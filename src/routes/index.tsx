@@ -28,13 +28,13 @@ function Dashboard() {
   const recent = LEADS.slice(0, 4);
 
   return (
-    <div className="relative min-h-screen bg-void animate-in fade-in duration-1000 overflow-hidden">
+    <div className="relative min-h-full bg-void animate-in fade-in duration-1000 overflow-y-auto">
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
       <div className="absolute top-[-20%] right-[-10%] size-[800px] bg-orange-10/5 rounded-full blur-[150px] pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] size-[600px] bg-blue-10/5 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="relative px-12 py-16 max-w-[1400px] mx-auto">
-        <header className="flex items-end justify-between mb-20 animate-in slide-in-from-top-6 duration-1000">
+      <div className="relative px-6 md:px-12 py-8 md:py-16 max-w-[1400px] mx-auto">
+        <header className="flex flex-col md:flex-row items-start md:items-end justify-between gap-8 mb-12 md:mb-20 animate-in slide-in-from-top-6 duration-1000">
           <div className="space-y-6">
             <div className="flex items-center gap-3">
               <div className="size-2 rounded-full bg-green-4 animate-pulse shadow-[0_0_10px_rgba(17,255,153,0.5)]" />
