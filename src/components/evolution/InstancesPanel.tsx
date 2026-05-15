@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Plus, Wifi, Trash2, RefreshCw, QrCode, Power, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -98,9 +99,9 @@ export function InstancesPanel() {
   const [aliases, setAliases] = useState<Record<string, string>>({});
   const [savingAliases, setSavingAliases] = useState<Record<string, boolean>>({});
 
-  // Load aliases from local DB
+  // Load aliases from DB
   const getInstancesFn = useServerFn(getInstances);
-  useQuery({
+  const { data: dbInstances } = useQuery({
     queryKey: ["instances", "aliases"],
     queryFn: async () => {
       const data = await getInstancesFn();
@@ -113,7 +114,7 @@ export function InstancesPanel() {
       }
       return data;
     },
-    refetchInterval: 30000,
+    refetchInterval: 15000,
   });
 
   const createMutation = useMutation({
@@ -229,11 +230,15 @@ export function InstancesPanel() {
               saving={savingAliases[name] ?? false}
               onAliasChange={(alias) => {
                 setAliases(prev => ({ ...prev, [name]: alias }));
+              }}
+              onAliasSave={() => {
+                const alias = aliases[name] ?? "";
                 setSavingAliases(prev => ({ ...prev, [name]: true }));
                 updateAliasFn({ data: { id: name, alias } })
                   .then(() => {
                     queryClient.invalidateQueries({ queryKey: ["instances", "aliases"] });
                     setSavingAliases(prev => ({ ...prev, [name]: false }));
+                    toast.success(`Tag "${alias || name}" salva`);
                   })
                   .catch((err: Error) => {
                     toast.error("Erro ao salvar tag: " + err.message);
@@ -326,6 +331,7 @@ function InstanceLiveCard({
   alias,
   saving,
   onAliasChange,
+  onAliasSave,
 }: {
   name: string;
   state: string;
@@ -339,6 +345,7 @@ function InstanceLiveCard({
   alias?: string;
   saving?: boolean;
   onAliasChange: (alias: string) => void;
+  onAliasSave: () => void;
 }) {
   const stateMeta =
     state === "open"
@@ -382,11 +389,16 @@ function InstanceLiveCard({
           className="bg-transparent border border-frost-border/30 rounded px-2 py-0.5 text-[11px] font-mono outline-none focus:border-primary/40 text-foreground w-24"
           maxLength={8}
         />
-        {saving && (
+        {saving ? (
           <Loader2 className="size-3 animate-spin text-muted-foreground" />
-        )}
-        {!saving && alias && (
-          <span className="size-2 rounded-full bg-green-4" />
+        ) : (
+          <button
+            onClick={onAliasSave}
+            disabled={saving}
+            className="text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-1 rounded bg-primary/10 text-primary hover:bg-primary/20 transition-all"
+          >
+            Salvar
+          </button>
         )}
       </div>
 
