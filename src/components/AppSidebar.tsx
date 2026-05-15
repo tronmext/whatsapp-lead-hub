@@ -51,9 +51,9 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r border-frost-border bg-void">
-      <SidebarHeader className="p-4 flex flex-col items-center justify-center transition-all duration-300">
-        <Link to="/" className="flex items-center justify-center group transition-transform active:scale-95 overflow-hidden w-full">
-          <div className="flex items-center justify-center transition-all duration-300 w-full">
+      <SidebarHeader className="h-20 flex items-center justify-center transition-all duration-300">
+        <Link to="/" className="flex items-center justify-center group transition-transform active:scale-95 w-full px-4">
+          <div className="flex items-center justify-center w-full">
             <img 
               src={collapsed 
                 ? "https://ftczlwqeimdhgjkkhvbg.supabase.co/storage/v1/object/sign/lovable-storage/logo-icone.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wNGRjMzRmOC1kMmQ0LTQ0MmQtOTY3Yy02NDVhYjMzOTI4OTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJsb3ZhYmxlLXN0b3JhZ2UvbG9nby1pY29uZS5wbmciLCJpYXQiOjE3Nzg4MTc3NDksImV4cCI6MTc3OTQyMjU0OX0.iRFA0HxgbL7wVKeTGk0Iyik1VzEq2TBCAFsc2f-jd2A"
@@ -62,7 +62,7 @@ export function AppSidebar() {
               alt="Leadflow Logo"
               className={cn(
                 "object-contain transition-all duration-300",
-                collapsed ? "size-10" : "h-10 w-auto"
+                collapsed ? "size-12" : "h-10 w-auto"
               )}
             />
           </div>
@@ -84,10 +84,10 @@ export function AppSidebar() {
                       asChild
                       tooltip={item.title}
                       className={cn(
-                        "h-10 transition-all duration-200",
+                        "h-12 transition-all duration-200 rounded-xl mx-auto",
                         active 
-                          ? "bg-white/[0.05] text-foreground border-border" 
-                          : "text-muted-foreground hover:text-foreground hover:bg-state-hover"
+                          ? "bg-primary/10 text-primary border border-primary/20" 
+                          : "text-muted-foreground hover:text-foreground hover:bg-white/[0.03]"
                       )}
                     >
                       <Link to={item.url} className="flex items-center w-full">
