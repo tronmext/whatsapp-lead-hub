@@ -45,16 +45,23 @@ function LeadsPage() {
     if (!destination) return;
     if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
+    const leadIndex = leads.findIndex(l => l.id === draggableId);
+    if (leadIndex === -1) return;
+
     const updatedLeads = [...leads];
-    const leadIndex = updatedLeads.findIndex(l => l.id === draggableId);
+    const [movedLead] = updatedLeads.splice(leadIndex, 1);
     
-    if (leadIndex !== -1) {
-      updatedLeads[leadIndex] = {
-        ...updatedLeads[leadIndex],
-        status: destination.droppableId as Lead["status"]
-      };
-      setLeads(updatedLeads);
-    }
+    // Atualiza o status e insere na nova posição relativa à coluna
+    const leadWithNewStatus = {
+      ...movedLead,
+      status: destination.droppableId as Lead["status"]
+    };
+
+    // Para simplificar a reordenação visual no mock:
+    // Removemos o lead da posição antiga e inserimos no final da lista 
+    // (ou poderíamos implementar uma lógica de 'order' no mock se necessário)
+    updatedLeads.push(leadWithNewStatus);
+    setLeads(updatedLeads);
   };
 
   return (
