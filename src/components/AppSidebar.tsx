@@ -85,7 +85,7 @@ export function AppSidebar() {
                           : "text-muted-foreground hover:text-near-white hover:bg-white/[0.02]"
                       )}
                     >
-                      <Link to={item.url} className={cn("flex items-center w-full", collapsed && "justify-center")}>
+                      <Link to={item.url} className="flex items-center w-full">
                         <item.icon className={cn("size-4.5 shrink-0", active ? "text-near-white" : "text-muted-foreground")} strokeWidth={1.8} />
                         {!collapsed && (
                           <span className={cn(
