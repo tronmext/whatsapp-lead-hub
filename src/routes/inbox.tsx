@@ -1,4 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { sendText } from "@/lib/evolution.functions";
+import { getActiveInstance } from "@/components/evolution/InstancesPanel";
 import { useState, useRef, useEffect } from "react";
 import { LEADS, STATUS_LABELS, type Lead, type LineId } from "@/lib/mock-data";
 import { TagPill } from "@/components/Tag";
@@ -238,7 +241,7 @@ function InboxPage() {
           <div className="h-4" />
         </div>
         
-        <ChatComposer />
+        <ChatComposer phone={lead.phone} />
       </section>
 
       {/* 03. Right: Lead Insights Card */}
@@ -290,10 +293,11 @@ function ChatHeader({ lead }: { lead: Lead }) {
   );
 }
 
-function ChatComposer() {
+function ChatComposer({ phone }: { phone?: string }) {
   const [text, setText] = useState("");
-  const [isRecording, setIsRecording] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const sendTextFn = useServerFn(sendText);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -301,6 +305,30 @@ function ChatComposer() {
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
     }
   }, [text]);
+
+  async function handleSend() {
+    const body = text.trim();
+    if (!body) return;
+    const instance = getActiveInstance();
+    if (!instance) {
+      toast.error("Selecione uma instância ativa em Settings → Instâncias.");
+      return;
+    }
+    if (!phone) {
+      toast.error("Lead sem telefone.");
+      return;
+    }
+    setIsSending(true);
+    try {
+      await sendTextFn({ data: { instanceName: instance, number: phone, text: body } });
+      toast.success("Mensagem enviada");
+      setText("");
+    } catch (e) {
+      toast.error((e as Error).message);
+    } finally {
+      setIsSending(false);
+    }
+  }
 
   return (
     <div className="border-t border-border/10 p-4 md:p-6 bg-void relative z-20 mt-auto">
@@ -316,10 +344,7 @@ function ChatComposer() {
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                if (text.trim()) {
-                  setText("");
-                  toast.success("Mensagem enviada");
-                }
+                handleSend();
               }
             }}
           />
@@ -333,32 +358,14 @@ function ChatComposer() {
               </button>
             </div>
             <div className="flex items-center gap-1.5">
-              <button 
-                onClick={() => {
-                  setIsRecording(!isRecording);
-                  if (!isRecording) toast.info("Gravando...");
-                  else toast.success("Enviado");
-                }}
-                className={cn(
-                  "size-8 rounded-lg grid place-items-center transition-all",
-                  isRecording ? "bg-red-500 text-white animate-pulse" : "text-muted-foreground/40 hover:text-foreground"
-                )}
-              >
-                <Mic className="size-4" />
-              </button>
-              <button 
-                disabled={!text.trim() && !isRecording}
-                onClick={() => {
-                  if (text.trim()) {
-                    toast.success("Mensagem enviada");
-                    setText("");
-                  }
-                }}
+              <button
+                disabled={!text.trim() || isSending}
+                onClick={handleSend}
                 className={cn(
                   "size-9 rounded-lg grid place-items-center transition-all active:scale-90",
-                  text.trim() || isRecording
-                    ? "bg-primary text-primary-foreground shadow-[0_0_30px_rgba(255,128,31,0.24)]" 
-                    : "bg-secondary text-muted-foreground cursor-not-allowed opacity-50"
+                  text.trim() && !isSending
+                    ? "bg-primary text-primary-foreground shadow-[0_0_30px_rgba(255,128,31,0.24)]"
+                    : "bg-secondary text-muted-foreground cursor-not-allowed opacity-50",
                 )}
               >
                 <Send className="size-4.5" strokeWidth={2.5} />
