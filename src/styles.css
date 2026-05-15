@@ -1,9 +1,7 @@
-@import "tailwindcss" source(none);
-@source "../src";
-@import "tw-animate-css";
-
-/* Fonts: Premium Typography Hierarchy */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+@import "tailwindcss" source(none);
+@import "tw-animate-css";
+@source "../src";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -52,90 +50,100 @@
   --color-blue-10: oklch(0.68 0.18 245);
   --color-yellow-9: oklch(0.84 0.16 85);
   --color-red-5: oklch(0.62 0.24 18);
-  
-  --color-frost-border: color-mix(in oklab, var(--foreground) 14%, transparent);
+
+  --color-frost-border: rgba(214, 235, 253, 0.14);
+  --color-frost-border-strong: rgba(214, 235, 253, 0.22);
   --color-void: #000000;
-  --color-near-white: #e4e4e7;
+  --color-near-white: oklch(0.96 0.003 286);
 }
 
 :root {
   color-scheme: dark;
 
-  /* Colors - Dark High Contrast Technical Palette */
-  --background: oklch(0.11 0 0);
-  --foreground: oklch(0.92 0.004 286);
+  /* Canvas — pure void black. Not near-black. Not off-black. */
+  --background: #000000;
+  --foreground: oklch(0.96 0.003 286);
 
-  --card: oklch(0.18 0.006 286);
-  --card-foreground: oklch(0.92 0.004 286);
-  --card-shadow: 0 16px 48px -24px rgba(0, 0, 0, 0.78);
+  /* Card surface — one luminance step above void */
+  --card: oklch(0.12 0.004 286);
+  --card-foreground: oklch(0.96 0.003 286);
+  --card-shadow: none;
 
+  /* Primary — warm orange for interactive states (themeable) */
   --primary: oklch(0.72 0.18 52);
-  --primary-foreground: oklch(0.12 0 0);
+  --primary-foreground: oklch(0.1 0 0);
+  --primary-glow: rgba(255, 128, 31, 0.2);
+  --primary-glow-color: rgba(255, 128, 31, 0.12);
 
-  --secondary: oklch(0.21 0.006 286);
-  --secondary-foreground: oklch(0.9 0.004 286);
+  /* Secondary — subtle elevated surface */
+  --secondary: oklch(0.15 0.004 286);
+  --secondary-foreground: oklch(0.94 0.003 286);
 
-  --muted: oklch(0.16 0.006 286);
-  --muted-foreground: oklch(0.67 0.006 286);
+  /* Muted — tertiary surfaces and supporting text */
+  --muted: oklch(0.16 0.004 286);
+  --muted-foreground: oklch(0.62 0.006 286);
 
+  /* Accent — mirrors primary for consistency */
   --accent: oklch(0.72 0.18 52);
-  --accent-foreground: oklch(0.12 0 0);
+  --accent-foreground: oklch(0.1 0 0);
 
-  --border: oklch(0.29 0.008 286);
-  --input: oklch(0.15 0.006 286);
-  --input-color: oklch(0.9 0.004 286);
+  /* Borders — frost system with blue-tinted crystalline shimmer */
+  --border: rgba(214, 235, 253, 0.14);
+  --input: oklch(0.1 0.004 286);
+  --input-color: oklch(0.94 0.003 286);
   --ring: oklch(0.72 0.18 52);
-  --state-hover: color-mix(in oklab, var(--foreground) 7%, transparent);
-  --state-pressed: color-mix(in oklab, var(--foreground) 11%, transparent);
+
+  /* State overlays */
+  --state-hover: rgba(255, 255, 255, 0.04);
+  --state-pressed: rgba(255, 255, 255, 0.08);
   --btn-height: 2.5rem;
-  
-  --destructive: oklch(0.62 0.22 25);
+
+  --destructive: oklch(0.62 0.24 18);
   --destructive-foreground: oklch(0.96 0.004 286);
 
-  /* Layer 2 — Material 3 surfaces */
-  --surface-container: oklch(0.18 0.006 286);
-  --surface-container-high: oklch(0.23 0.008 286);
-  --surface-inverse: oklch(0.9 0.004 286);
-  --surface-inverse-foreground: oklch(0.12 0 0);
+  /* Layer 2 — elevated surfaces */
+  --surface-container: oklch(0.12 0.004 286);
+  --surface-container-high: oklch(0.16 0.004 286);
+  --surface-inverse: oklch(0.96 0.003 286);
+  --surface-inverse-foreground: oklch(0.1 0 0);
 
   /* Radius Contract */
   --radius-xs: 0.125rem;
   --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-2xl: 1rem;
-  --radius-3xl: 1.5rem;
-  --radius-4xl: 2rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
   --radius-card: 12px;
-  --radius-input: 4px;
-  --radius-button: 4px;
+  --radius-input: 8px;
+  --radius-button: 8px;
   --radius-full: 9999px;
 
-  /* Typography Scale */
+  /* Typography Scale — ≥1.25 ratio between steps */
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
-  --text-4xl: 2.25rem;
-  --text-5xl: 3rem;
-  
-  --leading-tight: 1.25;
-  --leading-snug: 1.375;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.875rem;
+  --text-3xl: 2.25rem;
+  --text-4xl: 3rem;
+  --text-5xl: 3.75rem;
+  --text-6xl: 4.5rem;
+
+  --leading-tight: 1;
+  --leading-snug: 1.2;
   --leading-normal: 1.5;
   --leading-relaxed: 1.625;
 
-  /* Sidebar Colors */
-  --sidebar-background: oklch(0.1 0 0);
-  --sidebar-foreground: oklch(0.92 0.004 286);
+  /* Sidebar Colors — void-deep, no luminance drift */
+  --sidebar-background: #000000;
+  --sidebar-foreground: oklch(0.96 0.003 286);
   --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: var(--primary-foreground);
-  --sidebar-accent: oklch(0.18 0.006 286);
-  --sidebar-accent-foreground: oklch(0.92 0.004 286);
-  --sidebar-border: oklch(0.25 0.008 286);
+  --sidebar-accent: oklch(0.12 0.004 286);
+  --sidebar-accent-foreground: oklch(0.96 0.003 286);
+  --sidebar-border: rgba(214, 235, 253, 0.1);
   --sidebar-ring: var(--primary);
 }
 
@@ -144,7 +152,8 @@
     border-color: var(--border);
   }
 
-  html, body {
+  html,
+  body {
     background-color: var(--background);
     color: var(--foreground);
     font-family: var(--font-body);
@@ -154,19 +163,22 @@
     letter-spacing: 0;
   }
 
-  h1, .font-display {
+  h1,
+  .font-display {
     font-family: var(--font-display);
     font-weight: 400;
-    line-height: 1.0;
-    letter-spacing: -0.96px;
+    line-height: 1;
+    letter-spacing: -0.02em;
     font-feature-settings: "ss01", "ss04", "ss11";
   }
 
-  h2, h3, .font-section {
+  h2,
+  h3,
+  .font-section {
     font-family: var(--font-display);
     font-weight: 400;
     line-height: 1.2;
-    letter-spacing: -2.8px;
+    letter-spacing: -0.03em;
     font-feature-settings: "ss01", "ss04", "ss11";
   }
 
@@ -192,12 +204,17 @@
     border: 1px solid var(--color-frost-border);
   }
 
+  .frost-border-strong {
+    border: 1px solid var(--color-frost-border-strong);
+  }
+
   input,
   textarea,
   select {
     background-color: var(--input);
     color: var(--input-color);
-    border-color: color-mix(in oklab, var(--foreground) 12%, transparent);
+    border: 1px solid var(--color-frost-border);
+    border-radius: var(--radius-input);
   }
 
   input::placeholder,
@@ -220,7 +237,7 @@
   }
 
   .nav-link:hover {
-    color: #f0f0f0;
+    color: var(--color-near-white);
   }
 
   .code-block {
@@ -230,5 +247,34 @@
     border-radius: 24px;
     padding: 24px;
     font-size: 16px;
+  }
+
+  /* Atmospheric depth utilities */
+  .grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .glow-orange {
+    background: radial-gradient(ellipse at 50% 0%, var(--primary-glow-color) 0%, transparent 70%);
+  }
+
+  .btn-glow-default:hover {
+    box-shadow: 0 0 25px var(--primary-glow);
+  }
+
+  .btn-glow-premium:hover {
+    box-shadow: 0 0 30px var(--primary-glow);
+  }
+
+  .active-indicator-glow {
+    box-shadow: 0 0 8px var(--primary-glow);
+  }
+
+  .glow-blue {
+    background: radial-gradient(ellipse at 50% 0%, rgba(0, 117, 255, 0.15) 0%, transparent 70%);
+  }
+
+  .glow-green {
+    background: radial-gradient(ellipse at 50% 0%, rgba(34, 255, 153, 0.08) 0%, transparent 70%);
   }
 }

@@ -1,6 +1,7 @@
 {
   "name": "tanstack_start_ts",
   "private": true,
+  "packageManager": "bun@1.0.0",
   "sideEffects": false,
   "type": "module",
   "scripts": {
@@ -9,7 +10,11 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "pre-release:check": "bash ./scripts/pre-release-check.sh",
+    "pre-release:check:full": "RUN_LINT=1 bash ./scripts/pre-release-check.sh",
+    "cleanup:lid:local": "bash ./scripts/cleanup-lid-records.sh local",
+    "cleanup:lid:remote": "bash ./scripts/cleanup-lid-records.sh remote"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",
