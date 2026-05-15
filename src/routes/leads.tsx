@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { LEADS, STATUS_LABELS, type Lead } from "@/lib/mock-data";
 import { TagPill } from "@/components/Tag";
-import { Search, Plus, MoreHorizontal, LayoutGrid, List } from "lucide-react";
+import { Search, Plus, LayoutGrid, List } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
@@ -27,6 +27,11 @@ function LeadsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("kanban");
   const [leads, setLeads] = useState<Lead[]>(LEADS);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const filteredLeads = leads.filter(l => 
     l.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -40,16 +45,23 @@ function LeadsPage() {
     if (!destination) return;
     if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
+    const leadIndex = leads.findIndex(l => l.id === draggableId);
+    if (leadIndex === -1) return;
+
     const updatedLeads = [...leads];
-    const leadIndex = updatedLeads.findIndex(l => l.id === draggableId);
+    const [movedLead] = updatedLeads.splice(leadIndex, 1);
     
-    if (leadIndex !== -1) {
-      updatedLeads[leadIndex] = {
-        ...updatedLeads[leadIndex],
-        status: destination.droppableId as Lead["status"]
-      };
-      setLeads(updatedLeads);
-    }
+    // Atualiza o status e insere na nova posição relativa à coluna
+    const leadWithNewStatus = {
+      ...movedLead,
+      status: destination.droppableId as Lead["status"]
+    };
+
+    // Para simplificar a reordenação visual no mock:
+    // Removemos o lead da posição antiga e inserimos no final da lista 
+    // (ou poderíamos implementar uma lógica de 'order' no mock se necessário)
+    updatedLeads.push(leadWithNewStatus);
+    setLeads(updatedLeads);
   };
 
   return (
@@ -107,7 +119,7 @@ function LeadsPage() {
       </header>
 
       <main className="flex-1 px-8 md:px-12 pb-12 overflow-hidden flex flex-col">
-        {viewMode === "kanban" ? (
+        {isClient && viewMode === "kanban" ? (
           <DragDropContext onDragEnd={onDragEnd}>
             <div className="flex gap-6 h-full overflow-x-auto pb-4 scrollbar-hide">
               {COLUMNS.map((status) => (
