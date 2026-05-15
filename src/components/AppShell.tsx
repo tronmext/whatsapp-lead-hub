@@ -64,19 +64,6 @@ export function AppShell() {
   );
 }
 
-        <div className="mt-auto p-4 space-y-2">
-          <LineStatus id="L1" label="Linha 1" phone="+55 11 99887-1100" online />
-          <LineStatus id="L2" label="Linha 2" phone="+55 65 99700-2244" online />
-        </div>
-      </aside>
-
-      <main className="flex-1 min-w-0">
-        <Outlet />
-      </main>
-    </div>
-  );
-}
-
 function LineStatus({
   label,
   phone,
@@ -88,18 +75,18 @@ function LineStatus({
   online: boolean;
 }) {
   return (
-    <div className="frost-border rounded-lg px-3 py-2.5 bg-[oklch(0.04_0_0)]">
+    <div className="frost-border rounded-lg px-3 py-2.5 bg-[oklch(0.04_0_0)] group/status">
       <div className="flex items-center justify-between">
         <span className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground font-section">
           {label}
         </span>
         <span className="flex items-center gap-1 text-[10px] text-[oklch(0.86_0.2_155)]">
-          <span className="size-1.5 rounded-full bg-[oklch(0.86_0.2_155)] shadow-[0_0_8px_oklch(0.86_0.2_155)]" />
+          <span className="size-1.5 rounded-full bg-[oklch(0.86_0.2_155)] shadow-[0_0_8px_oklch(0.86_0.2_155)] animate-pulse" />
           {online ? "online" : "off"}
         </span>
       </div>
-      <div className="mt-1 flex items-center gap-1.5 text-[12px] text-foreground/90 font-mono">
-        <Wifi className="size-3 text-muted-foreground" />
+      <div className="mt-1 flex items-center gap-1.5 text-[12px] text-foreground/90 font-mono transition-colors group-hover/status:text-foreground">
+        <Wifi className="size-3 text-muted-foreground group-hover/status:text-blue" />
         {phone}
       </div>
     </div>
