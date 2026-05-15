@@ -103,19 +103,30 @@ export function InstancesPanel() {
   const getInstancesFn = useServerFn(getInstances);
   const { data: dbInstances } = useQuery({
     queryKey: ["instances", "aliases"],
-    queryFn: async () => {
-      const data = await getInstancesFn();
-      if (data && data.length > 0) {
-        const aliasMap: Record<string, string> = {};
-        data.forEach((inst: any) => {
-          if (inst.alias) aliasMap[inst.name] = inst.alias;
-        });
-        setAliases(prev => ({ ...prev, ...aliasMap }));
-      }
-      return data;
-    },
+    queryFn: () => getInstancesFn(),
     refetchInterval: 15000,
   });
+
+  const dbAliasMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    if (dbInstances) {
+      dbInstances.forEach((inst: any) => {
+        if (inst.alias) map[inst.name] = inst.alias;
+      });
+    }
+    return map;
+  }, [dbInstances]);
+
+  // Initialize aliases from DB on mount and after refetch
+  useEffect(() => {
+    setAliases(prev => {
+      const merged = { ...prev };
+      for (const [name, alias] of Object.entries(dbAliasMap)) {
+        merged[name] = alias;
+      }
+      return merged;
+    });
+  }, [dbAliasMap]);
 
   const createMutation = useMutation({
     mutationFn: async () => {
@@ -236,7 +247,8 @@ export function InstancesPanel() {
                 setSavingAliases(prev => ({ ...prev, [name]: true }));
                 updateAliasFn({ data: { id: name, alias } })
                   .then(() => {
-                    queryClient.invalidateQueries({ queryKey: ["instances", "aliases"] });
+                    queryClient.invalidateQueries({ queryKey: ["instances"] });
+                    queryClient.invalidateQueries({ queryKey: ["sidebar"] });
                     setSavingAliases(prev => ({ ...prev, [name]: false }));
                     toast.success(`Tag "${alias || name}" salva`);
                   })
