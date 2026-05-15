@@ -117,27 +117,55 @@ function InboxPage() {
       </section>
 
       {/* Chat */}
-      <section className="flex-1 flex flex-col min-w-0 border-r border-border">
+      <section className="flex-1 flex flex-col min-w-0 border-r border-border bg-[oklch(0.01_0_0)] relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-blue/5 via-transparent to-transparent pointer-events-none opacity-50" />
         <ChatHeader lead={lead} />
-        <div className="flex-1 overflow-y-auto px-8 py-6 space-y-3 bg-[oklch(0.015_0_0)]">
-          {lead.messages.map((m) => (
-            <div key={m.id} className={`flex ${m.from === "me" ? "justify-end" : "justify-start"}`}>
-              <div
-                className={[
-                  "max-w-[70%] px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed",
-                  m.from === "me"
-                    ? "bg-foreground text-background rounded-br-sm"
-                    : "frost-border bg-card rounded-bl-sm",
-                ].join(" ")}
+        
+        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4 scrollbar-hide relative z-10">
+          <div className="text-center py-4">
+            <span className="pill px-3 py-1 bg-white/5 border border-white/10 text-[11px] text-muted-foreground uppercase tracking-wider font-mono">
+              Hoje
+            </span>
+          </div>
+          
+          {lead.messages.map((m, i) => {
+            const isMe = m.from === "me";
+            return (
+              <div 
+                key={m.id} 
+                className={cn(
+                  "flex animate-in fade-in slide-in-from-bottom-2 duration-300", 
+                  isMe ? "justify-end" : "justify-start"
+                )}
+                style={{ animationDelay: `${i * 100}ms` }}
               >
-                <p>{m.text}</p>
-                <span className={`block text-[10px] mt-1 font-mono ${m.from === "me" ? "text-background/60" : "text-muted-foreground"}`}>
-                  {m.time}
-                </span>
+                <div className={cn("flex flex-col max-w-[75%]", isMe ? "items-end" : "items-start")}>
+                  <div
+                    className={cn(
+                      "px-4 py-3 rounded-2xl text-[14.5px] leading-relaxed shadow-sm transition-all duration-300",
+                      isMe
+                        ? "bg-foreground text-background rounded-tr-none hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+                        : "frost-border bg-card/60 backdrop-blur-md rounded-tl-none hover:bg-card/80"
+                    )}
+                  >
+                    <p>{m.text}</p>
+                  </div>
+                  <div className={cn(
+                    "flex items-center gap-1.5 mt-1 px-1",
+                    isMe ? "flex-row" : "flex-row-reverse"
+                  )}>
+                    <span className="text-[10px] font-mono text-muted-foreground/60 uppercase">
+                      {m.time}
+                    </span>
+                    {isMe && <CheckCheck className="size-3 text-blue" />}
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
+          <div className="h-2" />
         </div>
+        
         <ChatComposer />
       </section>
 
