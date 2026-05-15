@@ -32,7 +32,15 @@ function buildUrl(base: string, path: string, query?: EvolutionRequestOptions["q
   return u.toString();
 }
 
-export async function evolutionFetch<T = unknown>(opts: EvolutionRequestOptions): Promise<T> {
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
+
+export async function evolutionFetch<T extends JsonValue = JsonValue>(opts: EvolutionRequestOptions): Promise<T> {
   const { url, key } = getCreds();
   const target = buildUrl(url, opts.path, opts.query);
 
