@@ -51,7 +51,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r border-frost-border bg-void">
-      <SidebarHeader className="p-4">
+      <SidebarHeader className={cn("p-4 transition-all duration-300", collapsed ? "items-center" : "items-start")}>
         <Link to="/" className="flex items-center gap-3 group transition-transform active:scale-95 overflow-hidden">
           <div className="size-8 shrink-0 rounded-lg bg-near-white text-void grid place-items-center shadow-[0_0_20px_rgba(255,255,255,0.1)]">
             <Sparkles className="size-5" strokeWidth={2.4} />
