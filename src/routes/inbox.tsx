@@ -321,7 +321,7 @@ function LeadCard({ lead }: { lead: Lead }) {
           <HeadingHero className="text-[32px] mb-2 leading-none">
             {lead.name}
           </HeadingHero>
-          <TextMono className="text-[13px] font-bold opacity-60 flex items-center gap-2">
+          <TextMono className="text-[13px] font-bold opacity-60 flex items-center gap-2 justify-center">
             <Phone className="size-3.5" /> {lead.phone}
           </TextMono>
           
