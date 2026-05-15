@@ -44,41 +44,41 @@ function InboxPage() {
   return (
     <div className="h-full flex flex-col md:flex-row bg-void animate-in fade-in duration-700 overflow-hidden relative">
       {/* 01. Sidebar: Feed de Conversas */}
-      <section className="w-full md:w-[380px] shrink-0 border-b md:border-b-0 md:border-r border-frost-border flex flex-col bg-white/[0.01] backdrop-blur-3xl relative z-10 h-1/3 md:h-full">
-        <div className="p-6 border-b border-frost-border space-y-4 bg-void/50 backdrop-blur-md sticky top-0 z-20">
+      <section className="w-full md:w-[320px] shrink-0 border-b md:border-b-0 md:border-r border-border/10 flex flex-col bg-void relative z-10 h-1/3 md:h-full">
+        <div className="p-4 border-b border-border/10 space-y-3 bg-void/50 backdrop-blur-md sticky top-0 z-20">
           <div className="flex items-center justify-between">
-            <HeadingSub className="text-[18px] tracking-tight mb-0">Conversas</HeadingSub>
-            <div className="flex items-center gap-1.5">
-              <button className="size-8 rounded-lg frost-border grid place-items-center hover:bg-white/5 transition-all active:scale-90 text-muted-foreground hover:text-near-white">
-                <Filter className="size-3.5" />
+            <TextSmall className="text-[10px]">Conversas</TextSmall>
+            <div className="flex items-center gap-1">
+              <button className="size-7 rounded-lg border border-border/10 grid place-items-center hover:bg-white/5 transition-all active:scale-90 text-muted-foreground hover:text-foreground">
+                <Filter className="size-3" />
               </button>
-              <button className="size-8 rounded-lg frost-border grid place-items-center bg-near-white text-void hover:opacity-90 transition-all active:scale-90">
-                <Plus className="size-3.5" strokeWidth={3} />
+              <button className="size-7 rounded-full bg-primary text-primary-foreground grid place-items-center hover:opacity-90 transition-all active:scale-90">
+                <Plus className="size-3" strokeWidth={3} />
               </button>
             </div>
           </div>
           
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             <div className="relative group">
-              <Search className="size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-near-white transition-colors" />
+              <Search className="size-3 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within:text-primary transition-colors" />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Buscar leads..."
-                className="w-full bg-void/40 border border-frost-border/30 rounded-lg pl-9 pr-3 py-2 text-[13px] placeholder:text-muted-foreground/30 outline-none focus:border-near-white/20 focus:bg-void/60 transition-all font-sans"
+                placeholder="Buscar..."
+                className="w-full bg-muted border border-border/5 rounded-xl pl-8 pr-3 py-1.5 text-[12px] placeholder:text-muted-foreground/20 outline-none focus:border-primary/20 transition-all font-mono"
               />
             </div>
             
-            <div className="flex p-1 bg-void/40 rounded-lg border border-frost-border/20">
+            <div className="flex p-0.5 bg-muted rounded-lg border border-border/5">
               {(["all", "L1", "L2"] as const).map((opt) => (
                 <button
                   key={opt}
                   onClick={() => setLineFilter(opt)}
                   className={cn(
-                    "flex-1 py-1.5 text-[9px] font-black uppercase tracking-[0.15em] transition-all rounded-md font-mono",
+                    "flex-1 py-1 text-[8px] font-black uppercase tracking-[0.1em] transition-all rounded-md font-mono",
                     lineFilter === opt
-                      ? "bg-near-white/10 text-near-white shadow-sm"
-                      : "text-muted-foreground/40 hover:text-near-white/60"
+                      ? "bg-white/[0.05] text-foreground shadow-sm"
+                      : "text-muted-foreground/30 hover:text-foreground/50"
                   )}
                 >
                   {opt === "all" ? "Geral" : opt}
