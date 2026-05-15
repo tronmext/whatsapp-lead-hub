@@ -2,7 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ALL_TAGS } from "@/lib/mock-data";
 import { TagPill } from "@/components/Tag";
 import { cn } from "@/lib/utils";
-import { Plus, Sparkles, Wifi, Shield, Bell, Database, Globe, Command, Trash2 } from "lucide-react";
+import { Plus, Sparkles, Wifi, Shield, Trash2, Command } from "lucide-react";
+import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
+import { ResendCard } from "@/components/ResendCard";
+import { ResendButton } from "@/components/ResendButton";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -22,18 +25,16 @@ function SettingsPage() {
       <header className="mb-20 animate-in slide-in-from-top-4 duration-1000">
         <div className="flex items-center gap-3 mb-4">
           <Command className="size-4 text-muted-foreground" />
-          <p className="text-[12px] uppercase tracking-[0.2em] text-muted-foreground font-black font-mono">
-            Centro de Controle do Pipeline
-          </p>
+          <TextSmall className="text-muted-foreground opacity-80">CENTRO DE CONTROLE DO PIPELINE</TextSmall>
         </div>
-        <h1 className="font-display text-[72px] leading-[1] tracking-tight">Settings</h1>
+        <HeadingHero>Settings</HeadingHero>
       </header>
 
       <div className="grid grid-cols-1 gap-20">
         <section className="space-y-10">
           <div className="flex items-baseline justify-between border-b border-frost-border pb-6">
-            <h2 className="text-[24px] font-section text-near-white tracking-[0.35px]">Motor de IA Inteligente</h2>
-            <p className="text-[13px] text-muted-foreground font-mono">v4.2-STABLE</p>
+            <HeadingSub>Motor de IA Inteligente</HeadingSub>
+            <TextMono className="opacity-50">v4.2-STABLE</TextMono>
           </div>
           
           <div className="code-block relative group">
@@ -41,10 +42,10 @@ function SettingsPage() {
                <Shield className="size-4 text-near-white" />
                <Sparkles className="size-4 text-orange-10" />
              </div>
-             <div className="flex items-center gap-4 mb-6 text-[12px] font-mono text-muted-foreground uppercase tracking-widest border-b border-frost-border/20 pb-4">
+             <TextMono className="flex items-center gap-4 mb-6 uppercase tracking-widest border-b border-frost-border/20 pb-4 block">
                 <span className="text-orange-10">●</span>
                 system_instruction.md
-             </div>
+             </TextMono>
              <textarea 
                className="w-full h-64 bg-transparent outline-none resize-none text-[15px] font-mono leading-relaxed text-near-white/80 scrollbar-hide"
                spellCheck={false}
@@ -56,19 +57,18 @@ Analise a transcrição da conversa e gere um objeto JSON:
 3. IDENTIFIED_NEEDS (Lista técnica de dores)
 4. SUGGESTED_NEXT_STEPS (Ações pragmáticas)
 
-Nicho: Imóveis de luxo e Agronegócio de precisão.
 Tom: Sóbrio, editorial, técnico.`}
              />
              <div className="mt-8 flex justify-end gap-3 pt-6 border-t border-frost-border/20">
-                <button className="btn-secondary px-6 py-2 uppercase tracking-widest text-[11px] font-black">RESTAURAR</button>
-                <button className="btn-primary px-8 py-2 uppercase tracking-widest text-[11px] font-black shadow-2xl">SALVAR MUDANÇAS</button>
+                <ResendButton variant="secondary" size="sm" className="px-6 uppercase tracking-widest text-[11px] font-black">RESTAURAR</ResendButton>
+                <ResendButton variant="primary" size="sm" className="px-8 uppercase tracking-widest text-[11px] font-black shadow-2xl">SALVAR MUDANÇAS</ResendButton>
              </div>
           </div>
         </section>
 
         <section className="space-y-10">
           <div className="flex items-baseline justify-between border-b border-frost-border pb-6">
-            <h2 className="text-[24px] font-section text-near-white tracking-[0.35px]">Instâncias WhatsApp</h2>
+            <HeadingSub>Instâncias WhatsApp</HeadingSub>
             <div className="size-2 rounded-full bg-green-4 shadow-[0_0_10px_rgba(17,255,153,0.5)] animate-pulse" />
           </div>
 
@@ -79,15 +79,15 @@ Tom: Sóbrio, editorial, técnico.`}
                <div className="size-12 rounded-full bg-white/5 grid place-items-center group-hover:scale-110 transition-transform">
                   <Plus className="size-6 text-muted-foreground" />
                </div>
-               <span className="text-[12px] font-black uppercase tracking-[0.2em] text-muted-foreground group-hover:text-near-white transition-colors">CONECTAR NOVA LINHA</span>
+               <TextSmall className="tracking-[0.2em] text-muted-foreground group-hover:text-near-white transition-colors">CONECTAR NOVA LINHA</TextSmall>
             </button>
           </div>
         </section>
       </div>
 
       <footer className="mt-40 pt-10 border-t border-frost-border/20 flex justify-between items-center opacity-40 grayscale hover:grayscale-0 transition-all duration-1000">
-         <div className="text-[11px] font-mono font-bold uppercase tracking-[0.3em]">Leadflow v1.0.8</div>
-         <div className="text-[11px] font-mono font-bold uppercase tracking-[0.3em]">Cinematic Void Edition</div>
+         <TextMono className="uppercase tracking-[0.3em] font-bold">Leadflow v1.0.8</TextMono>
+         <TextMono className="uppercase tracking-[0.3em] font-bold">Cinematic Void Edition</TextMono>
       </footer>
     </div>
   );
@@ -98,27 +98,27 @@ function InstanceCard({ line, label, phone, accent }: { line: string; label: str
   const bgClass = accent === "orange" ? "bg-orange-10/10" : "bg-blue-10/10";
   
   return (
-    <div className="frost-border rounded-[24px] p-8 bg-white/[0.01] backdrop-blur-sm group hover:bg-white/[0.03] transition-all duration-500 relative overflow-hidden">
+    <ResendCard variant="large" className="p-8 relative overflow-hidden group">
        <div className="flex items-center justify-between mb-8">
-          <span className={cn("pill px-3 py-1 text-[10px] font-mono font-black border uppercase tracking-widest", bgClass, colorClass)}>
+          <TextMono className={cn("px-3 py-1 border uppercase tracking-widest text-[10px] font-black rounded-full", bgClass, colorClass)}>
             LINHA {line}
-          </span>
+          </TextMono>
           <div className="flex items-center gap-2 bg-green-4/10 px-3 py-1 rounded-full border border-green-4/20">
              <div className="size-1.5 rounded-full bg-green-4 animate-pulse" />
-             <span className="text-[9px] font-black uppercase tracking-widest text-green-4">ESTÁVEL</span>
+             <TextSmall className="text-green-4 text-[9px]">ESTÁVEL</TextSmall>
           </div>
        </div>
-       <div className="text-[20px] font-semibold text-near-white mb-2">{label}</div>
-       <div className="flex items-center gap-2 text-[14px] text-muted-foreground font-mono">
-          <Wifi className="size-4" strokeWidth={2.5} />
-          {phone}
+       <div className="text-[20px] font-semibold text-near-white mb-2 font-sans tracking-tight">{label}</div>
+       <div className="flex items-center gap-2">
+          <Wifi className="size-4 text-muted-foreground" strokeWidth={2.5} />
+          <TextMono className="text-[14px]">{phone}</TextMono>
        </div>
        <div className="mt-10 flex gap-3">
-          <button className="flex-1 py-3 text-[11px] font-black uppercase tracking-widest frost-border rounded-xl hover:bg-white/5 transition-all">CONFIGURAR</button>
+          <ResendButton variant="secondary" className="flex-1 text-[11px] font-black uppercase tracking-widest rounded-xl">CONFIGURAR</ResendButton>
           <button className="size-11 rounded-xl frost-border grid place-items-center text-muted-foreground hover:text-red-5 hover:border-red-5/30 transition-all active:scale-90">
              <Trash2 className="size-4" />
           </button>
        </div>
-    </div>
+    </ResendCard>
   );
 }
