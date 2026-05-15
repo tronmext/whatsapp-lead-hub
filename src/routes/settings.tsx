@@ -1,10 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Sparkles, Wifi, Shield, Command } from "lucide-react";
+import { Sparkles, Wifi, Shield, Command, Loader2, Save } from "lucide-react";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { Button } from "@/components/ui/button";
 import { InstancesPanel } from "@/components/evolution/InstancesPanel";
+import { getPrompts, savePrompt } from "@/lib/server-functions";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -78,6 +82,55 @@ function SettingsPage() {
 }
 
 function AISettings() {
+  const qc = useQueryClient();
+  const getPromptsFn = useServerFn(getPrompts);
+  const savePromptFn = useServerFn(savePrompt);
+
+  const promptsQ = useQuery({
+    queryKey: ["prompts"],
+    queryFn: () => getPromptsFn(),
+  });
+
+  const [selectedPrompt, setSelectedPrompt] = useState<{ id: string; name: string; content: string } | null>(null);
+  const [content, setContent] = useState("");
+
+  useEffect(() => {
+    if (promptsQ.data && promptsQ.data.length > 0 && !selectedPrompt) {
+      const first = promptsQ.data[0];
+      setSelectedPrompt({ id: first.id, name: first.name, content: first.content });
+      setContent(first.content);
+    }
+  }, [promptsQ.data, selectedPrompt]);
+
+  const saveMut = useMutation({
+    mutationFn: async () => {
+      if (!selectedPrompt) return;
+      return savePromptFn({ data: { id: selectedPrompt.id, name: selectedPrompt.name, content } });
+    },
+    onSuccess: () => {
+      toast.success("Prompt salvo com sucesso");
+      qc.invalidateQueries({ queryKey: ["prompts"] });
+    },
+    onError: (e) => toast.error((e as Error).message),
+  });
+
+  const handleNewPrompt = () => {
+    const newPrompt = { id: `prompt_${Date.now()}`, name: "Novo Prompt", content: "" };
+    setSelectedPrompt(newPrompt);
+    setContent("");
+  };
+
+  if (promptsQ.isLoading) {
+    return (
+      <section className="space-y-12">
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <Loader2 className="size-4 animate-spin" />
+          <TextSmall>Carregando prompts...</TextSmall>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="space-y-12">
       <div className="flex items-baseline justify-between border-b border-frost-border pb-8">
@@ -85,7 +138,29 @@ function AISettings() {
           <HeadingSub className="mb-2">Motor de IA Inteligente</HeadingSub>
           <TextSmall className="text-muted-foreground">Configure as diretrizes e o comportamento do processamento de leads.</TextSmall>
         </div>
-        <TextMono className="opacity-50 text-[11px]">v4.2-STABLE</TextMono>
+        <div className="flex items-center gap-3">
+          {promptsQ.data && promptsQ.data.length > 0 && (
+            <select
+              value={selectedPrompt?.id ?? ""}
+              onChange={(e) => {
+                const p = promptsQ.data.find((x: { id: string }) => x.id === e.target.value);
+                if (p) {
+                  setSelectedPrompt({ id: p.id, name: p.name, content: p.content });
+                  setContent(p.content);
+                }
+              }}
+              className="bg-muted border border-frost-border rounded-lg px-3 py-2 text-sm font-mono outline-none text-foreground"
+            >
+              {promptsQ.data.map((p: { id: string; name: string }) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+          )}
+          <Button variant="outline" size="sm" onClick={handleNewPrompt} className="font-bold tracking-widest text-[10px]">
+            NOVO
+          </Button>
+          <TextMono className="opacity-50 text-[11px]">v4.2-STABLE</TextMono>
+        </div>
       </div>
       
       <div className="code-block relative group">
@@ -95,24 +170,28 @@ function AISettings() {
          </div>
          <TextMono className="flex items-center gap-4 mb-6 uppercase tracking-widest border-b border-frost-border/20 pb-4 block text-[11px]">
             <span className="text-orange-10 animate-pulse">●</span>
-            system_instruction.md
+            {selectedPrompt?.name ?? "system_instruction.md"}
          </TextMono>
          <textarea 
            className="w-full h-80 bg-transparent outline-none resize-none text-[15px] font-mono leading-relaxed text-near-white/80 scrollbar-hide"
            spellCheck={false}
-           defaultValue={`Você é um analista comercial sênior especialista em High Ticket.
-Analise a transcrição da conversa e gere um objeto JSON:
-
-1. EXECUTIVE_SUMMARY (3-5 linhas diretas)
-2. QUALIFICATION_SCORE (0-100 baseado em urgência e budget)
-3. IDENTIFIED_NEEDS (Lista técnica de dores)
-4. SUGGESTED_NEXT_STEPS (Ações pragmáticas)
-
-Tom: Sóbrio, editorial, técnico.`}
+           value={content}
+           onChange={(e) => setContent(e.target.value)}
          />
          <div className="mt-8 flex justify-end gap-3 pt-6 border-t border-frost-border/20">
-            <Button variant="secondary" size="sm" className="px-6 uppercase tracking-widest text-[11px] font-black">RESTAURAR</Button>
-            <Button variant="default" size="sm" className="px-8 uppercase tracking-widest text-[11px] font-black shadow-2xl">SALVAR MUDANÇAS</Button>
+            <Button variant="secondary" size="sm" className="px-6 uppercase tracking-widest text-[11px] font-black" onClick={() => {
+              if (selectedPrompt) setContent(selectedPrompt.content);
+            }}>RESTAURAR</Button>
+            <Button 
+              variant="default" 
+              size="sm" 
+              className="px-8 uppercase tracking-widest text-[11px] font-black shadow-2xl"
+              onClick={() => saveMut.mutate()}
+              disabled={saveMut.isPending || !content.trim()}
+            >
+              {saveMut.isPending ? <Loader2 className="size-3.5 animate-spin mr-2" /> : <Save className="size-3.5 mr-2" />}
+              SALVAR MUDANÇAS
+            </Button>
          </div>
       </div>
     </section>
