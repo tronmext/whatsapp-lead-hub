@@ -1,5 +1,7 @@
 import * as React from "react"
 import { Link, useRouterState } from "@tanstack/react-router"
+import { useServerFn } from "@tanstack/react-start"
+import { useQuery } from "@tanstack/react-query"
 import { 
   Inbox, 
   LayoutDashboard, 
@@ -9,7 +11,8 @@ import {
   Sparkles, 
   Wifi,
   ChevronRight,
-  PanelLeft
+  PanelLeft,
+  Loader2
 } from "lucide-react"
 import logoFull from "@/assets/logo-full.png"
 import logoIcon from "@/assets/logo-icon.png"
@@ -30,6 +33,7 @@ import {
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
 import { TextMono, TextSmall } from "@/components/Typography"
+import { listInstances } from "@/lib/evolution.functions"
 
 const navItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -111,10 +115,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="p-4 space-y-4">
-        <div className="space-y-3">
-          <LineStatus label="L1" phone="99887-1100" online collapsed={collapsed} color="orange" />
-          <LineStatus label="L2" phone="99700-2244" online collapsed={collapsed} color="blue" />
-        </div>
+        <InstanceStatuses collapsed={collapsed} />
         
         {!collapsed && (
           <div className="pt-4 border-t border-frost-border/20">
@@ -129,50 +130,88 @@ export function AppSidebar() {
   )
 }
 
-function LineStatus({
-  label,
-  phone,
-  online,
-  collapsed,
-  color
-}: {
-  label: string
-  phone: string
-  online: boolean
-  collapsed: boolean
-  color: "orange" | "blue"
-}) {
-  const accentColor = color === "orange" ? "text-orange-10" : "text-blue-10"
+function InstanceStatuses({ collapsed }: { collapsed: boolean }) {
+  const listFn = useServerFn(listInstances)
   
-  if (collapsed) {
+  const { data, isLoading } = useQuery({
+    queryKey: ["sidebar", "instances"],
+    queryFn: () => listFn(),
+    refetchInterval: 10000,
+  })
+
+  const instances = (data?.instances ?? []) as Array<{
+    instanceName?: string
+    state?: string
+    ownerJid?: string
+    profileName?: string
+    connectionStatus?: string
+  }>
+
+  if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center gap-1 opacity-60 hover:opacity-100 transition-opacity min-h-[40px]">
-        <div className={cn("size-2 rounded-full", online ? "bg-green-4 animate-pulse shadow-[0_0_8px_rgba(17,255,153,0.4)]" : "bg-muted")} />
-        <span className={cn("text-[9px] font-black font-mono", accentColor)}>{label}</span>
+      <div className="flex items-center justify-center py-2">
+        <Loader2 className="size-3 animate-spin text-muted-foreground" />
       </div>
     )
   }
 
+  if (instances.length === 0) {
+    if (!collapsed) {
+      return (
+        <TextSmall className="text-[9px] opacity-40 text-center block">
+          Nenhuma instância conectada
+        </TextSmall>
+      )
+    }
+    return null
+  }
+
   return (
-    <div className="frost-border rounded-xl px-3 py-3 bg-white/[0.01] group/status hover:bg-white/[0.03] transition-all shadow-sm">
-      <div className="flex items-center justify-between mb-1.5">
-        <div className="flex items-center gap-2">
-          <span className={cn("text-[9px] font-black font-mono px-1.5 rounded border border-current bg-current/5", accentColor)}>
-            {label}
-          </span>
-          <TextSmall className="text-[9px] opacity-40">INSTÂNCIA ACTIVE</TextSmall>
-        </div>
-        <span className="flex items-center gap-1 text-[9px] text-green-4 font-mono font-bold">
-          <span className="size-1.5 rounded-full bg-green-4 animate-pulse" />
-          {online ? "LIVE" : "OFF"}
-        </span>
-      </div>
-      <div className="flex items-center gap-2 transition-colors">
-        <Wifi className="size-3 text-muted-foreground group-hover/status:text-blue-10" strokeWidth={2.5} />
-        <TextMono className="text-[11px] group-hover/status:text-foreground tracking-tighter">
-          +55 11 {phone}
-        </TextMono>
-      </div>
+    <div className="space-y-3">
+      {instances.map((inst) => {
+        const name = inst.instanceName ?? "—"
+        const state = inst.state ?? inst.connectionStatus ?? "close"
+        const isOnline = state === "open"
+        const phone = inst.ownerJid ? inst.ownerJid.split("@")[0] : ""
+        const formattedPhone = phone.length > 4 
+          ? `${phone.slice(0, -4)}-${phone.slice(-4)}` 
+          : phone
+        
+        if (collapsed) {
+          return (
+            <div key={name} className="flex flex-col items-center justify-center gap-1 opacity-60 hover:opacity-100 transition-opacity min-h-[40px]">
+              <div className={cn("size-2 rounded-full", isOnline ? "bg-green-4 animate-pulse shadow-[0_0_8px_rgba(17,255,153,0.4)]" : "bg-muted")} />
+              <span className="text-[9px] font-black font-mono text-muted-foreground">{name.slice(0, 2)}</span>
+            </div>
+          )
+        }
+
+        const stateColor = isOnline ? "text-green-4" : state === "connecting" ? "text-orange-10" : "text-red-5"
+        const stateLabel = isOnline ? "LIVE" : state === "connecting" ? "CONECTANDO" : "OFF"
+
+        return (
+          <div key={name} className="frost-border rounded-xl px-3 py-3 bg-white/[0.01] group/status hover:bg-white/[0.03] transition-all shadow-sm">
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] font-black font-mono px-1.5 rounded border border-current bg-current/5 text-muted-foreground">
+                  {name}
+                </span>
+                <TextSmall className="text-[9px] opacity-40">INSTÂNCIA</TextSmall>
+              </div>
+              <span className={cn("flex items-center gap-1 text-[9px] font-mono font-bold", stateColor)}>
+                <span className={cn("size-1.5 rounded-full", isOnline ? "bg-green-4 animate-pulse" : state === "connecting" ? "bg-orange-10 animate-pulse" : "bg-red-5")} />
+                {stateLabel}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 transition-colors">
+              <Wifi className="size-3 text-muted-foreground group-hover/status:text-blue-10" strokeWidth={2.5} />
+              <TextMono className="text-[11px] group-hover/status:text-foreground tracking-tighter">
+                {formattedPhone ? `+${formattedPhone}` : "Sem número"}
+              </TextMono>
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }
