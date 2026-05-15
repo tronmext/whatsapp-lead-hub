@@ -378,34 +378,28 @@ function ChatComposer() {
 
 function LeadCard({ lead }: { lead: Lead }) {
   return (
-    <aside className="hidden xl:flex w-[420px] shrink-0 flex-col overflow-y-auto bg-void border-l border-frost-border animate-in slide-in-from-right-8 duration-1000 scrollbar-hide relative z-20">
-      <div className="absolute inset-0 bg-gradient-to-b from-orange-10/[0.02] via-transparent to-transparent pointer-events-none" />
+    <aside className="hidden xl:flex w-[320px] shrink-0 flex-col overflow-y-auto bg-void border-l border-border/10 animate-in slide-in-from-right-4 duration-700 scrollbar-hide relative z-20">
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.01] via-transparent to-transparent pointer-events-none" />
       
-      <div className="p-10 border-b border-frost-border relative z-10">
+      <div className="p-8 border-b border-border/10 relative z-10">
         <div className="flex flex-col items-center text-center">
-          <div className="relative mb-6 group">
-            <div className="size-24 rounded-full grid place-items-center text-[32px] font-bold bg-void frost-border transition-all duration-1000 group-hover:scale-110 group-hover:frost-ring">
+          <div className="relative mb-4 group">
+            <div className="size-20 rounded-full grid place-items-center text-[20px] font-bold bg-void border border-white/5 transition-all duration-700">
               {lead.initials}
             </div>
-            <button className="absolute bottom-0 right-0 size-8 bg-near-white text-void rounded-full grid place-items-center shadow-2xl border-4 border-void hover:scale-110 transition-transform active:scale-95">
-              <Plus className="size-4" strokeWidth={3} />
-            </button>
           </div>
-          <HeadingHero className="text-[32px] mb-2 leading-none">
+          <span className="text-[20px] font-bold text-foreground mb-1 leading-tight">
             {lead.name}
-          </HeadingHero>
-          <TextMono className="text-[13px] font-bold opacity-60 flex items-center gap-2 justify-center">
-            <Phone className="size-3.5" /> {lead.phone}
+          </span>
+          <TextMono className="text-[11px] opacity-30 flex items-center gap-2 justify-center">
+            {lead.phone}
           </TextMono>
           
-          <div className="flex items-center gap-3 justify-center mt-8">
-            <TextMono className={cn(
-              "px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] border shadow-lg rounded-full",
-              lead.line === "L1" ? "border-orange-10/40 text-orange-10 bg-orange-10/5" : "border-blue-10/40 text-blue-10 bg-blue-10/5"
-            )}>
+          <div className="flex items-center gap-2 justify-center mt-6">
+            <TextMono className="px-3 py-1 text-[9px] font-black uppercase tracking-wider border border-border/10 rounded-full opacity-40">
               LINHA {lead.line.slice(1)}
             </TextMono>
-            <TextMono className="px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] bg-near-white text-void shadow-2xl rounded-full">
+            <TextMono className="px-3 py-1 text-[9px] font-black uppercase tracking-wider bg-foreground text-background rounded-full">
               {STATUS_LABELS[lead.status]}
             </TextMono>
           </div>
