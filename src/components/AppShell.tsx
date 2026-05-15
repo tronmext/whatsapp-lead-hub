@@ -3,7 +3,7 @@ import { AppSidebar } from "@/components/AppSidebar"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Toaster } from "@/components/ui/sonner"
 import { Sparkles, Search, Bell, User } from "lucide-react"
-import { ResendButton } from "./ResendButton"
+import { Button } from "@/components/ui/button"
 import { TextMono } from "./Typography"
 
 export function AppShell() {
