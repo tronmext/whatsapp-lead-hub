@@ -235,28 +235,57 @@ function ChatHeader({ lead }: { lead: Lead }) {
 
 function ChatComposer() {
   const [text, setText] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
+    }
+  }, [text]);
+
   return (
-    <div className="border-t border-border p-4 bg-card/40">
-      <div className="frost-border rounded-2xl bg-[oklch(0.04_0_0)] p-2 flex items-end gap-2">
-        <button className="size-8 grid place-items-center text-muted-foreground hover:text-foreground">
-          <Paperclip className="size-4" />
-        </button>
+    <div className="border-t border-border p-5 bg-black/40 backdrop-blur-md relative z-20">
+      <div className="frost-border rounded-2xl bg-[oklch(0.04_0_0)] p-2 flex items-end gap-1.5 focus-within:ring-1 focus-within:ring-ring focus-within:bg-[oklch(0.06_0_0)] transition-all shadow-lg">
+        <div className="flex gap-0.5">
+          <button className="size-9 rounded-xl grid place-items-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all">
+            <Plus className="size-4.5" strokeWidth={2} />
+          </button>
+          <button className="size-9 rounded-xl grid place-items-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all">
+            <Smile className="size-4.5" strokeWidth={2} />
+          </button>
+        </div>
+        
         <textarea
+          ref={textareaRef}
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={1}
-          placeholder="Digite uma mensagem..."
-          className="flex-1 bg-transparent resize-none outline-none text-[14px] py-1.5 placeholder:text-muted-foreground"
+          placeholder="Digite sua mensagem..."
+          className="flex-1 bg-transparent resize-none outline-none text-[15px] py-2 px-1 placeholder:text-muted-foreground/50 leading-relaxed scrollbar-hide"
         />
-        <button className="size-8 grid place-items-center text-muted-foreground hover:text-foreground">
-          <Smile className="size-4" />
-        </button>
-        <button className="size-8 grid place-items-center text-muted-foreground hover:text-foreground">
-          <Mic className="size-4" />
-        </button>
-        <button className="pill bg-foreground text-background size-9 grid place-items-center hover:opacity-90">
-          <Send className="size-4" />
-        </button>
+        
+        <div className="flex gap-1 items-center pb-0.5">
+          <button className="size-9 rounded-xl grid place-items-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all">
+            <Mic className="size-4.5" strokeWidth={2} />
+          </button>
+          <button 
+            disabled={!text.trim()}
+            className={cn(
+              "size-9 rounded-xl grid place-items-center transition-all active:scale-90",
+              text.trim() 
+                ? "bg-foreground text-background shadow-[0_0_15px_rgba(255,255,255,0.2)]" 
+                : "bg-white/5 text-muted-foreground cursor-not-allowed opacity-50"
+            )}
+          >
+            <Send className="size-4.5" strokeWidth={2.5} />
+          </button>
+        </div>
+      </div>
+      <div className="text-center mt-3">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-mono flex items-center justify-center gap-1.5 opacity-60">
+          <Info className="size-2.5" /> Use <kbd className="bg-white/10 px-1 rounded">Shift + Enter</kbd> para pular linha
+        </p>
       </div>
     </div>
   );
