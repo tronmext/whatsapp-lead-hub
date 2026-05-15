@@ -457,7 +457,7 @@ function Section({
     <section className={cn("px-10 py-10 border-b border-frost-border relative overflow-hidden", accent && "bg-white/[0.01]")}>
       <div className="flex items-center gap-4 mb-8 relative z-10">
         <Icon className={cn("size-5", accent ? "text-orange-10" : "text-muted-foreground")} strokeWidth={accent ? 2.5 : 2} />
-        <TextSmall className="text-near-white tracking-[0.25em] text-[11px] block">{title}</TextSmall>
+        <HeadingSub className="text-[13px] tracking-[0.25em] mb-0">{title}</HeadingSub>
       </div>
       <div className="relative z-10">{children}</div>
     </section>
