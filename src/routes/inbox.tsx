@@ -145,7 +145,7 @@ function InboxPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] via-transparent to-transparent pointer-events-none opacity-50" />
         <ChatHeader lead={lead} />
         
-        <div className="flex-1 overflow-y-auto px-12 py-10 space-y-6 scrollbar-hide relative z-10">
+        <div className="flex-1 overflow-y-auto px-12 py-10 space-y-6 scrollbar-hide relative z-10 flex flex-col">
           <div className="text-center py-8">
             <TextMono className="px-5 py-1.5 bg-white/[0.03] border border-white/[0.05] text-[10px] uppercase tracking-[0.3em] font-bold rounded-full">
               Protocolo Iniciado · Hoje
