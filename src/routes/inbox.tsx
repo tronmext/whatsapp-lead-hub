@@ -152,9 +152,9 @@ function InboxPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] via-transparent to-transparent pointer-events-none opacity-50" />
         <ChatHeader lead={lead} />
         
-        <div className="flex-1 overflow-y-auto px-12 py-10 space-y-6 scrollbar-hide relative z-10 flex flex-col">
-          <div className="text-center py-8">
-            <TextMono className="px-5 py-1.5 bg-white/[0.03] border border-white/[0.05] text-[10px] uppercase tracking-[0.3em] font-bold rounded-full">
+        <div className="flex-1 overflow-y-auto px-4 md:px-8 py-4 md:py-6 space-y-4 scrollbar-hide relative z-10 flex flex-col">
+          <div className="text-center py-4">
+            <TextMono className="px-3 py-1 bg-white/[0.02] border border-white/[0.04] text-[9px] uppercase tracking-[0.2em] font-bold rounded-full opacity-40">
               Protocolo Iniciado · Hoje
             </TextMono>
           </div>
@@ -205,7 +205,7 @@ function InboxPage() {
 
                   <div
                     className={cn(
-                      "px-5 py-4 rounded-[20px] text-[15.5px] leading-relaxed shadow-sm transition-all duration-500 relative",
+                      "px-4 py-2.5 rounded-[18px] text-[14.5px] leading-snug shadow-sm transition-all duration-500 relative",
                       isMe
                         ? "bg-near-white text-void rounded-tr-none hover:shadow-[0_0_40px_rgba(255,255,255,0.1)] font-medium"
                         : "frost-border bg-white/[0.02] backdrop-blur-xl rounded-tl-none hover:bg-white/[0.04]"
@@ -223,13 +223,13 @@ function InboxPage() {
                     )}
                   </div>
                   <div className={cn(
-                    "flex items-center gap-2 mt-2 px-1 opacity-40",
+                    "flex items-center gap-1.5 mt-1 px-1 opacity-40",
                     isMe ? "flex-row" : "flex-row-reverse"
                   )}>
-                    <TextMono className="text-[10px] font-bold uppercase tracking-widest">
+                    <TextMono className="text-[9px] font-bold uppercase tracking-widest">
                       {m.time}
                     </TextMono>
-                    {isMe && <CheckCheck className="size-3 text-blue-10" strokeWidth={3} />}
+                    {isMe && <CheckCheck className="size-2.5 text-blue-10" strokeWidth={3} />}
                   </div>
                 </div>
               </div>
