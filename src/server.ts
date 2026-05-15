@@ -92,9 +92,15 @@ export default {
         try {
           const stateDir = path.join(process.cwd(), '.wrangler/state/v3/d1/miniflare-D1DatabaseObject');
           if (fs.existsSync(stateDir)) {
-            const files = fs.readdirSync(stateDir).filter(f => f.endsWith('.sqlite'));
+            const files = fs.readdirSync(stateDir).filter(f => {
+              if (!f.endsWith('.sqlite')) return false;
+              const fullPath = path.join(stateDir, f);
+              try {
+                return fs.statSync(fullPath).size > 0;
+              } catch { return false; }
+            });
             if (files.length > 0) {
-              // Pega o arquivo mais recente
+              // Pega o arquivo mais recente que não esteja vazio
               const latest = files.sort((a, b) => 
                 fs.statSync(path.join(stateDir, b)).mtimeMs - fs.statSync(path.join(stateDir, a)).mtimeMs
               )[0];
