@@ -40,7 +40,7 @@ function InboxPage() {
       <section className="w-[380px] shrink-0 border-r border-frost-border flex flex-col bg-white/[0.01] backdrop-blur-3xl relative z-10">
         <div className="p-8 border-b border-frost-border space-y-6">
           <div className="flex items-center justify-between">
-            <HeadingSub className="text-[24px]">Conversas</HeadingSub>
+            <HeadingSub className="text-[24px] tracking-tight mb-0">Conversas</HeadingSub>
             <button className="size-9 rounded-full frost-border grid place-items-center hover:bg-white/5 transition-all active:scale-90">
               <Plus className="size-4.5" />
             </button>
