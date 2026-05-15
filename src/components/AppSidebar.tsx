@@ -51,7 +51,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r border-frost-border bg-void">
-      <SidebarHeader className="p-4">
+      <SidebarHeader className={cn("p-4 transition-all duration-300", collapsed ? "items-center" : "items-start")}>
         <Link to="/" className="flex items-center gap-3 group transition-transform active:scale-95 overflow-hidden">
           <div className="size-8 shrink-0 rounded-lg bg-near-white text-void grid place-items-center shadow-[0_0_20px_rgba(255,255,255,0.1)]">
             <Sparkles className="size-5" strokeWidth={2.4} />
@@ -66,7 +66,7 @@ export function AppSidebar() {
 
       <SidebarContent className="px-2 pt-4">
         <SidebarGroup>
-          <SidebarGroupLabel className="px-2 text-[10px] uppercase tracking-[0.2em] font-black text-muted-foreground/50 mb-2">
+          <SidebarGroupLabel className={cn("px-2 text-[10px] uppercase tracking-[0.2em] font-black text-muted-foreground/50 mb-2 transition-all", collapsed && "opacity-0 h-0 mb-0 overflow-hidden")}>
             Main Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -85,14 +85,16 @@ export function AppSidebar() {
                           : "text-muted-foreground hover:text-near-white hover:bg-white/[0.02]"
                       )}
                     >
-                      <Link to={item.url} className="flex items-center w-full">
+                      <Link to={item.url} className={cn("flex items-center w-full", collapsed && "justify-center")}>
                         <item.icon className={cn("size-4.5 shrink-0", active ? "text-near-white" : "text-muted-foreground")} strokeWidth={1.8} />
-                        <span className={cn(
-                          "ml-3 tracking-[0.35px] font-section font-medium",
-                          active ? "text-near-white" : "text-muted-foreground"
-                        )}>
-                          {item.title}
-                        </span>
+                        {!collapsed && (
+                          <span className={cn(
+                            "ml-3 tracking-[0.35px] font-section font-medium",
+                            active ? "text-near-white" : "text-muted-foreground"
+                          )}>
+                            {item.title}
+                          </span>
+                        )}
                         {active && !collapsed && (
                           <ChevronRight className="ml-auto size-3.5 opacity-50" strokeWidth={3} />
                         )}
