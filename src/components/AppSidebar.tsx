@@ -84,10 +84,10 @@ export function AppSidebar() {
                       asChild
                       tooltip={item.title}
                       className={cn(
-                        "h-10 transition-all duration-200",
+                        "h-12 transition-all duration-200 rounded-xl mx-auto",
                         active 
-                          ? "bg-white/[0.05] text-foreground border-border" 
-                          : "text-muted-foreground hover:text-foreground hover:bg-state-hover"
+                          ? "bg-primary/10 text-primary border border-primary/20" 
+                          : "text-muted-foreground hover:text-foreground hover:bg-white/[0.03]"
                       )}
                     >
                       <Link to={item.url} className="flex items-center w-full">
