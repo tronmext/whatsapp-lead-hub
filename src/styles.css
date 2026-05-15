@@ -129,27 +129,27 @@
   --leading-relaxed: 1.625;
 
   /* Sidebar Colors */
-  --sidebar-background: #000000;
-  --sidebar-foreground: #fafafa;
-  --sidebar-primary: #ff801f;
-  --sidebar-primary-foreground: #111111;
-  --sidebar-accent: #18181b;
-  --sidebar-accent-foreground: #fafafa;
-  --sidebar-border: #f0f0f0;
-  --sidebar-ring: #ff801f;
+  --sidebar-background: oklch(0.1 0 0);
+  --sidebar-foreground: oklch(0.92 0.004 286);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: oklch(0.18 0.006 286);
+  --sidebar-accent-foreground: oklch(0.92 0.004 286);
+  --sidebar-border: oklch(0.25 0.008 286);
+  --sidebar-ring: var(--primary);
 }
 
 @layer base {
   * {
-    border-color: var(--color-border);
+    border-color: var(--border);
   }
 
   html, body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    font-family: var(--font-sans);
-    font-size: var(--text-body);
-    line-height: var(--leading-body);
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
     -webkit-font-smoothing: antialiased;
     letter-spacing: 0;
   }
@@ -163,7 +163,7 @@
   }
 
   h2, h3, .font-section {
-    font-family: var(--font-section);
+    font-family: var(--font-display);
     font-weight: 400;
     line-height: 1.2;
     letter-spacing: -2.8px;
@@ -197,7 +197,7 @@
   }
 
   .nav-link {
-    font-family: var(--font-section);
+    font-family: var(--font-display);
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.35px;
