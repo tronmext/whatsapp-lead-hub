@@ -2,15 +2,15 @@
 @source "../src";
 @import "tw-animate-css";
 
-/* Fonts: Proxy fonts matching Resend's Editorial & Technical hierarchy */
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,600;9..144,1,400&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+/* Fonts: Premium Typography Hierarchy */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: "Fraunces", serif;
-  --font-section: "Space Grotesk", sans-serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-abc-favorit), ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-ui: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
   --radius-sm: 2px;
@@ -59,63 +59,76 @@
 }
 
 :root {
-  /* Colors - The star is the black void against near-white text */
+  /* Colors - High Contrast Technical Palette */
   --background: #000000;
-  --foreground: #f0f0f0;
+  --foreground: #fafafa;
 
-  --card: #111111;
+  --card: #18181b;
   --card-foreground: #fafafa;
-  --card-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.1);
+  --card-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.5);
 
   --primary: #ff801f;
   --primary-foreground: #111111;
 
-  --secondary: #18181b;
-  --secondary-foreground: #f0f0f0;
+  --secondary: transparent;
+  --secondary-foreground: #000000;
 
-  --muted: rgba(255, 255, 255, 0.03);
-  --muted-foreground: #a1a4a5;
+  --muted: #ffffff;
+  --muted-foreground: #f0f0f0;
 
-  --accent: rgba(214, 235, 253, 0.08);
-  --accent-foreground: #ffffff;
+  --accent: #ff801f;
+  --accent-foreground: #111111;
 
-  --border: rgba(255, 255, 255, 0.1);
-  --input: #111111;
-  --input-color: #fffc;
+  --border: #f0f0f0;
   --ring: #ff801f;
   
   --destructive: #ef4444;
   --destructive-foreground: #000000;
 
-  /* States - Subtlety is key */
-  --state-hover: rgba(255, 255, 255, 0.03);
-  --state-pressed: rgba(255, 255, 255, 0.08);
+  /* Layer 2 — Material 3 surfaces */
+  --surface-container: #18181b;
+  --surface-container-high: #27272a;
+  --surface-inverse: #ffffff;
+  --surface-inverse-foreground: #111111;
 
-  /* Layout Tokens - Precision spacing */
-  --nav-height: 64px;
-  --nav-links-gap: 32px;
-  --nav-cta-height: 40px;
-  --btn-height: 44px;
-  --button-shadow: 0 4px 14px 0 rgba(0,0,0,0.39);
+  /* Radius Contract */
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 2rem;
+  --radius-card: 12px;
+  --radius-input: 4px;
+  --radius-button: 4px;
+  --radius-full: 9999px;
 
-  /* Radius Contract - Strict hierarchy */
-  --radius-button: 9999px; /* Pill for CTAs as per design */
-  --radius-input: 12px;
-  --radius-card: 16px;
-  --radius: 4px;
+  /* Typography Scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
 
-  /* Typography Scale Contract - Editorial hierarchy */
-  --text-body: 16px;
-  --leading-body: 1.6;
-
-  /* Sidebar Colors - Deep technical feel */
+  /* Sidebar Colors */
   --sidebar-background: #000000;
-  --sidebar-foreground: #f0f0f0;
+  --sidebar-foreground: #fafafa;
   --sidebar-primary: #ff801f;
   --sidebar-primary-foreground: #111111;
-  --sidebar-accent: rgba(255, 255, 255, 0.03);
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-accent: #18181b;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #f0f0f0;
   --sidebar-ring: #ff801f;
 }
 
