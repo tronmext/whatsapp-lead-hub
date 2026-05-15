@@ -59,14 +59,16 @@
 }
 
 :root {
+  /* Colors */
   --background: #000000;
   --foreground: #f0f0f0;
 
-  --card: transparent;
-  --card-foreground: #f0f0f0;
+  --card: #18181b;
+  --card-foreground: #fafafa;
+  --card-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.1);
 
-  --primary: #ffffff;
-  --primary-foreground: #000000;
+  --primary: #ff801f;
+  --primary-foreground: #111111;
 
   --secondary: transparent;
   --secondary-foreground: #f0f0f0;
@@ -77,20 +79,44 @@
   --accent: rgba(214, 235, 253, 0.1);
   --accent-foreground: #ffffff;
 
-  --border: rgba(214, 235, 253, 0.19);
-  --input: rgba(214, 235, 253, 0.15);
-  --ring: rgb(0, 0, 0); 
+  --border: #f0f0f0;
+  --input: #18181b;
+  --input-color: #fffc;
+  --ring: #ff801f;
   
+  --destructive: #ef4444;
+  --destructive-foreground: #000000;
+
+  /* States */
+  --state-hover: rgba(255, 255, 255, 0.05);
+  --state-pressed: rgba(255, 255, 255, 0.1);
+
+  /* Layout Tokens */
+  --nav-height: 64px;
+  --nav-links-gap: 32px;
+  --nav-cta-height: 40px;
+  --btn-height: 40px;
+  --button-shadow: var(--tw-inset-shadow), var(--tw-in...;
+
+  /* Radius Contract */
+  --radius-button: 4px;
+  --radius-input: 4px;
+  --radius-card: 12px;
+  --radius: 4px;
+
+  /* Typography Scale Contract */
+  --text-body: 16px;
+  --leading-body: 1.6;
+
+  /* Sidebar Colors */
   --sidebar-background: #000000;
   --sidebar-foreground: #f0f0f0;
-  --sidebar-primary: #ffffff;
-  --sidebar-primary-foreground: #000000;
+  --sidebar-primary: #ff801f;
+  --sidebar-primary-foreground: #111111;
   --sidebar-accent: rgba(255, 255, 255, 0.05);
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(214, 235, 253, 0.19);
-  --sidebar-ring: #ffffff;
-
-  --radius: 4px;
+  --sidebar-ring: #ff801f;
 }
 
 @layer base {
