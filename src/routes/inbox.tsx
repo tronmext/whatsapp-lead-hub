@@ -287,7 +287,7 @@ function InboxPage() {
             <div className="flex items-center gap-2">
               <TextSmall className="text-[10px]">Conversas</TextSmall>
               <TextMono className="text-[9px] opacity-40 px-2 py-0.5 rounded-full border border-border/10">
-                {instance}
+                {aliasMap[instance] ?? instance}
               </TextMono>
             </div>
             <div className="flex items-center gap-1">
@@ -409,9 +409,14 @@ function InboxPage() {
                       >
                         {name}
                       </span>
-                      <TextMono className="text-[9px] uppercase tracking-wider opacity-40 shrink-0">
-                        {when}
-                      </TextMono>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <TextMono className="text-[9px] px-1.5 py-0.5 rounded border border-border/10 bg-white/[0.02]">
+                          {aliasMap[instance] ?? instance}
+                        </TextMono>
+                        <TextMono className="text-[9px] uppercase tracking-wider opacity-40">
+                          {when}
+                        </TextMono>
+                      </div>
                     </div>
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-[11px] truncate opacity-50 max-w-[180px]">
