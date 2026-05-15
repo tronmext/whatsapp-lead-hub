@@ -12,7 +12,7 @@ const InstanceName = z.string().trim().min(1).max(120);
 /* ============================== INSTANCES ================================ */
 
 export const listInstances = createServerFn({ method: "GET" }).handler(async () => {
-  const data = await evolutionFetch<unknown>({ path: "/instance/fetchInstances" });
+  const data = await evolutionFetch({ path: "/instance/fetchInstances" });
   return { instances: Array.isArray(data) ? data : [data] };
 });
 
