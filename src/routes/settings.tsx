@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ALL_TAGS } from "@/lib/mock-data";
 import { TagPill } from "@/components/Tag";
-import { Plus, Sparkles, Wifi } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Plus, Sparkles, Wifi, Shield, Bell, Database, Globe, Command, Trash2 } from "lucide-react";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -15,64 +16,101 @@ export const Route = createFileRoute("/settings")({
 
 function SettingsPage() {
   return (
-    <div className="px-10 py-10 max-w-[920px]">
-      <header className="mb-10">
-        <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-section mb-3">
-          · configurações
-        </p>
-        <h1 className="font-display text-[56px] leading-[1] tracking-[-0.04em]">Settings</h1>
-      </header>
+    <div className="relative min-h-screen animate-in fade-in duration-700">
+      <div className="grain absolute inset-0 opacity-20 pointer-events-none" />
+      
+      <div className="relative px-10 py-12 max-w-[1000px] mx-auto">
+        <header className="mb-12 animate-in slide-in-from-top-2 duration-700">
+          <div className="flex items-center gap-2 mb-3">
+            <Command className="size-3 text-muted-foreground" />
+            <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-black font-mono">
+              Centro de Controle
+            </p>
+          </div>
+          <h1 className="font-display text-[64px] leading-[1] tracking-tight">Settings</h1>
+        </header>
 
-      <Section title="Linhas WhatsApp" subtitle="Conectadas via Evolution API v2.">
-        <div className="grid grid-cols-2 gap-3">
-          {[
-            { line: "L1", label: "Linha 1 · Comercial", phone: "+55 11 99887-1100", color: "oklch(0.74 0.18 45)" },
-            { line: "L2", label: "Linha 2 · Agronegócio", phone: "+55 65 99700-2244", color: "oklch(0.68 0.18 245)" },
-          ].map((l) => (
-            <div key={l.line} className="frost-border rounded-xl p-4 bg-card/40">
-              <div className="flex items-center justify-between mb-3">
-                <span className="pill px-2 py-0.5 text-[10px] font-mono font-bold text-black" style={{ background: l.color }}>
-                  {l.line}
-                </span>
-                <span className="text-[10px] text-[oklch(0.86_0.2_155)] flex items-center gap-1">
-                  <span className="size-1.5 rounded-full bg-[oklch(0.86_0.2_155)] shadow-[0_0_8px_oklch(0.86_0.2_155)]" />
-                  conectado
-                </span>
-              </div>
-              <div className="text-[13px] font-medium">{l.label}</div>
-              <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground font-mono mt-0.5">
-                <Wifi className="size-3" /> {l.phone}
+        <div className="space-y-12">
+          <Section 
+            title="Linhas WhatsApp" 
+            subtitle="Gerencie as instâncias conectadas via Evolution API v2."
+            icon={Wifi}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                { line: "L1", label: "Operação Comercial", phone: "+55 11 99887-1100", color: "orange" },
+                { line: "L2", label: "Setor Agronegócio", phone: "+55 65 99700-2244", color: "blue" },
+              ].map((l) => (
+                <div key={l.line} className="frost-border rounded-[24px] p-5 bg-card/40 backdrop-blur-sm group hover:frost-ring transition-all duration-300">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className={cn(
+                      "pill px-2.5 py-1 text-[10px] font-mono font-black shadow-sm",
+                      l.color === "orange" ? "bg-orange text-black" : "bg-blue text-white"
+                    )}>
+                      {l.line}
+                    </span>
+                    <div className="flex items-center gap-1.5 bg-green/10 px-2 py-0.5 rounded-full border border-green/20">
+                      <span className="size-1.5 rounded-full bg-green animate-pulse" />
+                      <span className="text-[9px] font-black uppercase text-green tracking-widest">Ativo</span>
+                    </div>
+                  </div>
+                  <div className="text-[15px] font-bold tracking-tight mb-1">{l.label}</div>
+                  <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground font-mono">
+                    {l.phone}
+                  </div>
+                  <div className="mt-5 flex gap-2">
+                    <button className="flex-1 py-2 text-[10px] font-black uppercase tracking-widest frost-border rounded-lg hover:bg-white/5 transition-all">Configurar</button>
+                    <button className="size-9 rounded-lg frost-border grid place-items-center text-muted-foreground hover:text-red hover:border-red/30 transition-all">
+                      <Trash2 className="size-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+              <button className="frost-border rounded-[24px] p-5 bg-white/[0.02] border-dashed border-2 flex flex-col items-center justify-center gap-3 group hover:bg-white/[0.04] transition-all">
+                <div className="size-10 rounded-full bg-white/5 grid place-items-center group-hover:scale-110 transition-transform">
+                  <Plus className="size-5 text-muted-foreground" />
+                </div>
+                <span className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">Nova Instância</span>
+              </button>
+            </div>
+          </Section>
+
+          <Section 
+            title="Tags Estratégicas" 
+            subtitle="Tags globais para segmentação de leads e automação de filtros."
+            icon={Database}
+          >
+            <div className="frost-border rounded-[24px] p-6 bg-card/30 backdrop-blur-sm">
+              <div className="flex flex-wrap gap-2.5">
+                {ALL_TAGS.map((t) => <TagPill key={t.id} tag={t} className="px-3 py-1 shadow-md hover:scale-105 transition-transform" />)}
+                <button className="pill px-3 py-1 text-[11px] font-black uppercase tracking-widest frost-border border-dashed text-muted-foreground hover:text-foreground hover:bg-white/5 inline-flex items-center gap-2 transition-all">
+                  <Plus className="size-3" /> Adicionar
+                </button>
               </div>
             </div>
-          ))}
-        </div>
-      </Section>
+          </Section>
 
-      <Section title="Tags globais" subtitle="Compartilhadas entre operadores e regras de filtro.">
-        <div className="frost-border rounded-xl p-4 bg-card/40">
-          <div className="flex flex-wrap gap-2">
-            {ALL_TAGS.map((t) => <TagPill key={t.id} tag={t} />)}
-            <button className="pill px-2 py-0.5 text-[11px] frost-border text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
-              <Plus className="size-3" /> Nova tag
-            </button>
-          </div>
-        </div>
-      </Section>
-
-      <Section
-        title="Motor de IA"
-        subtitle="Prompt base usado para gerar resumos, score e próximos passos."
-        accent
-      >
-        <div className="frost-border rounded-xl bg-[oklch(0.025_0_0)] overflow-hidden">
-          <div className="px-4 py-2 border-b border-border flex items-center gap-2">
-            <Sparkles className="size-3.5 text-[oklch(0.74_0.18_45)]" />
-            <span className="text-[11px] uppercase tracking-[0.16em] font-section text-muted-foreground">
-              prompt.system.md
-            </span>
-          </div>
-          <pre className="p-4 text-[12px] font-mono leading-relaxed whitespace-pre-wrap text-foreground/85">
-{`Você é um analista comercial sênior. Receba a transcrição
+          <Section
+            title="Motor de IA"
+            subtitle="Personalize o System Prompt que define o tom e as prioridades da análise."
+            icon={Sparkles}
+            accent
+          >
+            <div className="frost-border rounded-[24px] bg-black/60 overflow-hidden shadow-2xl relative group">
+              <div className="absolute top-0 right-0 p-4">
+                <Sparkles className="size-5 text-orange opacity-20 group-hover:opacity-100 transition-opacity animate-pulse" />
+              </div>
+              <div className="px-6 py-4 border-b border-border bg-white/[0.02] flex items-center gap-3">
+                <div className="size-2 rounded-full bg-orange shadow-[0_0_8px_rgba(255,128,31,0.5)]" />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] font-mono text-muted-foreground">
+                  qualifier_system_v2.md
+                </span>
+              </div>
+              <div className="p-6">
+                <textarea 
+                  className="w-full h-48 bg-transparent text-[13.5px] font-mono leading-relaxed resize-none outline-none text-foreground/80 scrollbar-hide"
+                  spellCheck={false}
+                  defaultValue={`Você é um analista comercial sênior. Receba a transcrição
 completa de uma conversa de WhatsApp com um lead e retorne:
 
 1. Resumo executivo  (3-5 linhas, tom direto)
@@ -83,50 +121,100 @@ completa de uma conversa de WhatsApp com um lead e retorne:
 
 Foco do nicho: imóveis de alto padrão e agronegócio.
 Linguagem: pt-BR, profissional, sem jargão genérico.`}
-          </pre>
-        </div>
-        <div className="flex justify-end gap-2 mt-3">
-          <button className="pill px-4 py-2 text-[12px] frost-border hover:bg-white/5">Cancelar</button>
-          <button className="pill px-4 py-2 text-[12px] bg-foreground text-background hover:opacity-90">
-            Salvar prompt
-          </button>
-        </div>
-      </Section>
+                />
+              </div>
+              <div className="px-6 py-4 bg-white/[0.03] border-t border-border flex justify-between items-center">
+                <div className="flex gap-4">
+                   <div className="flex items-center gap-1.5">
+                     <Shield className="size-3 text-muted-foreground" />
+                     <span className="text-[10px] font-black uppercase text-muted-foreground">Auditado</span>
+                   </div>
+                   <div className="flex items-center gap-1.5">
+                     <Bell className="size-3 text-muted-foreground" />
+                     <span className="text-[10px] font-black uppercase text-muted-foreground">Notificar Erros</span>
+                   </div>
+                </div>
+                <div className="flex gap-2">
+                  <button className="pill px-4 py-2 text-[11px] font-black uppercase tracking-widest frost-border hover:bg-white/5 transition-all">Restaurar</button>
+                  <button className="pill px-6 py-2 text-[11px] font-black uppercase tracking-widest bg-foreground text-background hover:scale-105 active:scale-95 shadow-xl transition-all">
+                    Salvar Mudanças
+                  </button>
+                </div>
+              </div>
+            </div>
+          </Section>
 
-      <Section title="Despacho" subtitle="Para onde os resumos serão enviados via WhatsApp.">
-        <div className="space-y-2">
-          <Field label="Secretaria" value="+55 11 98000-0001" line="L1" />
-          <Field label="Equipe Interna (grupo)" value="Grupo Vendas Brasil" line="L2" />
+          <Section 
+            title="Rede de Despacho" 
+            subtitle="Defina os pontos de saída para os briefings gerados pela IA."
+            icon={Globe}
+          >
+            <div className="space-y-3">
+              <Field label="Central da Secretaria" value="+55 11 98000-0001" line="L1" icon={Users2} />
+              <Field label="Grupo de Vendas (Nacional)" value="Cluster Comercial BR" line="L2" icon={Building2} />
+            </div>
+          </Section>
         </div>
-      </Section>
+        
+        <footer className="mt-20 pt-8 border-t border-border flex items-center justify-between opacity-40">
+           <div className="text-[10px] font-black uppercase tracking-[0.3em] font-mono">Leadflow v1.0.4</div>
+           <div className="text-[10px] font-black uppercase tracking-[0.3em] font-mono italic">Void Edition</div>
+        </footer>
+      </div>
     </div>
   );
 }
 
 function Section({
-  title, subtitle, children, accent,
-}: { title: string; subtitle: string; children: React.ReactNode; accent?: boolean }) {
+  title, subtitle, children, accent, icon: Icon,
+}: { title: string; subtitle: string; children: React.ReactNode; accent?: boolean; icon: any }) {
   return (
-    <section className="mb-10">
-      <div className="mb-4">
-        <h2 className={`font-section text-[18px] font-semibold tracking-tight ${accent ? "text-[oklch(0.86_0.16_55)]" : ""}`}>
-          {title}
-        </h2>
-        <p className="text-[12px] text-muted-foreground mt-1">{subtitle}</p>
+    <section className="animate-in slide-in-from-bottom-4 duration-1000">
+      <div className="flex items-start gap-5 mb-6">
+        <div className={cn(
+          "size-12 rounded-2xl frost-border grid place-items-center shrink-0 shadow-lg transition-transform hover:scale-110 duration-500",
+          accent ? "bg-orange/5 border-orange/20" : "bg-white/[0.02]"
+        )}>
+          <Icon className={cn("size-5", accent ? "text-orange" : "text-muted-foreground")} strokeWidth={1.5} />
+        </div>
+        <div className="pt-1">
+          <h2 className={cn(
+            "font-section text-[22px] font-bold tracking-tight mb-1",
+            accent ? "text-foreground" : "text-foreground/90"
+          )}>
+            {title}
+          </h2>
+          <p className="text-[14px] text-muted-foreground font-medium italic">{subtitle}</p>
+        </div>
       </div>
-      {children}
+      <div className="pl-1 relative">
+        <div className="absolute left-[-26px] top-0 bottom-0 w-[1px] bg-gradient-to-b from-border/40 via-border/10 to-transparent" />
+        {children}
+      </div>
     </section>
   );
 }
 
-function Field({ label, value, line }: { label: string; value: string; line: string }) {
+function Field({ label, value, line, icon: Icon }: { label: string; value: string; line: string; icon: any }) {
   return (
-    <div className="frost-border rounded-lg p-3 bg-card/40 flex items-center justify-between">
-      <div>
-        <div className="text-[12px] font-medium">{label}</div>
-        <div className="text-[12px] text-muted-foreground font-mono">{value}</div>
+    <div className="frost-border rounded-2xl p-4 bg-card/30 backdrop-blur-sm flex items-center justify-between group hover:bg-card/50 transition-all duration-300">
+      <div className="flex items-center gap-4">
+        <div className="size-10 rounded-xl bg-white/5 frost-border grid place-items-center group-hover:frost-ring transition-all">
+          <Icon className="size-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+        </div>
+        <div>
+          <div className="text-[14px] font-bold tracking-tight">{label}</div>
+          <div className="text-[12px] text-muted-foreground font-mono mt-0.5">{value}</div>
+        </div>
       </div>
-      <span className="pill px-2 py-0.5 text-[10px] font-mono frost-border">enviar via {line}</span>
+      <div className="flex items-center gap-3">
+        <span className="pill px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.1em] frost-border text-muted-foreground font-mono">
+          via {line}
+        </span>
+        <button className="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">Alterar</button>
+      </div>
     </div>
   );
 }
+
+import { Users2, Building2 } from "lucide-react";
