@@ -144,7 +144,7 @@ function LineStatus({
   
   if (collapsed) {
     return (
-      <div className="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity">
+      <div className="flex flex-col items-center justify-center gap-1 opacity-60 hover:opacity-100 transition-opacity min-h-[40px]">
         <div className={cn("size-2 rounded-full", online ? "bg-green-4 animate-pulse shadow-[0_0_8px_rgba(17,255,153,0.4)]" : "bg-muted")} />
         <span className={cn("text-[9px] font-black font-mono", accentColor)}>{label}</span>
       </div>
