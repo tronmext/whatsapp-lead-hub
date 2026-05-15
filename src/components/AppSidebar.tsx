@@ -11,6 +11,8 @@ import {
   ChevronRight,
   PanelLeft
 } from "lucide-react"
+import logoFull from "@/assets/logo-full.png"
+import logoIcon from "@/assets/logo-icon.png"
 
 import {
   Sidebar,
