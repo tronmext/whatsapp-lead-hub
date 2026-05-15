@@ -128,9 +128,9 @@ function Dashboard() {
             <TextMono className="text-[15px] leading-relaxed mb-10 block opacity-80">
               Há <span className="text-near-white font-bold underline decoration-orange-10/40 underline-offset-8">12 conversas</span> aguardando qualificação automática.
             </TextMono>
-            <ResendButton variant="primary" className="w-full py-4 uppercase tracking-[0.1em] font-black">
+            <Button variant="default" className="w-full py-6">
               QUALIFICAR AGORA
-            </ResendButton>
+            </Button>
             
             <div className="mt-10 pt-10 border-t border-frost-border/40 flex items-center justify-between">
               <TextSmall className="text-[10px] opacity-50">MODELO ATIVO</TextSmall>
