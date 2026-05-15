@@ -433,13 +433,15 @@ function InboxPage() {
         if (evoMap.has(norm)) {
           // Enhance existing chat with local name if missing or if it's just the phone number
           const chat = evoMap.get(norm)!;
-          if (
-            !chat.pushName ||
-            chat.pushName.includes("@") ||
-            chat.pushName === "Você" ||
-            /^\d+$/.test(chat.pushName)
-          ) {
-            chat.pushName = l.name;
+          if (!chat.isGroup) {
+            if (
+              !chat.pushName ||
+              chat.pushName.includes("@") ||
+              chat.pushName === "Você" ||
+              /^\d+$/.test(chat.pushName)
+            ) {
+              chat.pushName = l.name;
+            }
           }
           if (l.status) {
             chat.leadStatus = l.status;
@@ -1124,7 +1126,9 @@ function ContactDetailsPanel({
       data: {
         jid,
         instanceId: instance,
-        name: chat.pushName || jid.split("@")[0],
+        name: isGroup
+          ? chat.groupName || chat.pushName || jid.split("@")[0]
+          : chat.pushName || jid.split("@")[0],
         phone: jidToPhone(jid),
       },
     }).then((result: any) => {
@@ -2200,7 +2204,7 @@ function ChatPane({
                     "px-4 py-2.5 rounded-[18px] text-[14px] leading-snug shadow-sm overflow-hidden",
                     isMe
                       ? "bg-primary text-primary-foreground rounded-tr-none font-medium"
-                      : "bg-card border border-border/10 text-foreground rounded-tl-none",
+                      : "bg-muted border border-border/10 text-foreground rounded-tl-none",
                   )}
                 >
                   {isMedia ? (
