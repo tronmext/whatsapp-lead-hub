@@ -59,63 +59,63 @@
 }
 
 :root {
-  /* Colors */
+  /* Colors - The star is the black void against near-white text */
   --background: #000000;
   --foreground: #f0f0f0;
 
-  --card: #18181b;
+  --card: #111111;
   --card-foreground: #fafafa;
   --card-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.1);
 
   --primary: #ff801f;
   --primary-foreground: #111111;
 
-  --secondary: transparent;
+  --secondary: #18181b;
   --secondary-foreground: #f0f0f0;
 
-  --muted: rgba(255, 255, 255, 0.05);
+  --muted: rgba(255, 255, 255, 0.03);
   --muted-foreground: #a1a4a5;
 
-  --accent: rgba(214, 235, 253, 0.1);
+  --accent: rgba(214, 235, 253, 0.08);
   --accent-foreground: #ffffff;
 
-  --border: #f0f0f0;
-  --input: #18181b;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: #111111;
   --input-color: #fffc;
   --ring: #ff801f;
   
   --destructive: #ef4444;
   --destructive-foreground: #000000;
 
-  /* States */
-  --state-hover: rgba(255, 255, 255, 0.05);
-  --state-pressed: rgba(255, 255, 255, 0.1);
+  /* States - Subtlety is key */
+  --state-hover: rgba(255, 255, 255, 0.03);
+  --state-pressed: rgba(255, 255, 255, 0.08);
 
-  /* Layout Tokens */
+  /* Layout Tokens - Precision spacing */
   --nav-height: 64px;
   --nav-links-gap: 32px;
   --nav-cta-height: 40px;
-  --btn-height: 40px;
-  --button-shadow: var(--tw-inset-shadow), var(--tw-in...;
+  --btn-height: 44px;
+  --button-shadow: 0 4px 14px 0 rgba(0,0,0,0.39);
 
-  /* Radius Contract */
-  --radius-button: 4px;
-  --radius-input: 4px;
-  --radius-card: 12px;
+  /* Radius Contract - Strict hierarchy */
+  --radius-button: 9999px; /* Pill for CTAs as per design */
+  --radius-input: 12px;
+  --radius-card: 16px;
   --radius: 4px;
 
-  /* Typography Scale Contract */
+  /* Typography Scale Contract - Editorial hierarchy */
   --text-body: 16px;
   --leading-body: 1.6;
 
-  /* Sidebar Colors */
+  /* Sidebar Colors - Deep technical feel */
   --sidebar-background: #000000;
   --sidebar-foreground: #f0f0f0;
   --sidebar-primary: #ff801f;
   --sidebar-primary-foreground: #111111;
-  --sidebar-accent: rgba(255, 255, 255, 0.05);
+  --sidebar-accent: rgba(255, 255, 255, 0.03);
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: rgba(214, 235, 253, 0.19);
+  --sidebar-border: rgba(255, 255, 255, 0.08);
   --sidebar-ring: #ff801f;
 }
 
