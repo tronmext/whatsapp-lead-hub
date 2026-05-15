@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/dialog";
 import { Link } from "@tanstack/react-router";
 import { getContact, updateContact, getLeads, getInstances } from "@/lib/server-functions";
+import { setActiveInstance } from "@/components/evolution/InstancesPanel";
 
 export const Route = createFileRoute("/inbox")({
   head: () => ({
@@ -316,6 +317,34 @@ function InboxPage() {
               className="w-full bg-muted border border-border/10 rounded-xl pl-8 pr-3 py-1.5 text-[12px] text-foreground placeholder:text-muted-foreground/40 outline-none focus:border-primary/30 transition-all font-mono"
             />
           </div>
+
+          {/* Instance filter pills */}
+          {instancesQ.data && instancesQ.data.length > 1 && (
+            <div className="flex gap-1.5 flex-wrap">
+              {instancesQ.data.map((inst: any) => {
+                const instName = inst.name
+                const isActive = instName === instance
+                const alias = aliasMap[instName] ?? instName
+                return (
+                  <button
+                    key={instName}
+                    onClick={() => {
+                      setActiveInstance(instName)
+                      setSelectedJid(null)
+                    }}
+                    className={cn(
+                      "px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase tracking-wider transition-all",
+                      isActive
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted/50 text-muted-foreground hover:text-foreground hover:bg-white/5 border border-border/10"
+                    )}
+                  >
+                    {alias}
+                  </button>
+                )
+              })}
+            </div>
+          )}
         </div>
 
         <ul className="flex-1 overflow-y-auto divide-y divide-border/10 scrollbar-hide">
