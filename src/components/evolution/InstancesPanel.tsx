@@ -42,9 +42,11 @@ type EvoInstance = {
   name?: string;
   state?: string;
   status?: string;
+  connectionStatus?: string;
   ownerJid?: string;
   profileName?: string;
   profilePictureUrl?: string;
+  profilePicUrl?: string;
   number?: string;
 };
 
@@ -52,7 +54,17 @@ function pickName(i: EvoInstance): string {
   return i.instance?.instanceName ?? i.instanceName ?? i.name ?? "—";
 }
 function pickState(i: EvoInstance): string {
-  return i.instance?.state ?? i.state ?? i.instance?.status ?? i.status ?? "unknown";
+  return (
+    i.instance?.state ??
+    i.state ??
+    i.connectionStatus ??
+    i.instance?.status ??
+    i.status ??
+    "unknown"
+  );
+}
+function pickPicture(i: EvoInstance): string | undefined {
+  return i.profilePictureUrl ?? i.profilePicUrl;
 }
 
 export function InstancesPanel() {
