@@ -79,8 +79,8 @@ function Dashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <ResendCard variant="large" className="lg:col-span-2 group">
-            <div className="flex items-center justify-between p-10 pb-6 border-b border-frost-border">
-              <HeadingSub>Leads Recentes</HeadingSub>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 md:p-10 pb-6 border-b border-frost-border gap-4">
+              <HeadingSub className="mb-0">Leads Recentes</HeadingSub>
               <Link to="/leads" className="nav-link text-[12px] flex items-center gap-2 group/link">
                 GERENCIAR TODOS <ArrowUpRight className="size-4 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
               </Link>
