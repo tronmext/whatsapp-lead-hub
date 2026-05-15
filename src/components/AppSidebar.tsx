@@ -53,18 +53,16 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r border-frost-border bg-void">
-      <SidebarHeader className="h-20 flex items-center justify-center transition-all duration-300">
-        <Link to="/" className="flex items-center justify-center group transition-transform active:scale-95 w-full px-4">
-          <div className="flex items-center justify-center w-full">
-            <img 
-              src={collapsed ? logoIcon : logoFull}
-              alt="Leadflow Logo"
-              className={cn(
-                "object-contain transition-all duration-300",
-                collapsed ? "size-12" : "h-10 w-auto"
-              )}
-            />
-          </div>
+      <SidebarHeader className={cn("h-20 flex items-center justify-center transition-all duration-300", collapsed && "h-16 p-1")}>
+        <Link to="/" className="flex items-center justify-center group transition-transform active:scale-95 w-full">
+          <img 
+            src={collapsed ? logoIcon : logoFull}
+            alt="Leadflow Logo"
+            className={cn(
+              "object-contain transition-all duration-300",
+              collapsed ? "size-8" : "h-10 w-auto"
+            )}
+          />
         </Link>
       </SidebarHeader>
 
