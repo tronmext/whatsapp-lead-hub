@@ -141,7 +141,7 @@ function InboxPage() {
       </section>
 
       {/* 02. Center: Palco do Chat */}
-      <section className="flex-1 flex flex-col min-w-0 border-r border-frost-border bg-void relative overflow-hidden">
+      <section className="flex-1 flex flex-col min-w-0 border-r border-frost-border bg-void relative overflow-hidden h-full">
         <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] via-transparent to-transparent pointer-events-none opacity-50" />
         <ChatHeader lead={lead} />
         
