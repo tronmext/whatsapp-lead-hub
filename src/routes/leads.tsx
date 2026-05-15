@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { LEADS, STATUS_LABELS, type Lead } from "@/lib/mock-data";
 import { TagPill } from "@/components/Tag";
-import { Search, Plus, MoreHorizontal, LayoutGrid, List } from "lucide-react";
+import { Search, Plus, LayoutGrid, List } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
@@ -27,6 +27,11 @@ function LeadsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("kanban");
   const [leads, setLeads] = useState<Lead[]>(LEADS);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const filteredLeads = leads.filter(l => 
     l.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -107,7 +112,7 @@ function LeadsPage() {
       </header>
 
       <main className="flex-1 px-8 md:px-12 pb-12 overflow-hidden flex flex-col">
-        {viewMode === "kanban" ? (
+        {isClient && viewMode === "kanban" ? (
           <DragDropContext onDragEnd={onDragEnd}>
             <div className="flex gap-6 h-full overflow-x-auto pb-4 scrollbar-hide">
               {COLUMNS.map((status) => (
