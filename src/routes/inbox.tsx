@@ -9,6 +9,9 @@ import {
   Phone, Building2, MapPin, Tag as TagIcon, Plus, ArrowRight,
   MessageSquare, FileText, Users2, Clock, Mic, Check, CheckCheck, MoreHorizontal, Info
 } from "lucide-react";
+import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
+import { ResendCard } from "@/components/ResendCard";
+import { ResendButton } from "@/components/ResendButton";
 
 export const Route = createFileRoute("/inbox")({
   head: () => ({
@@ -37,12 +40,10 @@ function InboxPage() {
       <section className="w-[380px] shrink-0 border-r border-frost-border flex flex-col bg-white/[0.01] backdrop-blur-3xl relative z-10">
         <div className="p-8 border-b border-frost-border space-y-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-[24px] font-section font-bold tracking-[0.35px] text-near-white">Conversas</h1>
-            <div className="flex gap-2">
-              <button className="size-9 rounded-full frost-border grid place-items-center hover:bg-white/5 transition-all active:scale-90">
-                <Plus className="size-4.5" />
-              </button>
-            </div>
+            <HeadingSub className="text-[24px] tracking-tight mb-0">Conversas</HeadingSub>
+            <button className="size-9 rounded-full frost-border grid place-items-center hover:bg-white/5 transition-all active:scale-90">
+              <Plus className="size-4.5" />
+            </button>
           </div>
           
           <div className="relative group">
@@ -51,11 +52,11 @@ function InboxPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Buscar no pipeline..."
-              className="w-full bg-void frost-border rounded-xl pl-12 pr-4 py-3.5 text-[14px] placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-near-white/20 transition-all"
+              className="w-full bg-void frost-border rounded-xl pl-12 pr-4 py-3.5 text-[14px] placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-near-white/20 transition-all font-mono"
             />
           </div>
           
-          <div className="flex p-1 bg-void rounded-xl frost-border">
+          <div className="flex p-1 bg-void rounded-xl frost-border animate-in zoom-in-95 duration-500 delay-100">
             {(["all", "L1", "L2"] as const).map((opt) => (
               <button
                 key={opt}
@@ -109,15 +110,15 @@ function InboxPage() {
                       <span className={cn("text-[15px] font-bold truncate tracking-tight transition-colors", active ? "text-near-white" : "text-near-white/80 group-hover:text-near-white")}>
                         {l.name}
                       </span>
-                      <span className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest ml-2 opacity-60">
+                      <TextMono className="text-[10px] uppercase tracking-widest opacity-60">
                         {l.lastTime}
-                      </span>
+                      </TextMono>
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <span className="text-[13px] text-muted-foreground truncate leading-relaxed max-w-[180px]">
+                      <TextMono className="text-[13px] truncate leading-relaxed max-w-[180px] block">
                         {l.lastMessage}
-                      </span>
+                      </TextMono>
                       {l.unread > 0 && (
                         <span className="ml-2 px-1.5 py-0.5 min-w-[20px] text-center rounded-full bg-green-4 text-void text-[10px] font-black shadow-[0_0_15px_rgba(17,255,153,0.3)] shrink-0 animate-pulse">
                           {l.unread}
@@ -139,9 +140,9 @@ function InboxPage() {
         
         <div className="flex-1 overflow-y-auto px-12 py-10 space-y-6 scrollbar-hide relative z-10">
           <div className="text-center py-8">
-            <span className="pill px-5 py-1.5 bg-white/[0.03] border border-white/[0.05] text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-mono font-bold">
+            <TextMono className="px-5 py-1.5 bg-white/[0.03] border border-white/[0.05] text-[10px] uppercase tracking-[0.3em] font-bold rounded-full">
               Protocolo Iniciado · Hoje
-            </span>
+            </TextMono>
           </div>
           
           {lead.messages.map((m, i) => {
@@ -160,7 +161,7 @@ function InboxPage() {
                     className={cn(
                       "px-5 py-4 rounded-[20px] text-[15.5px] leading-relaxed shadow-sm transition-all duration-500",
                       isMe
-                        ? "bg-near-white text-void rounded-tr-none hover:shadow-[0_0_40px_rgba(255,255,255,0.1)]"
+                        ? "bg-near-white text-void rounded-tr-none hover:shadow-[0_0_40px_rgba(255,255,255,0.1)] font-medium"
                         : "frost-border bg-white/[0.02] backdrop-blur-xl rounded-tl-none hover:bg-white/[0.04]"
                     )}
                   >
@@ -170,9 +171,9 @@ function InboxPage() {
                     "flex items-center gap-2 mt-2 px-1 opacity-40",
                     isMe ? "flex-row" : "flex-row-reverse"
                   )}>
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest">
+                    <TextMono className="text-[10px] font-bold uppercase tracking-widest">
                       {m.time}
-                    </span>
+                    </TextMono>
                     {isMe && <CheckCheck className="size-3 text-blue-10" strokeWidth={3} />}
                   </div>
                 </div>
@@ -202,17 +203,19 @@ function ChatHeader({ lead }: { lead: Lead }) {
            <span className="absolute bottom-0 right-0 size-3 bg-green-4 rounded-full border-2 border-void shadow-[0_0_12px_rgba(17,255,153,0.6)] animate-pulse" />
         </div>
         <div>
-          <div className="text-[18px] font-display text-near-white tracking-tight">{lead.name}</div>
-          <div className="flex items-center gap-3 text-[11px] text-muted-foreground font-mono font-bold mt-0.5">
+          <HeadingSub className="text-[18px] tracking-tight">
+            {lead.name}
+          </HeadingSub>
+          <div className="flex items-center gap-3 mt-0.5">
             <span className="flex items-center gap-1.5">
               <span className={cn(
                 "size-1.5 rounded-full",
                 lead.line === "L1" ? "bg-orange-10" : "bg-blue-10"
               )} />
-              {lead.phone}
+              <TextMono className="text-[11px] font-bold">{lead.phone}</TextMono>
             </span>
-            <span className="opacity-30">|</span>
-            <span className="text-green-4 animate-pulse uppercase tracking-widest">Transmitindo…</span>
+            <span className="opacity-30 text-muted-foreground">|</span>
+            <TextSmall className="text-green-4 animate-pulse uppercase tracking-widest text-[9px]">Transmitindo…</TextSmall>
           </div>
         </div>
       </div>
@@ -225,19 +228,18 @@ function ChatHeader({ lead }: { lead: Lead }) {
           <MoreHorizontal className="size-4.5" strokeWidth={2} />
         </button>
         <div className="w-[1px] h-8 bg-frost-border/40 mx-2" />
-        <button 
+        <ResendButton 
           onClick={() => {
             toast.loading("Analisando transcrição...", { id: "ai-qual" });
             setTimeout(() => {
               toast.success("Qualificação concluída com sucesso", { id: "ai-qual", description: "Score e insights atualizados." });
             }, 2000);
           }}
-          className="btn-secondary px-6 py-2.5 flex items-center gap-3 group overflow-hidden relative"
+          className="group overflow-hidden relative"
+          icon={<Sparkles className="size-4 text-orange-10 animate-pulse" />}
         >
-          <div className="absolute inset-0 bg-orange-10 opacity-0 group-hover:opacity-10 transition-opacity" />
-          <Sparkles className="size-4 text-orange-10 animate-pulse" /> 
-          <span className="text-[12px] font-black uppercase tracking-[0.1em]">Qualificar com IA</span>
-        </button>
+          <span className="text-[12px] font-black uppercase tracking-[0.1em]">Qualificar</span>
+        </ResendButton>
       </div>
     </div>
   );
@@ -272,7 +274,7 @@ function ChatComposer() {
           onChange={(e) => setText(e.target.value)}
           rows={1}
           placeholder="Compor mensagem para o pipeline..."
-          className="flex-1 bg-transparent resize-none outline-none text-[16px] py-2.5 px-1 placeholder:text-muted-foreground/40 leading-relaxed scrollbar-hide text-near-white"
+          className="flex-1 bg-transparent resize-none outline-none text-[16px] py-2.5 px-1 placeholder:text-muted-foreground/40 leading-relaxed scrollbar-hide text-near-white font-sans"
         />
         
         <div className="flex gap-2 items-center">
@@ -293,9 +295,9 @@ function ChatComposer() {
         </div>
       </div>
       <div className="text-center mt-5 opacity-40">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-mono font-bold flex items-center justify-center gap-3">
+        <TextSmall className="text-[10px] flex items-center justify-center gap-3">
           <Info className="size-3" /> Transmissão encriptada de ponta a ponta
-        </p>
+        </TextSmall>
       </div>
     </div>
   );
@@ -316,21 +318,23 @@ function LeadCard({ lead }: { lead: Lead }) {
               <Plus className="size-4" strokeWidth={3} />
             </button>
           </div>
-          <h2 className="text-[32px] font-display text-near-white tracking-tight leading-tight mb-2">{lead.name}</h2>
-          <div className="flex items-center gap-2 justify-center text-muted-foreground font-mono font-bold text-[13px] opacity-60">
+          <HeadingHero className="text-[32px] mb-2 leading-none">
+            {lead.name}
+          </HeadingHero>
+          <TextMono className="text-[13px] font-bold opacity-60 flex items-center gap-2 justify-center">
             <Phone className="size-3.5" /> {lead.phone}
-          </div>
+          </TextMono>
           
           <div className="flex items-center gap-3 justify-center mt-8">
-            <span className={cn(
-              "pill px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] border shadow-lg",
+            <TextMono className={cn(
+              "px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] border shadow-lg rounded-full",
               lead.line === "L1" ? "border-orange-10/40 text-orange-10 bg-orange-10/5" : "border-blue-10/40 text-blue-10 bg-blue-10/5"
             )}>
               LINHA {lead.line.slice(1)}
-            </span>
-            <span className="pill px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] bg-near-white text-void shadow-2xl">
+            </TextMono>
+            <TextMono className="px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] bg-near-white text-void shadow-2xl rounded-full">
               {STATUS_LABELS[lead.status]}
-            </span>
+            </TextMono>
           </div>
         </div>
         
@@ -338,7 +342,7 @@ function LeadCard({ lead }: { lead: Lead }) {
           <div className="absolute top-0 right-0 size-32 bg-green-4 opacity-5 blur-[60px] group-hover:opacity-15 transition-opacity duration-1000" />
           <div className="flex items-center justify-between relative z-10">
             <div>
-              <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-black font-mono mb-2">QUALIFICAÇÃO IA</p>
+              <TextSmall className="text-[10px] opacity-80 mb-2 block">QUALIFICAÇÃO IA</TextSmall>
               <div className="text-[44px] font-display leading-none tracking-tighter text-near-white">
                 {lead.score}<span className="text-muted-foreground/20 text-[20px] ml-1 font-sans">/100</span>
               </div>
@@ -353,23 +357,23 @@ function LeadCard({ lead }: { lead: Lead }) {
                   className="animate-in fade-in duration-1000"
                 />
               </svg>
-              <span className="absolute text-[12px] font-mono font-black text-green-4">{lead.score}%</span>
+              <TextMono className="absolute text-[12px] font-black text-green-4">{lead.score}%</TextMono>
             </div>
           </div>
         </div>
       </div>
 
       <Section title="Segmentação Operacional" icon={TagIcon}>
-        <div className="flex flex-wrap gap-2.5">
+        <div className="flex flex-wrap gap-2.5 animate-in slide-in-from-top-2 duration-500">
           {lead.tags.map((t) => <TagPill key={t.id} tag={t} className="px-3 py-1 shadow-lg hover:scale-110 transition-transform" />)}
-          <button className="pill px-3 py-1.5 text-[10px] font-black uppercase tracking-widest frost-border text-muted-foreground hover:text-near-white hover:bg-white/5 inline-flex items-center gap-2 transition-all">
+          <button className="pill px-3 py-1.5 text-[10px] font-black uppercase tracking-widest frost-border text-muted-foreground hover:text-near-white hover:bg-white/5 inline-flex items-center gap-2 transition-all font-mono">
             <Plus className="size-3.5" /> GERENCIAR
           </button>
         </div>
       </Section>
 
       <Section title="Briefing do Perfil" icon={Building2}>
-        <dl className="space-y-5 text-[14px]">
+        <dl className="space-y-5">
           <Row icon={Building2} label="Empresa" value={lead.company} />
           <Row icon={Users2} label="Cargo" value={lead.role} />
           <Row icon={MapPin} label="Cidade" value={lead.city} />
@@ -386,18 +390,18 @@ function LeadCard({ lead }: { lead: Lead }) {
             </p>
           </div>
           
-          <div className="space-y-4 mb-10">
+          <div className="space-y-4 mb-10 animate-in fade-in duration-1000">
             {lead.insights.bullets.map((b, i) => (
-              <div key={i} className="flex gap-4 text-[13.5px] group">
+              <div key={i} className="flex gap-4 group">
                 <span className="text-orange-10 font-black mt-0.5 group-hover:scale-150 transition-transform">·</span>
-                <span className="text-near-white/70 leading-relaxed font-medium">{b}</span>
+                <span className="text-near-white/70 leading-relaxed font-medium text-[13.5px]">{b}</span>
               </div>
             ))}
           </div>
           
           <div className="flex items-center gap-4 mb-6">
              <div className="h-[1px] flex-1 bg-frost-border/30" />
-             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground whitespace-nowrap font-mono">PRÓXIMOS PASSOS</span>
+             <TextSmall className="text-[10px] opacity-60">PRÓXIMOS PASSOS</TextSmall>
              <div className="h-[1px] flex-1 bg-frost-border/30" />
           </div>
           
@@ -418,12 +422,12 @@ function LeadCard({ lead }: { lead: Lead }) {
             <div key={n.id} className="frost-border rounded-2xl p-5 bg-white/[0.01] hover:bg-white/[0.02] transition-all group/note border-l-2 border-l-transparent hover:border-l-near-white/40">
               <p className="text-[14px] leading-relaxed text-near-white/80 font-medium">{n.text}</p>
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-frost-border/10">
-                <span className="text-[10px] font-mono font-bold text-muted-foreground/40 uppercase tracking-widest">{n.at}</span>
+                <TextMono className="text-[10px] font-bold uppercase tracking-widest opacity-40">{n.at}</TextMono>
                 <button className="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-red-5 transition-colors opacity-0 group-hover/note:opacity-100">Deletar</button>
               </div>
             </div>
           ))}
-          <button className="w-full py-4 flex items-center justify-center gap-3 text-[12px] font-black uppercase tracking-[0.15em] text-muted-foreground hover:text-near-white hover:bg-white/5 frost-border border-dashed rounded-2xl transition-all duration-500">
+          <button className="w-full py-4 flex items-center justify-center gap-3 text-[12px] font-black uppercase tracking-[0.15em] text-muted-foreground hover:text-near-white hover:bg-white/5 frost-border border-dashed rounded-2xl transition-all duration-500 font-mono">
             <Plus className="size-4.5" /> NOVA ANOTAÇÃO
           </button>
         </div>
@@ -438,9 +442,9 @@ function LeadCard({ lead }: { lead: Lead }) {
       </Section>
 
       <div className="p-12 text-center opacity-20 group hover:opacity-40 transition-opacity duration-1000">
-        <p className="text-[10px] uppercase tracking-[0.5em] text-muted-foreground font-black font-mono">
+        <TextMono className="text-[10px] uppercase tracking-[0.5em] font-black">
           TIMELINE · AUDITADA · 2026
-        </p>
+        </TextMono>
       </div>
     </aside>
   );
@@ -453,9 +457,7 @@ function Section({
     <section className={cn("px-10 py-10 border-b border-frost-border relative overflow-hidden", accent && "bg-white/[0.01]")}>
       <div className="flex items-center gap-4 mb-8 relative z-10">
         <Icon className={cn("size-5", accent ? "text-orange-10" : "text-muted-foreground")} strokeWidth={accent ? 2.5 : 2} />
-        <h3 className="text-[12px] uppercase tracking-[0.25em] font-mono font-black text-near-white">
-          {title}
-        </h3>
+        <HeadingSub className="text-[13px] tracking-[0.25em] mb-0">{title}</HeadingSub>
       </div>
       <div className="relative z-10">{children}</div>
     </section>
@@ -465,11 +467,11 @@ function Section({
 function Row({ icon: Icon, label, value }: { icon: any; label: string; value?: string }) {
   return (
     <div className="flex items-center justify-between gap-4 group/row">
-      <span className="flex items-center gap-3 text-muted-foreground font-bold text-[12px] uppercase tracking-widest opacity-60 group-hover/row:opacity-100 transition-opacity">
+      <div className="flex items-center gap-3 opacity-60 group-hover:opacity-100 transition-opacity">
         <Icon className="size-3.5" />
-        {label}
-      </span>
-      <span className="text-near-white font-mono font-bold truncate max-w-[200px]">{value ?? "—"}</span>
+        <TextSmall className="text-[11px] mb-0 tracking-widest">{label}</TextSmall>
+      </div>
+      <TextMono className="text-near-white font-bold truncate max-w-[200px]">{value ?? "—"}</TextMono>
     </div>
   );
 }
@@ -489,8 +491,8 @@ function DispatchButton({
         <Icon className="size-5 text-near-white/60 group-hover:text-near-white" />
       </span>
       <div className="flex-1 min-w-0 relative z-10">
-        <div className="text-[14px] font-black uppercase tracking-widest text-near-white mb-0.5">{label}</div>
-        <div className="text-[10px] text-muted-foreground font-mono font-bold tracking-[0.15em] opacity-40 group-hover:opacity-80 transition-opacity">{sub}</div>
+        <TextMono className="text-[14px] font-black uppercase tracking-widest text-near-white mb-0.5 block">{label}</TextMono>
+        <TextMono className="text-[10px] font-bold tracking-[0.15em] opacity-40 group-hover:opacity-80 transition-opacity block uppercase">{sub}</TextMono>
       </div>
       <ArrowRight className="size-4 text-muted-foreground group-hover:text-near-white group-hover:translate-x-1 transition-all relative z-10" />
     </button>

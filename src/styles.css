@@ -2,16 +2,16 @@
 @source "../src";
 @import "tw-animate-css";
 
-/* Fonts: Domaine Display (Serif), ABC Favorit (geometric), Inter (UI), Commit Mono (Code) */
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,600;9..144,1,400&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap");
+/* Fonts: Proxy fonts matching Resend's Editorial & Technical hierarchy */
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,600;9..144,1,400&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: "Fraunces", serif; /* Proxy for Domaine Display */
-  --font-section: "Space Grotesk", sans-serif; /* Proxy for ABC Favorit */
+  --font-display: "Fraunces", serif;
+  --font-section: "Space Grotesk", sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", monospace; /* Proxy for Commit Mono */
+  --font-mono: "JetBrains Mono", monospace;
 
   --radius-sm: 2px;
   --radius-md: 4px;
@@ -69,7 +69,7 @@
 
   --border: rgba(214, 235, 253, 0.19);
   --input: rgba(214, 235, 253, 0.15);
-  --ring: rgb(0, 0, 0); /* Black focus ring as per spec */
+  --ring: rgb(0, 0, 0); 
   
   --radius: 4px;
 }
@@ -87,7 +87,7 @@
     letter-spacing: 0;
   }
 
-  h1 {
+  h1, .font-display {
     font-family: var(--font-display);
     font-weight: 400;
     line-height: 1.0;
@@ -95,12 +95,28 @@
     font-feature-settings: "ss01", "ss04", "ss11";
   }
 
-  h2, h3 {
+  h2, h3, .font-section {
     font-family: var(--font-section);
     font-weight: 400;
     line-height: 1.2;
     letter-spacing: -2.8px;
     font-feature-settings: "ss01", "ss04", "ss11";
+  }
+
+  /* Specific Resend-style scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
   }
 }
 
@@ -113,49 +129,18 @@
     border-radius: 9999px;
   }
 
-  .btn-primary {
-    background-color: #ffffff;
-    color: #000000;
-    border-radius: 9999px;
-    padding: 5px 12px;
-    font-weight: 600;
-    font-size: 14px;
-    transition: all 0.2s;
-  }
-
-  .btn-secondary {
-    background-color: transparent;
-    color: #f0f0f0;
-    border: 1px solid var(--color-frost-border);
-    border-radius: 9999px;
-    padding: 5px 12px;
-    font-size: 14px;
-    transition: all 0.2s;
-  }
-
-  .btn-secondary:hover {
-    background-color: rgba(255, 255, 255, 0.28);
-  }
-
   .nav-link {
     font-family: var(--font-section);
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.35px;
     color: #a1a4a5;
-    transition: color 0.2s;
+    transition: all 0.2s;
     font-feature-settings: "ss01", "ss03", "ss04";
   }
 
   .nav-link:hover {
     color: #f0f0f0;
-  }
-
-  .card-resend {
-    background-color: transparent;
-    border: 1px solid var(--color-frost-border);
-    border-radius: 16px;
-    box-shadow: rgba(176, 199, 217, 0.145) 0px 0px 0px 1px;
   }
 
   .code-block {

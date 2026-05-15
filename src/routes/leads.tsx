@@ -1,8 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { LEADS, STATUS_LABELS } from "@/lib/mock-data";
 import { TagPill } from "@/components/Tag";
-import { Search, Plus, ArrowUpRight, Target, Filter, ChevronDown } from "lucide-react";
+import { Search, Plus, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
+import { ResendCard } from "@/components/ResendCard";
+import { ResendButton } from "@/components/ResendButton";
 
 export const Route = createFileRoute("/leads")({
   head: () => ({
@@ -21,14 +24,14 @@ function LeadsPage() {
 
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 animate-in slide-in-from-top-4 duration-1000">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-black font-mono mb-4">
+          <TextSmall className="text-muted-foreground opacity-80 mb-4 block">
             · {LEADS.length} leads cadastrados
-          </p>
-          <h1 className="font-display text-[72px] leading-[1] tracking-tight">Leads</h1>
+          </TextSmall>
+          <HeadingHero className="text-[72px]">Leads</HeadingHero>
         </div>
-        <button className="btn-primary px-8 py-3 text-[14px] flex items-center gap-2 hover:scale-105 transition-transform active:scale-95 shadow-xl">
-          <Plus className="size-4" /> NOVO LEAD
-        </button>
+        <ResendButton variant="primary" size="md" icon={<Plus className="size-4" />} className="px-8 shadow-xl">
+          NOVO LEAD
+        </ResendButton>
       </header>
 
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 bg-black/40 p-2 rounded-2xl frost-border backdrop-blur-sm animate-in slide-in-from-bottom-4 duration-1000 delay-200">
@@ -36,7 +39,7 @@ function LeadsPage() {
           <Search className="size-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-near-white transition-colors" />
           <input
             placeholder="Buscar leads, telefone, empresa..."
-            className="w-full bg-transparent pl-12 pr-4 py-3 text-[13px] outline-none placeholder:text-muted-foreground"
+            className="w-full bg-transparent pl-12 pr-4 py-3 text-[13px] outline-none placeholder:text-muted-foreground font-mono"
           />
         </div>
         <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
@@ -44,7 +47,7 @@ function LeadsPage() {
             <button
               key={f}
               className={cn(
-                "pill px-5 py-2.5 text-[11px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
+                "pill px-5 py-2.5 text-[11px] font-black uppercase tracking-widest transition-all whitespace-nowrap font-mono",
                 i === 0 ? "bg-near-white text-void" : "frost-border text-muted-foreground hover:text-near-white hover:bg-white/5"
               )}
             >
@@ -54,7 +57,7 @@ function LeadsPage() {
         </div>
       </div>
 
-      <div className="frost-border rounded-3xl overflow-hidden bg-card/20 backdrop-blur-sm shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-400">
+      <ResendCard variant="large" className="overflow-hidden bg-card/20 shadow-2xl">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
@@ -69,11 +72,8 @@ function LeadsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-frost-border/20">
-              {LEADS.map((l, index) => (
-                <tr 
-                  key={l.id} 
-                  className="group transition-all hover:bg-white/[0.03]"
-                >
+              {LEADS.map((l) => (
+                <tr key={l.id} className="group transition-all hover:bg-white/[0.03]">
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-4">
                       <div className="size-11 rounded-full grid place-items-center text-[13px] font-bold bg-void frost-border group-hover:frost-ring transition-all duration-300">
@@ -81,13 +81,13 @@ function LeadsPage() {
                       </div>
                       <div>
                         <div className="text-[15px] font-semibold text-near-white">{l.name}</div>
-                        <div className="text-[12px] text-muted-foreground font-mono">{l.phone}</div>
+                        <TextMono className="text-[12px] opacity-60">{l.phone}</TextMono>
                       </div>
                     </div>
                   </td>
                   <td className="px-8 py-6">
                     <span className={cn(
-                      "pill px-3 py-1 text-[10px] font-black uppercase tracking-wider",
+                      "pill px-3 py-1 text-[10px] font-mono font-black uppercase tracking-wider",
                       l.line === "L1" ? "bg-orange-10/10 text-orange-10 border border-orange-10/20" : "bg-blue-10/10 text-blue-10 border border-blue-10/20"
                     )}>
                       {l.line}
@@ -98,26 +98,26 @@ function LeadsPage() {
                   </td>
                   <td className="px-8 py-6">
                     <div className="flex flex-wrap gap-2">
-                      {l.tags.map((t) => <TagPill key={t.id} tag={t} className="shadow-sm" />)}
+                      {l.tags.map((t) => <TagPill key={t.id} tag={t} />)}
                     </div>
                   </td>
                   <td className="px-8 py-6">
                     <span className="text-[13px] text-muted-foreground">{l.company ?? "—"}</span>
                   </td>
                   <td className="px-8 py-6 text-right">
-                    <div className="font-mono text-[16px] font-bold text-near-white">
+                    <TextMono className="text-[16px] font-bold text-near-white block">
                       {l.score}<span className="text-muted-foreground/30 font-medium text-[11px] ml-1">/100</span>
-                    </div>
+                    </TextMono>
                   </td>
                   <td className="px-8 py-6 text-right">
-                    <div className="text-[12px] text-muted-foreground font-mono">{l.lastTime}</div>
+                    <TextMono className="text-[12px] opacity-60">{l.lastTime}</TextMono>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
+      </ResendCard>
     </div>
   );
 }

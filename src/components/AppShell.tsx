@@ -1,6 +1,7 @@
 import { Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { Inbox, LayoutDashboard, Users, BarChart3, Settings, Sparkles, Wifi } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { TextMono, TextSmall } from "@/components/Typography";
 
 const NAV = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -18,7 +19,7 @@ export function AppShell() {
       <aside className="w-60 shrink-0 border-r border-frost-border flex flex-col bg-void sticky top-0 h-screen z-20">
         <div className="px-5 pt-8 pb-10">
           <Link to="/" className="flex items-center gap-3 group transition-transform active:scale-95">
-            <span className="size-8 rounded-lg bg-near-white text-void grid place-items-center">
+            <span className="size-8 rounded-lg bg-near-white text-void grid place-items-center shadow-[0_0_15px_rgba(255,255,255,0.1)]">
               <Sparkles className="size-5" strokeWidth={2.4} />
             </span>
             <span className="font-section text-[18px] font-semibold tracking-[-1px] text-near-white">
@@ -37,7 +38,7 @@ export function AppShell() {
                 className={cn(
                   "nav-link flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-200 group relative",
                   active
-                    ? "text-near-white bg-white/[0.03] frost-border"
+                    ? "text-near-white bg-white/[0.03] frost-border shadow-[inset_0_0_10px_rgba(214,235,253,0.05)]"
                     : "hover:text-near-white hover:bg-white/[0.02]"
                 )}
               >
@@ -78,19 +79,17 @@ function LineStatus({
   online: boolean;
 }) {
   return (
-    <div className="frost-border rounded-lg px-3 py-3 bg-white/[0.01] group/status hover:bg-white/[0.03] transition-colors">
+    <div className="frost-border rounded-lg px-3 py-3 bg-white/[0.01] group/status hover:bg-white/[0.03] transition-colors shadow-sm">
       <div className="flex items-center justify-between mb-1.5">
-        <span className="text-[10px] uppercase tracking-[0.08em] text-muted-foreground font-mono font-semibold">
-          {label}
-        </span>
-        <span className="flex items-center gap-1.5 text-[10px] text-green-4">
+        <TextSmall className="text-[10px] opacity-60">{label}</TextSmall>
+        <span className="flex items-center gap-1.5 text-[10px] text-green-4 font-mono font-bold">
           <span className="size-1.5 rounded-full bg-green-4 shadow-[0_0_8px_rgba(17,255,153,0.4)] animate-pulse" />
-          {online ? "online" : "off"}
+          {online ? "LIVE" : "OFF"}
         </span>
       </div>
-      <div className="flex items-center gap-2 text-[12px] text-muted-foreground font-mono transition-colors group-hover/status:text-near-white">
+      <div className="flex items-center gap-2 transition-colors">
         <Wifi className="size-3 text-muted-foreground group-hover/status:text-blue-10" strokeWidth={2.5} />
-        {phone}
+        <TextMono className="text-[12px] group-hover/status:text-near-white">{phone}</TextMono>
       </div>
     </div>
   );
