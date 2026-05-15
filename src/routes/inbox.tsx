@@ -203,7 +203,9 @@ function ChatHeader({ lead }: { lead: Lead }) {
            <span className="absolute bottom-0 right-0 size-3 bg-green-4 rounded-full border-2 border-void shadow-[0_0_12px_rgba(17,255,153,0.6)] animate-pulse" />
         </div>
         <div>
-          <HeadingSub className="text-[18px] tracking-tight">{lead.name}</HeadingSub>
+          <HeadingSub className="text-[18px] tracking-tight">
+            {lead.name}
+          </HeadingSub>
           <div className="flex items-center gap-3 mt-0.5">
             <span className="flex items-center gap-1.5">
               <span className={cn(
@@ -316,7 +318,9 @@ function LeadCard({ lead }: { lead: Lead }) {
               <Plus className="size-4" strokeWidth={3} />
             </button>
           </div>
-          <HeadingHero className="text-[32px] mb-2">{lead.name}</HeadingHero>
+          <HeadingHero className="text-[32px] mb-2 leading-none">
+            {lead.name}
+          </HeadingHero>
           <TextMono className="text-[13px] font-bold opacity-60 flex items-center gap-2">
             <Phone className="size-3.5" /> {lead.phone}
           </TextMono>
