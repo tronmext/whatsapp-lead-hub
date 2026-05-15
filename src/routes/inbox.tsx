@@ -249,53 +249,41 @@ function InboxPage() {
 
 function ChatHeader({ lead }: { lead: Lead }) {
   return (
-    <div className="px-6 md:px-8 py-4 border-b border-frost-border flex items-center justify-between bg-void/80 backdrop-blur-2xl sticky top-0 z-20">
-      <div className="flex items-center gap-4 min-w-0">
+    <div className="px-6 py-3 border-b border-border/10 flex items-center justify-between bg-void/50 backdrop-blur-xl sticky top-0 z-20">
+      <div className="flex items-center gap-3 min-w-0">
         <div className="relative group shrink-0">
-           <div className="size-10 rounded-full grid place-items-center text-[14px] font-bold bg-void frost-border transition-all duration-700 group-hover:frost-ring">
+           <div className="size-9 rounded-full grid place-items-center text-[12px] font-bold bg-void border border-white/5 transition-all duration-700">
              {lead.initials}
            </div>
-           <span className="absolute bottom-0 right-0 size-2.5 bg-green-4 rounded-full border-2 border-void shadow-[0_0_12px_rgba(17,255,153,0.6)] animate-pulse" />
+           <span className="absolute bottom-0 right-0 size-2 bg-green-500 rounded-full border-2 border-void shadow-[0_0_10px_rgba(34,197,94,0.4)]" />
         </div>
         <div className="min-w-0">
-          <HeadingSub className="text-[16px] tracking-tight truncate leading-none mb-1">
+          <span className="text-[14px] font-bold tracking-tight truncate leading-none mb-0.5 block text-foreground">
             {lead.name}
-          </HeadingSub>
-          <div className="flex items-center gap-3 mt-0.5">
-            <span className="flex items-center gap-1.5">
-              <span className={cn(
-                "size-1.5 rounded-full",
-                lead.line === "L1" ? "bg-orange-10" : "bg-blue-10"
-              )} />
-              <TextMono className="text-[11px] font-bold">{lead.phone}</TextMono>
-            </span>
-            <span className="opacity-30 text-muted-foreground">|</span>
-            <TextSmall className="text-green-4 animate-pulse uppercase tracking-widest text-[9px]">Transmitindo…</TextSmall>
+          </span>
+          <div className="flex items-center gap-2">
+            <TextMono className="text-[10px] font-bold opacity-30">{lead.phone}</TextMono>
+            <span className="opacity-10 text-muted-foreground">|</span>
+            <TextSmall className="text-primary text-[8px] animate-pulse">Ativo</TextSmall>
           </div>
         </div>
       </div>
       
-      <div className="flex items-center gap-2">
-        <button className="size-9 rounded-lg frost-border grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
-          <Phone className="size-4" strokeWidth={2} />
+      <div className="flex items-center gap-1.5">
+        <button className="size-8 rounded-lg border border-border/10 grid place-items-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all">
+          <Phone className="size-3.5" />
         </button>
-        <button className="size-9 rounded-lg frost-border grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
-          <MoreHorizontal className="size-4" strokeWidth={2} />
+        <button className="size-8 rounded-lg border border-border/10 grid place-items-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all">
+          <Video className="size-3.5" />
         </button>
-        <div className="w-[1px] h-6 bg-frost-border/40 mx-1" />
+        <div className="w-[1px] h-4 bg-border/10 mx-1" />
         <Button 
-          onClick={() => {
-            toast.loading("Analisando transcrição...", { id: "ai-qual" });
-            setTimeout(() => {
-              toast.success("Qualificação concluída com sucesso", { id: "ai-qual", description: "Score e insights atualizados." });
-            }, 2000);
-          }}
           variant="outline"
           size="sm"
-          className="group overflow-hidden relative shadow-[0_0_20px_rgba(255,165,0,0.1)] h-9 px-4"
+          className="h-8 px-3 rounded-full border-primary/20 text-primary hover:bg-primary/5 group"
         >
-          <Sparkles className="mr-2 size-4 text-orange-10 animate-pulse" /> 
-          <span className="text-[12px] font-black uppercase tracking-[0.1em]">Qualificar</span>
+          <Sparkles className="mr-2 size-3 animate-pulse" /> 
+          <span className="text-[10px] font-black uppercase tracking-wider">Qualificar</span>
         </Button>
       </div>
     </div>
