@@ -115,10 +115,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="bg-void min-h-screen selection:bg-orange-10/30 selection:text-near-white">
-        <AppShell />
-        <Toaster />
-      </div>
+      <AppShell />
     </QueryClientProvider>
   );
 }
