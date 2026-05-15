@@ -114,7 +114,7 @@ function InstanceCard({ line, label, phone, accent }: { line: string; label: str
           <TextMono className="text-[14px]">{phone}</TextMono>
        </div>
        <div className="mt-10 flex gap-3">
-          <ResendButton variant="secondary" className="flex-1 text-[11px] font-black uppercase tracking-widest rounded-xl">CONFIGURAR</ResendButton>
+          <Button variant="secondary" size="sm" className="flex-1 uppercase tracking-widest text-[11px] font-black">CONFIGURAR</Button>
           <button className="size-11 rounded-xl frost-border grid place-items-center text-muted-foreground hover:text-red-5 hover:border-red-5/30 transition-all active:scale-90">
              <Trash2 className="size-4" />
           </button>
