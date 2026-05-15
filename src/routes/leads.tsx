@@ -29,8 +29,8 @@ function LeadsPage() {
           </TextSmall>
           <HeadingHero className="text-[72px]">Leads</HeadingHero>
         </div>
-        <Button variant="default" size="default" icon={<Plus className="size-4" />} className="px-8 shadow-xl">
-          NOVO LEAD
+        <Button variant="default" size="default" className="px-8 shadow-xl">
+          NOVO LEAD <Plus className="ml-2 size-4" />
         </Button>
       </header>
 
