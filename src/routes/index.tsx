@@ -104,7 +104,7 @@ function Dashboard() {
                         {l.score}<span className="text-muted-foreground/30 font-medium text-[12px] ml-1">/100</span>
                       </TextMono>
                       <span className={cn(
-                        "text-[9px] font-mono font-black uppercase tracking-[0.1em] mt-1.5 px-2 py-0.5 rounded inline-block",
+                        "text-[9px] font-mono font-black uppercase tracking-[0.1em] px-2 py-0.5 rounded inline-block",
                         l.line === "L1" ? "bg-orange-10/10 text-orange-10 border border-orange-10/20" : "bg-blue-10/10 text-blue-10 border border-blue-10/20"
                       )}>
                         {l.line}
