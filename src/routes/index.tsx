@@ -33,7 +33,7 @@ function formatMsToHuman(ms: number): string {
 
 function Dashboard() {
   const { leads } = Route.useLoaderData();
-  const recent = leads.slice(0, 4);
+  const recent = (leads ?? []).slice(0, 4);
   const getMetricsFn = useServerFn(getAnalyticsMetrics);
 
   const metricsQ = useQuery({
