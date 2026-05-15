@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -96,7 +96,7 @@ export function InstancesPanel() {
   const [qrTarget, setQrTarget] = useState<string | null>(null);
 
   const [aliases, setAliases] = useState<Record<string, string>>({});
-  const aliasTimers = useRef<Record<string, NodeJS.Timeout>>({});
+  const [savingAliases, setSavingAliases] = useState<Record<string, boolean>>({});
 
   // Load aliases from local DB
   const getInstancesFn = useServerFn(getInstances);
@@ -226,18 +226,19 @@ export function InstancesPanel() {
               profilePictureUrl={pickPicture(inst)}
               isActive={isActive}
               alias={aliases[name] ?? (inst as any).alias ?? ""}
+              saving={savingAliases[name] ?? false}
               onAliasChange={(alias) => {
                 setAliases(prev => ({ ...prev, [name]: alias }));
-                clearTimeout(aliasTimers.current[name]);
-                aliasTimers.current[name] = setTimeout(() => {
-                  updateAliasFn({ data: { id: name, alias } })
-                    .then(() => {
-                      queryClient.invalidateQueries({ queryKey: ["instances", "aliases"] });
-                    })
-                    .catch((err: Error) => {
-                      toast.error("Erro ao salvar tag: " + err.message);
-                    });
-                }, 800);
+                setSavingAliases(prev => ({ ...prev, [name]: true }));
+                updateAliasFn({ data: { id: name, alias } })
+                  .then(() => {
+                    queryClient.invalidateQueries({ queryKey: ["instances", "aliases"] });
+                    setSavingAliases(prev => ({ ...prev, [name]: false }));
+                  })
+                  .catch((err: Error) => {
+                    toast.error("Erro ao salvar tag: " + err.message);
+                    setSavingAliases(prev => ({ ...prev, [name]: false }));
+                  });
               }}
               onActivate={() => {
                 setActiveInstance(name);
@@ -323,6 +324,7 @@ function InstanceLiveCard({
   onShowQr,
   onDelete,
   alias,
+  saving,
   onAliasChange,
 }: {
   name: string;
@@ -335,6 +337,7 @@ function InstanceLiveCard({
   onShowQr: () => void;
   onDelete: () => void;
   alias?: string;
+  saving?: boolean;
   onAliasChange: (alias: string) => void;
 }) {
   const stateMeta =
@@ -379,6 +382,12 @@ function InstanceLiveCard({
           className="bg-transparent border border-frost-border/30 rounded px-2 py-0.5 text-[11px] font-mono outline-none focus:border-primary/40 text-foreground w-24"
           maxLength={8}
         />
+        {saving && (
+          <Loader2 className="size-3 animate-spin text-muted-foreground" />
+        )}
+        {!saving && alias && (
+          <span className="size-2 rounded-full bg-green-4" />
+        )}
       </div>
 
       <div className="flex flex-wrap gap-2 mt-4">
