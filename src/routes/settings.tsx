@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ALL_TAGS } from "@/lib/mock-data";
 import { TagPill } from "@/components/Tag";
 import { cn } from "@/lib/utils";
-import { Plus, Sparkles, Wifi, Shield, Bell, Database, Globe, Command, Trash2 } from "lucide-react";
+import { Plus, Sparkles, Wifi, Shield, Bell, Database, Globe, Command, Trash2, Users2, Building2 } from "lucide-react";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -216,4 +216,4 @@ function Field({ label, value, line, icon: Icon }: { label: string; value: strin
     </div>
   );
 }
-import { Users2, Building2 } from "lucide-react";
+
