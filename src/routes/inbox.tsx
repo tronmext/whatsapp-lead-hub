@@ -364,7 +364,7 @@ function LeadCard({ lead }: { lead: Lead }) {
           <Row icon={Building2} label="Empresa" value={lead.company} />
           <Row icon={Users2} label="Cargo" value={lead.role} />
           <Row icon={MapPin} label="Cidade" value={lead.city} />
-          <Row icon={Globe} label="Origem" value={lead.source} />
+          <Row icon={Sparkles} label="Origem" value={lead.source} />
         </dl>
       </Section>
 
