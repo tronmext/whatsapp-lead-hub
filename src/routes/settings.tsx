@@ -115,8 +115,8 @@ function AISettings() {
   });
 
   const handleNewPrompt = () => {
-    const newPrompt = { id: `prompt_${Date.now()}`, name: "Novo Prompt", content: "" };
-    setSelectedPrompt(newPrompt);
+    const newPrompt = { id: "", name: "Novo Prompt", content: "" };
+    setSelectedPrompt(newPrompt as any);
     setContent("");
   };
 
