@@ -114,7 +114,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AppShell />
+      <div className="bg-void min-h-screen selection:bg-orange-10/30 selection:text-near-white">
+        <AppShell />
+      </div>
     </QueryClientProvider>
   );
 }
