@@ -249,16 +249,16 @@ function InboxPage() {
 
 function ChatHeader({ lead }: { lead: Lead }) {
   return (
-    <div className="px-10 py-6 border-b border-frost-border flex items-center justify-between bg-void/80 backdrop-blur-2xl sticky top-0 z-20">
-      <div className="flex items-center gap-5">
-        <div className="relative group">
-           <div className="size-12 rounded-full grid place-items-center text-[16px] font-bold bg-void frost-border transition-all duration-700 group-hover:frost-ring">
+    <div className="px-6 md:px-8 py-4 border-b border-frost-border flex items-center justify-between bg-void/80 backdrop-blur-2xl sticky top-0 z-20">
+      <div className="flex items-center gap-4 min-w-0">
+        <div className="relative group shrink-0">
+           <div className="size-10 rounded-full grid place-items-center text-[14px] font-bold bg-void frost-border transition-all duration-700 group-hover:frost-ring">
              {lead.initials}
            </div>
-           <span className="absolute bottom-0 right-0 size-3 bg-green-4 rounded-full border-2 border-void shadow-[0_0_12px_rgba(17,255,153,0.6)] animate-pulse" />
+           <span className="absolute bottom-0 right-0 size-2.5 bg-green-4 rounded-full border-2 border-void shadow-[0_0_12px_rgba(17,255,153,0.6)] animate-pulse" />
         </div>
-        <div>
-          <HeadingSub className="text-[18px] tracking-tight">
+        <div className="min-w-0">
+          <HeadingSub className="text-[16px] tracking-tight truncate leading-none mb-1">
             {lead.name}
           </HeadingSub>
           <div className="flex items-center gap-3 mt-0.5">
@@ -275,14 +275,14 @@ function ChatHeader({ lead }: { lead: Lead }) {
         </div>
       </div>
       
-      <div className="flex items-center gap-3">
-        <button className="size-11 rounded-xl frost-border grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
-          <Phone className="size-4.5" strokeWidth={2} />
+      <div className="flex items-center gap-2">
+        <button className="size-9 rounded-lg frost-border grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
+          <Phone className="size-4" strokeWidth={2} />
         </button>
-        <button className="size-11 rounded-xl frost-border grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
-          <MoreHorizontal className="size-4.5" strokeWidth={2} />
+        <button className="size-9 rounded-lg frost-border grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
+          <MoreHorizontal className="size-4" strokeWidth={2} />
         </button>
-        <div className="w-[1px] h-8 bg-frost-border/40 mx-2" />
+        <div className="w-[1px] h-6 bg-frost-border/40 mx-1" />
         <Button 
           onClick={() => {
             toast.loading("Analisando transcrição...", { id: "ai-qual" });
@@ -291,8 +291,8 @@ function ChatHeader({ lead }: { lead: Lead }) {
             }, 2000);
           }}
           variant="outline"
-          size="default"
-          className="group overflow-hidden relative shadow-[0_0_20px_rgba(255,165,0,0.1)]"
+          size="sm"
+          className="group overflow-hidden relative shadow-[0_0_20px_rgba(255,165,0,0.1)] h-9 px-4"
         >
           <Sparkles className="mr-2 size-4 text-orange-10 animate-pulse" /> 
           <span className="text-[12px] font-black uppercase tracking-[0.1em]">Qualificar</span>
