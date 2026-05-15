@@ -5,7 +5,7 @@ import { TagPill } from "@/components/Tag";
 import { cn } from "@/lib/utils";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
-import { ResendButton } from "@/components/ResendButton";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   head: () => ({
