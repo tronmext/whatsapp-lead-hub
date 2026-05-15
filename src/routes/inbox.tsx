@@ -308,7 +308,7 @@ function ChatComposer() {
   }, [text]);
 
   return (
-    <div className="border-t border-frost-border p-8 bg-void relative z-20">
+    <div className="border-t border-frost-border p-8 bg-void relative z-20 mt-auto">
       <div className="frost-border rounded-2xl bg-white/[0.01] p-3 flex items-end gap-3 focus-within:ring-1 focus-within:ring-near-white/20 focus-within:bg-white/[0.03] transition-all shadow-2xl">
         <div className="flex gap-1">
           <button className="size-10 rounded-xl grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all">

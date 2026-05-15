@@ -9,7 +9,7 @@ import { TextMono } from "./Typography"
 export function AppShell() {
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="flex min-h-screen w-full bg-void text-near-white animate-in fade-in duration-500 overflow-hidden">
+      <div className="flex h-screen w-full bg-void text-near-white animate-in fade-in duration-500 overflow-hidden">
         <AppSidebar />
         
         <SidebarInset className="flex flex-col flex-1 bg-void relative overflow-hidden">
@@ -55,7 +55,7 @@ export function AppShell() {
             </div>
           </header>
 
-          <main className="flex-1 relative z-10 overflow-y-auto overflow-x-hidden">
+          <main className="flex-1 relative z-10 overflow-hidden">
             <Outlet />
           </main>
         </SidebarInset>
