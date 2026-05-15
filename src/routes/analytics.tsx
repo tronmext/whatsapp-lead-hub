@@ -33,8 +33,8 @@ function AnalyticsPage() {
           <HeadingHero>Analytics</HeadingHero>
         </div>
         <div className="flex gap-3">
-          <ResendButton variant="secondary" size="md" className="uppercase tracking-widest text-[12px] font-black">Exportar Dados</ResendButton>
-          <ResendButton variant="primary" size="md" className="uppercase tracking-widest text-[12px] font-black shadow-2xl">Período Customizado</ResendButton>
+          <Button variant="secondary" size="md" className="uppercase tracking-widest text-[12px] font-black">Exportar Dados</Button>
+          <Button variant="default" size="md" className="uppercase tracking-widest text-[12px] font-black shadow-2xl">Período Customizado</Button>
         </div>
       </header>
 
