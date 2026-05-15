@@ -5,8 +5,8 @@ import { TagPill } from "@/components/Tag";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import {
-  Search, Filter, Send, Paperclip, Smile, Sparkles,
-  Phone, Building2, MapPin, Tag as TagIcon, Plus, ArrowRight,
+  Search, Filter, Send, Paperclip, Smile, Sparkles, Image as ImageIcon,
+  Phone, Building2, MapPin, Tag as TagIcon, Plus, ArrowRight, Video,
   MessageSquare, FileText, Users2, Clock, Mic, Check, CheckCheck, MoreHorizontal, Info, Reply, Heart, ThumbsUp, Laugh, Meh, Frown
 } from "lucide-react";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
@@ -315,57 +315,71 @@ function ChatComposer() {
   }, [text]);
 
   return (
-    <div className="border-t border-frost-border p-8 bg-void relative z-20 mt-auto">
-      <div className="frost-border rounded-2xl bg-white/[0.01] p-3 flex items-end gap-3 focus-within:ring-1 focus-within:ring-near-white/20 focus-within:bg-white/[0.03] transition-all shadow-2xl">
-        <div className="flex gap-1">
-          <button className="size-10 rounded-xl grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all">
-            <Plus className="size-5" />
-          </button>
-          <button className="size-10 rounded-xl grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all">
-            <Smile className="size-5" />
-          </button>
-        </div>
-        
-        <textarea
-          ref={textareaRef}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          rows={1}
-          placeholder="Compor mensagem para o pipeline..."
-          className="flex-1 bg-transparent resize-none outline-none text-[16px] py-2.5 px-1 placeholder:text-muted-foreground/40 leading-relaxed scrollbar-hide text-near-white font-sans"
-        />
-        
-        <div className="flex gap-2 items-center">
-          <button 
-            onClick={() => {
-              setIsRecording(!isRecording);
-              if (!isRecording) toast.info("Gravando áudio...");
-              else toast.success("Áudio enviado");
-            }}
-            className={cn(
-              "size-10 rounded-xl grid place-items-center transition-all",
-              isRecording ? "bg-red-5 text-near-white animate-pulse" : "text-muted-foreground hover:text-near-white hover:bg-white/5"
-            )}
-          >
-            <Mic className="size-5" />
-          </button>
-          <button 
-            disabled={!text.trim() && !isRecording}
-            onClick={() => {
-              if (text.trim()) {
-                toast.success("Mensagem enviada");
-                setText("");
+    <div className="border-t border-frost-border p-6 md:p-8 bg-void relative z-20 mt-auto">
+      <div className="max-w-4xl mx-auto">
+        <div className="frost-border rounded-2xl bg-white/[0.02] backdrop-blur-xl p-2 transition-all focus-within:bg-white/[0.04] focus-within:border-white/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+          <textarea
+            ref={textareaRef}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            rows={1}
+            placeholder="Mensagem..."
+            className="w-full bg-transparent border-none outline-none resize-none px-4 py-3 text-[15.5px] min-h-[44px] max-h-32 scrollbar-hide text-near-white placeholder:text-muted-foreground/30 font-sans leading-relaxed"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                if (text.trim()) {
+                  setText("");
+                  toast.success("Mensagem enviada");
+                }
               }
             }}
-            className={cn(
-              "size-10 rounded-xl grid place-items-center transition-all active:scale-90",
-              text.trim() || isRecording
-                ? "bg-near-white text-void shadow-[0_0_30px_rgba(255,255,255,0.2)]" 
-                : "bg-white/5 text-muted-foreground cursor-not-allowed opacity-50"
-            )}
-          >
-            <Send className="size-5" strokeWidth={2.5} />
-          </button>
+          />
+          <div className="flex items-center justify-between px-2 pb-1">
+            <div className="flex items-center gap-0.5">
+              <button className="size-9 rounded-lg grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
+                <Smile className="size-5" />
+              </button>
+              <button className="size-9 rounded-lg grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
+                <Paperclip className="size-5" />
+              </button>
+              <button className="size-9 rounded-lg grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
+                <ImageIcon className="size-5" />
+              </button>
+            </div>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => {
+                  setIsRecording(!isRecording);
+                  if (!isRecording) toast.info("Gravando áudio...");
+                  else toast.success("Áudio enviado");
+                }}
+                className={cn(
+                  "size-9 rounded-lg grid place-items-center transition-all active:scale-90",
+                  isRecording ? "bg-red-5 text-near-white animate-pulse" : "text-muted-foreground hover:text-near-white hover:bg-white/5"
+                )}
+              >
+                <Mic className="size-5" />
+              </button>
+              <button 
+                disabled={!text.trim() && !isRecording}
+                onClick={() => {
+                  if (text.trim()) {
+                    toast.success("Mensagem enviada");
+                    setText("");
+                  }
+                }}
+                className={cn(
+                  "size-9 rounded-lg grid place-items-center transition-all active:scale-90",
+                  text.trim() || isRecording
+                    ? "bg-near-white text-void shadow-[0_0_30px_rgba(255,255,255,0.2)]" 
+                    : "bg-white/5 text-muted-foreground cursor-not-allowed opacity-50"
+                )}
+              >
+                <Send className="size-4.5" strokeWidth={2.5} />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       <div className="text-center mt-5 opacity-40">
