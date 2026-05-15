@@ -44,41 +44,41 @@ function InboxPage() {
   return (
     <div className="h-full flex flex-col md:flex-row bg-void animate-in fade-in duration-700 overflow-hidden relative">
       {/* 01. Sidebar: Feed de Conversas */}
-      <section className="w-full md:w-[380px] shrink-0 border-b md:border-b-0 md:border-r border-frost-border flex flex-col bg-white/[0.01] backdrop-blur-3xl relative z-10 h-1/3 md:h-full">
-        <div className="p-6 border-b border-frost-border space-y-4 bg-void/50 backdrop-blur-md sticky top-0 z-20">
+      <section className="w-full md:w-[320px] shrink-0 border-b md:border-b-0 md:border-r border-border/10 flex flex-col bg-void relative z-10 h-1/3 md:h-full">
+        <div className="p-4 border-b border-border/10 space-y-3 bg-void/50 backdrop-blur-md sticky top-0 z-20">
           <div className="flex items-center justify-between">
-            <HeadingSub className="text-[18px] tracking-tight mb-0">Conversas</HeadingSub>
-            <div className="flex items-center gap-1.5">
-              <button className="size-8 rounded-lg frost-border grid place-items-center hover:bg-white/5 transition-all active:scale-90 text-muted-foreground hover:text-near-white">
-                <Filter className="size-3.5" />
+            <TextSmall className="text-[10px]">Conversas</TextSmall>
+            <div className="flex items-center gap-1">
+              <button className="size-7 rounded-lg border border-border/10 grid place-items-center hover:bg-white/5 transition-all active:scale-90 text-muted-foreground hover:text-foreground">
+                <Filter className="size-3" />
               </button>
-              <button className="size-8 rounded-lg frost-border grid place-items-center bg-near-white text-void hover:opacity-90 transition-all active:scale-90">
-                <Plus className="size-3.5" strokeWidth={3} />
+              <button className="size-7 rounded-full bg-primary text-primary-foreground grid place-items-center hover:opacity-90 transition-all active:scale-90">
+                <Plus className="size-3" strokeWidth={3} />
               </button>
             </div>
           </div>
           
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             <div className="relative group">
-              <Search className="size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-near-white transition-colors" />
+              <Search className="size-3 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within:text-primary transition-colors" />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Buscar leads..."
-                className="w-full bg-void/40 border border-frost-border/30 rounded-lg pl-9 pr-3 py-2 text-[13px] placeholder:text-muted-foreground/30 outline-none focus:border-near-white/20 focus:bg-void/60 transition-all font-sans"
+                placeholder="Buscar..."
+                className="w-full bg-muted border border-border/5 rounded-xl pl-8 pr-3 py-1.5 text-[12px] placeholder:text-muted-foreground/20 outline-none focus:border-primary/20 transition-all font-mono"
               />
             </div>
             
-            <div className="flex p-1 bg-void/40 rounded-lg border border-frost-border/20">
+            <div className="flex p-0.5 bg-muted rounded-lg border border-border/5">
               {(["all", "L1", "L2"] as const).map((opt) => (
                 <button
                   key={opt}
                   onClick={() => setLineFilter(opt)}
                   className={cn(
-                    "flex-1 py-1.5 text-[9px] font-black uppercase tracking-[0.15em] transition-all rounded-md font-mono",
+                    "flex-1 py-1 text-[8px] font-black uppercase tracking-[0.1em] transition-all rounded-md font-mono",
                     lineFilter === opt
-                      ? "bg-near-white/10 text-near-white shadow-sm"
-                      : "text-muted-foreground/40 hover:text-near-white/60"
+                      ? "bg-white/[0.05] text-foreground shadow-sm"
+                      : "text-muted-foreground/30 hover:text-foreground/50"
                   )}
                 >
                   {opt === "all" ? "Geral" : opt}
@@ -93,54 +93,54 @@ function InboxPage() {
             const active = l.id === selectedId;
             return (
               <li key={l.id} className="animate-in fade-in slide-in-from-left-4 duration-500" style={{ animationDelay: `${index * 50}ms` }}>
-                <button
-                  onClick={() => setSelectedId(l.id)}
-                  className={cn(
-                    "w-full text-left px-8 py-6 flex gap-5 transition-all duration-500 relative group",
-                    active ? "bg-white/[0.04] shadow-[inset_0_0_30px_rgba(255,255,255,0.02)]" : "hover:bg-white/[0.02]"
-                  )}
-                >
-                  {active && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-10 bg-near-white rounded-full" />}
-                  
-                  <div className="relative shrink-0">
-                    <div className={cn(
-                      "size-14 rounded-full grid place-items-center text-[16px] font-bold bg-void frost-border transition-all duration-700",
-                      active ? "scale-105 frost-ring" : "group-hover:scale-105"
-                    )}>
-                      {l.initials}
-                    </div>
-                    <span
-                      className={cn(
-                        "absolute -bottom-1 -right-1 text-[9px] font-mono px-2 py-0.5 rounded-full font-black border-2 border-void shadow-2xl",
-                        l.line === "L1" ? "bg-orange-10 text-void" : "bg-blue-10 text-near-white"
-                      )}
-                    >
-                      {l.line}
-                    </span>
-                  </div>
-                  
-                  <div className="flex-1 min-w-0 pt-1">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className={cn("text-[15px] font-bold truncate tracking-tight transition-colors", active ? "text-near-white" : "text-near-white/80 group-hover:text-near-white")}>
-                        {l.name}
+                  <button
+                    onClick={() => setSelectedId(l.id)}
+                    className={cn(
+                      "w-full text-left px-5 py-4 flex gap-4 transition-all duration-300 relative group",
+                      active ? "bg-white/[0.02]" : "hover:bg-white/[0.01]"
+                    )}
+                  >
+                    {active && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-6 bg-primary rounded-full" />}
+                    
+                    <div className="relative shrink-0">
+                      <div className={cn(
+                        "size-10 rounded-full grid place-items-center text-[12px] font-bold bg-void border border-white/5 transition-all duration-500",
+                        active ? "border-primary/40" : "group-hover:border-white/10"
+                      )}>
+                        {l.initials}
+                      </div>
+                      <span
+                        className={cn(
+                          "absolute -bottom-0.5 -right-0.5 text-[7px] font-mono px-1 py-0 rounded-full font-black border-2 border-void shadow-2xl",
+                          l.line === "L1" ? "bg-orange-10 text-void" : "bg-blue-10 text-white"
+                        )}
+                      >
+                        {l.line}
                       </span>
-                      <TextMono className="text-[10px] uppercase tracking-widest opacity-60">
-                        {l.lastTime}
-                      </TextMono>
                     </div>
                     
-                    <div className="flex items-center justify-between">
-                      <TextMono className="text-[13px] truncate leading-relaxed max-w-[180px] block">
-                        {l.lastMessage}
-                      </TextMono>
-                      {l.unread > 0 && (
-                        <span className="ml-2 px-1.5 py-0.5 min-w-[20px] text-center rounded-full bg-green-4 text-void text-[10px] font-black shadow-[0_0_15px_rgba(17,255,153,0.3)] shrink-0 animate-pulse">
-                          {l.unread}
+                    <div className="flex-1 min-w-0 pt-0.5">
+                      <div className="flex items-center justify-between mb-0.5">
+                        <span className={cn("text-[13px] font-bold truncate tracking-tight transition-colors", active ? "text-foreground" : "text-foreground/70 group-hover:text-foreground")}>
+                          {l.name}
                         </span>
-                      )}
+                        <TextMono className="text-[9px] uppercase tracking-wider opacity-30">
+                          {l.lastTime}
+                        </TextMono>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] truncate opacity-30 font-sans block max-w-[140px]">
+                          {l.lastMessage}
+                        </span>
+                        {l.unread > 0 && (
+                          <span className="ml-2 size-4 rounded-full bg-primary text-primary-foreground text-[8px] font-black grid place-items-center shadow-lg shrink-0">
+                            {l.unread}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </button>
+                  </button>
               </li>
             );
           })}
@@ -148,8 +148,8 @@ function InboxPage() {
       </section>
 
       {/* 02. Center: Palco do Chat */}
-      <section className="flex-1 flex flex-col min-w-0 border-r border-frost-border bg-void relative overflow-hidden h-full">
-        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] via-transparent to-transparent pointer-events-none opacity-50" />
+      <section className="flex-1 flex flex-col min-w-0 border-r border-border/10 bg-void relative overflow-hidden h-full">
+        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.01] via-transparent to-transparent pointer-events-none opacity-30" />
         <ChatHeader lead={lead} />
         
         <div className="flex-1 overflow-y-auto px-4 md:px-8 py-4 md:py-6 space-y-4 scrollbar-hide relative z-10 flex flex-col">
@@ -249,53 +249,41 @@ function InboxPage() {
 
 function ChatHeader({ lead }: { lead: Lead }) {
   return (
-    <div className="px-6 md:px-8 py-4 border-b border-frost-border flex items-center justify-between bg-void/80 backdrop-blur-2xl sticky top-0 z-20">
-      <div className="flex items-center gap-4 min-w-0">
+    <div className="px-6 py-3 border-b border-border/10 flex items-center justify-between bg-void/50 backdrop-blur-xl sticky top-0 z-20">
+      <div className="flex items-center gap-3 min-w-0">
         <div className="relative group shrink-0">
-           <div className="size-10 rounded-full grid place-items-center text-[14px] font-bold bg-void frost-border transition-all duration-700 group-hover:frost-ring">
+           <div className="size-9 rounded-full grid place-items-center text-[12px] font-bold bg-void border border-white/5 transition-all duration-700">
              {lead.initials}
            </div>
-           <span className="absolute bottom-0 right-0 size-2.5 bg-green-4 rounded-full border-2 border-void shadow-[0_0_12px_rgba(17,255,153,0.6)] animate-pulse" />
+           <span className="absolute bottom-0 right-0 size-2 bg-green-500 rounded-full border-2 border-void shadow-[0_0_10px_rgba(34,197,94,0.4)]" />
         </div>
         <div className="min-w-0">
-          <HeadingSub className="text-[16px] tracking-tight truncate leading-none mb-1">
+          <span className="text-[14px] font-bold tracking-tight truncate leading-none mb-0.5 block text-foreground">
             {lead.name}
-          </HeadingSub>
-          <div className="flex items-center gap-3 mt-0.5">
-            <span className="flex items-center gap-1.5">
-              <span className={cn(
-                "size-1.5 rounded-full",
-                lead.line === "L1" ? "bg-orange-10" : "bg-blue-10"
-              )} />
-              <TextMono className="text-[11px] font-bold">{lead.phone}</TextMono>
-            </span>
-            <span className="opacity-30 text-muted-foreground">|</span>
-            <TextSmall className="text-green-4 animate-pulse uppercase tracking-widest text-[9px]">Transmitindo…</TextSmall>
+          </span>
+          <div className="flex items-center gap-2">
+            <TextMono className="text-[10px] font-bold opacity-30">{lead.phone}</TextMono>
+            <span className="opacity-10 text-muted-foreground">|</span>
+            <TextSmall className="text-primary text-[8px] animate-pulse">Ativo</TextSmall>
           </div>
         </div>
       </div>
       
-      <div className="flex items-center gap-2">
-        <button className="size-9 rounded-lg frost-border grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
-          <Phone className="size-4" strokeWidth={2} />
+      <div className="flex items-center gap-1.5">
+        <button className="size-8 rounded-lg border border-border/10 grid place-items-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all">
+          <Phone className="size-3.5" />
         </button>
-        <button className="size-9 rounded-lg frost-border grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
-          <MoreHorizontal className="size-4" strokeWidth={2} />
+        <button className="size-8 rounded-lg border border-border/10 grid place-items-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all">
+          <Video className="size-3.5" />
         </button>
-        <div className="w-[1px] h-6 bg-frost-border/40 mx-1" />
+        <div className="w-[1px] h-4 bg-border/10 mx-1" />
         <Button 
-          onClick={() => {
-            toast.loading("Analisando transcrição...", { id: "ai-qual" });
-            setTimeout(() => {
-              toast.success("Qualificação concluída com sucesso", { id: "ai-qual", description: "Score e insights atualizados." });
-            }, 2000);
-          }}
           variant="outline"
           size="sm"
-          className="group overflow-hidden relative shadow-[0_0_20px_rgba(255,165,0,0.1)] h-9 px-4"
+          className="h-8 px-3 rounded-full border-primary/20 text-primary hover:bg-primary/5 group"
         >
-          <Sparkles className="mr-2 size-4 text-orange-10 animate-pulse" /> 
-          <span className="text-[12px] font-black uppercase tracking-[0.1em]">Qualificar</span>
+          <Sparkles className="mr-2 size-3 animate-pulse" /> 
+          <span className="text-[10px] font-black uppercase tracking-wider">Qualificar</span>
         </Button>
       </div>
     </div>
@@ -315,16 +303,16 @@ function ChatComposer() {
   }, [text]);
 
   return (
-    <div className="border-t border-frost-border p-6 md:p-8 bg-void relative z-20 mt-auto">
-      <div className="max-w-4xl mx-auto">
-        <div className="frost-border rounded-2xl bg-white/[0.02] backdrop-blur-xl p-2 transition-all focus-within:bg-white/[0.04] focus-within:border-white/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+    <div className="border-t border-border/10 p-4 md:p-6 bg-void relative z-20 mt-auto">
+      <div className="max-w-3xl mx-auto">
+        <div className="border border-border/10 rounded-2xl bg-muted p-1 transition-all focus-within:border-primary/20 shadow-2xl">
           <textarea
             ref={textareaRef}
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={1}
             placeholder="Mensagem..."
-            className="w-full bg-transparent border-none outline-none resize-none px-4 py-3 text-[15.5px] min-h-[44px] max-h-32 scrollbar-hide text-near-white placeholder:text-muted-foreground/30 font-sans leading-relaxed"
+            className="w-full bg-transparent border-none outline-none resize-none px-4 py-2 text-[14px] min-h-[40px] max-h-32 scrollbar-hide text-foreground placeholder:text-muted-foreground/20 font-sans leading-relaxed"
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -337,29 +325,26 @@ function ChatComposer() {
           />
           <div className="flex items-center justify-between px-2 pb-1">
             <div className="flex items-center gap-0.5">
-              <button className="size-9 rounded-lg grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
-                <Smile className="size-5" />
+              <button className="size-8 rounded-lg grid place-items-center text-muted-foreground/40 hover:text-foreground hover:bg-white/5 transition-all">
+                <Smile className="size-4" />
               </button>
-              <button className="size-9 rounded-lg grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
-                <Paperclip className="size-5" />
-              </button>
-              <button className="size-9 rounded-lg grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
-                <ImageIcon className="size-5" />
+              <button className="size-8 rounded-lg grid place-items-center text-muted-foreground/40 hover:text-foreground hover:bg-white/5 transition-all">
+                <Paperclip className="size-4" />
               </button>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <button 
                 onClick={() => {
                   setIsRecording(!isRecording);
-                  if (!isRecording) toast.info("Gravando áudio...");
-                  else toast.success("Áudio enviado");
+                  if (!isRecording) toast.info("Gravando...");
+                  else toast.success("Enviado");
                 }}
                 className={cn(
-                  "size-9 rounded-lg grid place-items-center transition-all active:scale-90",
-                  isRecording ? "bg-red-5 text-near-white animate-pulse" : "text-muted-foreground hover:text-near-white hover:bg-white/5"
+                  "size-8 rounded-lg grid place-items-center transition-all",
+                  isRecording ? "bg-red-500 text-white animate-pulse" : "text-muted-foreground/40 hover:text-foreground"
                 )}
               >
-                <Mic className="size-5" />
+                <Mic className="size-4" />
               </button>
               <button 
                 disabled={!text.trim() && !isRecording}
@@ -393,46 +378,40 @@ function ChatComposer() {
 
 function LeadCard({ lead }: { lead: Lead }) {
   return (
-    <aside className="hidden xl:flex w-[420px] shrink-0 flex-col overflow-y-auto bg-void border-l border-frost-border animate-in slide-in-from-right-8 duration-1000 scrollbar-hide relative z-20">
-      <div className="absolute inset-0 bg-gradient-to-b from-orange-10/[0.02] via-transparent to-transparent pointer-events-none" />
+    <aside className="hidden xl:flex w-[320px] shrink-0 flex-col overflow-y-auto bg-void border-l border-border/10 animate-in slide-in-from-right-4 duration-700 scrollbar-hide relative z-20">
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.01] via-transparent to-transparent pointer-events-none" />
       
-      <div className="p-10 border-b border-frost-border relative z-10">
+      <div className="p-8 border-b border-border/10 relative z-10">
         <div className="flex flex-col items-center text-center">
-          <div className="relative mb-6 group">
-            <div className="size-24 rounded-full grid place-items-center text-[32px] font-bold bg-void frost-border transition-all duration-1000 group-hover:scale-110 group-hover:frost-ring">
+          <div className="relative mb-4 group">
+            <div className="size-20 rounded-full grid place-items-center text-[20px] font-bold bg-void border border-white/5 transition-all duration-700">
               {lead.initials}
             </div>
-            <button className="absolute bottom-0 right-0 size-8 bg-near-white text-void rounded-full grid place-items-center shadow-2xl border-4 border-void hover:scale-110 transition-transform active:scale-95">
-              <Plus className="size-4" strokeWidth={3} />
-            </button>
           </div>
-          <HeadingHero className="text-[32px] mb-2 leading-none">
+          <span className="text-[20px] font-bold text-foreground mb-1 leading-tight">
             {lead.name}
-          </HeadingHero>
-          <TextMono className="text-[13px] font-bold opacity-60 flex items-center gap-2 justify-center">
-            <Phone className="size-3.5" /> {lead.phone}
+          </span>
+          <TextMono className="text-[11px] opacity-30 flex items-center gap-2 justify-center">
+            {lead.phone}
           </TextMono>
           
-          <div className="flex items-center gap-3 justify-center mt-8">
-            <TextMono className={cn(
-              "px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] border shadow-lg rounded-full",
-              lead.line === "L1" ? "border-orange-10/40 text-orange-10 bg-orange-10/5" : "border-blue-10/40 text-blue-10 bg-blue-10/5"
-            )}>
+          <div className="flex items-center gap-2 justify-center mt-6">
+            <TextMono className="px-3 py-1 text-[9px] font-black uppercase tracking-wider border border-border/10 rounded-full opacity-40">
               LINHA {lead.line.slice(1)}
             </TextMono>
-            <TextMono className="px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] bg-near-white text-void shadow-2xl rounded-full">
+            <TextMono className="px-3 py-1 text-[9px] font-black uppercase tracking-wider bg-foreground text-background rounded-full">
               {STATUS_LABELS[lead.status]}
             </TextMono>
           </div>
         </div>
         
-        <div className="mt-12 p-6 rounded-3xl bg-white/[0.02] border border-frost-border relative group overflow-hidden">
-          <div className="absolute top-0 right-0 size-32 bg-green-4 opacity-5 blur-[60px] group-hover:opacity-15 transition-opacity duration-1000" />
+        <div className="mt-8 p-6 rounded-2xl bg-muted border border-border/5 relative group overflow-hidden">
+          <div className="absolute top-0 right-0 size-24 bg-primary/5 opacity-5 blur-[40px] group-hover:opacity-10 transition-opacity duration-1000" />
           <div className="flex items-center justify-between relative z-10">
             <div>
               <TextSmall className="text-[10px] opacity-80 mb-2 block">QUALIFICAÇÃO IA</TextSmall>
-              <div className="text-[44px] font-display leading-none tracking-tighter text-near-white">
-                {lead.score}<span className="text-muted-foreground/20 text-[20px] ml-1 font-sans">/100</span>
+              <div className="text-[32px] font-bold leading-none tracking-tight text-foreground">
+                {lead.score}<span className="text-muted-foreground/20 text-[14px] ml-1 font-sans">/100</span>
               </div>
             </div>
             <div className="size-16 relative flex items-center justify-center">
@@ -542,10 +521,10 @@ function Section({
   title, icon: Icon, accent, children,
 }: { title: string; icon: any; accent?: boolean; children: React.ReactNode }) {
   return (
-    <section className={cn("px-10 py-10 border-b border-frost-border relative overflow-hidden", accent && "bg-white/[0.01]")}>
-      <div className="flex items-center gap-4 mb-8 relative z-10">
-        <Icon className={cn("size-5", accent ? "text-orange-10" : "text-muted-foreground")} strokeWidth={accent ? 2.5 : 2} />
-        <HeadingSub className="text-[13px] tracking-[0.25em] mb-0">{title}</HeadingSub>
+    <section className={cn("px-8 py-8 border-b border-border/10 relative overflow-hidden", accent && "bg-muted/30")}>
+      <div className="flex items-center gap-3 mb-6 relative z-10">
+        <Icon className={cn("size-4", accent ? "text-primary" : "text-muted-foreground/40")} strokeWidth={accent ? 2.5 : 2} />
+        <TextSmall className="text-[9px] tracking-[0.2em] opacity-50 mb-0">{title}</TextSmall>
       </div>
       <div className="relative z-10">{children}</div>
     </section>
