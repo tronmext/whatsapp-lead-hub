@@ -30,7 +30,7 @@ function SettingsPage() {
       <div className="grain absolute inset-0 opacity-[0.03] pointer-events-none" />
       
       {/* Navigation Sidebar */}
-      <aside className="w-full md:w-80 shrink-0 border-b md:border-b-0 md:border-r border-frost-border bg-white/[0.01] backdrop-blur-3xl z-10 flex flex-col h-auto md:h-full">
+      <aside className="w-full md:w-80 shrink-0 border-b md:border-b-0 md:border-r border-frost-border bg-white/[0.01] backdrop-blur-3xl z-10 flex flex-col h-auto md:h-full relative overflow-y-auto">
         <div className="p-8 md:p-12">
           <header className="mb-12">
             <div className="flex items-center gap-3 mb-4">
@@ -44,6 +44,7 @@ function SettingsPage() {
             {TABS.map((tab) => (
               <button
                 key={tab.id}
+                type="button"
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
                   "w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-300 group",
