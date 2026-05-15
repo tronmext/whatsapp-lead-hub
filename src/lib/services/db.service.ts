@@ -190,8 +190,7 @@ export class DatabaseService {
       `SELECT AVG(diff) as avg_ms FROM (
         SELECT (julianday(timestamp) - julianday(LAG(timestamp) OVER (PARTITION BY contact_id ORDER BY timestamp))) * 86400000 as diff
         FROM messages
-        WHERE diff IS NOT NULL
-      )`
+      ) WHERE diff IS NOT NULL AND diff > 0`
     ).first<{ avg_ms: number | null }>();
     
     const conversion = await this.db.prepare(
@@ -227,10 +226,7 @@ export class DatabaseService {
     };
   }
 
-  // Prompts
-  async getPromptById(id: string) {
-    return this.db.prepare("SELECT * FROM prompts_library WHERE id = ?").bind(id).first<{ id: string; name: string; content: string; category: string }>();
-  }
+  // Prompts (getPrompt already exists below)
 
   async getPrompts() {
     const { results } = await this.db.prepare("SELECT * FROM prompts_library ORDER BY name").all<{ id: string; name: string; content: string; category: string }>();
@@ -258,6 +254,6 @@ export class DatabaseService {
   }
 
   async getPrompt(id: string) {
-    return this.db.prepare("SELECT * FROM prompts_library WHERE id = ?").bind(id).first<{ id: string; content: string }>();
+    return this.db.prepare("SELECT * FROM prompts_library WHERE id = ?").bind(id).first<{ id: string; name: string; content: string; category: string }>();
   }
 }
