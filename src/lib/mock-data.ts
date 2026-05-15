@@ -205,11 +205,3 @@ export const STATUS_LABELS: Record<Lead["status"], string> = {
   qualificado: "Qualificado",
   perdido: "Perdido",
 };
-
-export const TAG_COLOR_CLASSES: Record<Tag["color"], string> = {
-  orange: "bg-[oklch(0.74_0.18_45/0.15)] text-[oklch(0.82_0.16_55)] border-[oklch(0.74_0.18_45/0.35)]",
-  green: "bg-[oklch(0.88_0.22_155/0.12)] text-[oklch(0.86_0.2_155)] border-[oklch(0.88_0.22_155/0.3)]",
-  blue: "bg-[oklch(0.68_0.18_245/0.15)] text-[oklch(0.78_0.14_240)] border-[oklch(0.68_0.18_245/0.35)]",
-  yellow: "bg-[oklch(0.84_0.16_85/0.14)] text-[oklch(0.86_0.14_85)] border-[oklch(0.84_0.16_85/0.35)]",
-  red: "bg-[oklch(0.62_0.24_18/0.16)] text-[oklch(0.78_0.18_22)] border-[oklch(0.62_0.24_18/0.4)]",
-};

@@ -10,6 +10,7 @@ import {
 import { AppShell } from "@/components/AppShell";
 
 import appCss from "../styles.css?url";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -114,7 +115,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AppShell />
+      <div className="bg-void min-h-screen selection:bg-orange-10/30 selection:text-near-white">
+        <AppShell />
+        <Toaster />
+      </div>
     </QueryClientProvider>
   );
 }
