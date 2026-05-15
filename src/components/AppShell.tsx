@@ -49,9 +49,9 @@ export function AppShell() {
               
               <div className="w-[1px] h-6 bg-frost-border/30 mx-1" />
               
-              <ResendButton variant="primary" size="sm" className="hidden lg:flex font-black tracking-widest text-[11px]">
+              <Button variant="default" size="sm" className="hidden lg:flex font-black tracking-widest text-[11px]">
                 UPGRADE
-              </ResendButton>
+              </Button>
             </div>
           </header>
 
