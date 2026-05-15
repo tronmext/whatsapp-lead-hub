@@ -228,18 +228,20 @@ function ChatHeader({ lead }: { lead: Lead }) {
           <MoreHorizontal className="size-4.5" strokeWidth={2} />
         </button>
         <div className="w-[1px] h-8 bg-frost-border/40 mx-2" />
-        <ResendButton 
+        <Button 
           onClick={() => {
             toast.loading("Analisando transcrição...", { id: "ai-qual" });
             setTimeout(() => {
               toast.success("Qualificação concluída com sucesso", { id: "ai-qual", description: "Score e insights atualizados." });
             }, 2000);
           }}
+          variant="outline"
+          size="default"
           className="group overflow-hidden relative"
-          icon={<Sparkles className="size-4 text-orange-10 animate-pulse" />}
         >
+          <Sparkles className="mr-2 size-4 text-orange-10 animate-pulse" /> 
           <span className="text-[12px] font-black uppercase tracking-[0.1em]">Qualificar</span>
-        </ResendButton>
+        </Button>
       </div>
     </div>
   );
