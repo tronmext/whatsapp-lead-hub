@@ -312,7 +312,7 @@ function ChatComposer() {
             onChange={(e) => setText(e.target.value)}
             rows={1}
             placeholder="Mensagem..."
-            className="w-full bg-transparent border-none outline-none resize-none px-4 py-3 text-[15.5px] min-h-[44px] max-h-32 scrollbar-hide text-near-white placeholder:text-muted-foreground/30 font-sans leading-relaxed"
+            className="w-full bg-transparent border-none outline-none resize-none px-4 py-2 text-[14px] min-h-[40px] max-h-32 scrollbar-hide text-foreground placeholder:text-muted-foreground/20 font-sans leading-relaxed"
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
