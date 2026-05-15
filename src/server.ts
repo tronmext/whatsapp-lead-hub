@@ -11,6 +11,7 @@ type ServerEntry = {
 };
 
 let serverEntryPromise: Promise<ServerEntry> | undefined;
+let seeded = false;
 
 async function getServerEntry(): Promise<ServerEntry> {
   if (!serverEntryPromise) {
@@ -112,12 +113,15 @@ export default {
         console.log('DB active, injecting into globalThis');
         (globalThis as any).DB = db;
         
-        // Seed default data if needed (only once)
-        try {
-          const { seedDatabase } = await import('./lib/seed');
-          await seedDatabase(db);
-        } catch (err) {
-          console.error('Seed failed:', err);
+        // Seed default data if needed (only once per server instance)
+        if (!seeded) {
+          try {
+            const { seedDatabase } = await import('./lib/seed');
+            await seedDatabase(db);
+            seeded = true;
+          } catch (err) {
+            console.error('Seed failed:', err);
+          }
         }
       } else {
         console.warn('DB NOT FOUND in env or local filesystem');
