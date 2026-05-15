@@ -361,23 +361,25 @@ function ChatComposer() {
               >
                 <Mic className="size-5" />
               </button>
-          <button 
-            disabled={!text.trim() && !isRecording}
-            onClick={() => {
-              if (text.trim()) {
-                toast.success("Mensagem enviada");
-                setText("");
-              }
-            }}
-            className={cn(
-              "size-10 rounded-xl grid place-items-center transition-all active:scale-90",
-              text.trim() || isRecording
-                ? "bg-near-white text-void shadow-[0_0_30px_rgba(255,255,255,0.2)]" 
-                : "bg-white/5 text-muted-foreground cursor-not-allowed opacity-50"
-            )}
-          >
-            <Send className="size-5" strokeWidth={2.5} />
-          </button>
+              <button 
+                disabled={!text.trim() && !isRecording}
+                onClick={() => {
+                  if (text.trim()) {
+                    toast.success("Mensagem enviada");
+                    setText("");
+                  }
+                }}
+                className={cn(
+                  "size-9 rounded-lg grid place-items-center transition-all active:scale-90",
+                  text.trim() || isRecording
+                    ? "bg-near-white text-void shadow-[0_0_30px_rgba(255,255,255,0.2)]" 
+                    : "bg-white/5 text-muted-foreground cursor-not-allowed opacity-50"
+                )}
+              >
+                <Send className="size-4.5" strokeWidth={2.5} />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       <div className="text-center mt-5 opacity-40">
