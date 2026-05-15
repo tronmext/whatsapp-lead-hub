@@ -1,15 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
-import { LEADS, STATUS_LABELS, type Lead } from "@/lib/mock-data";
+import { STATUS_LABELS } from "@/lib/mock-data";
 import { TagPill } from "@/components/Tag";
 import { Search, Plus, LayoutGrid, List } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
 import { Button } from "@/components/ui/button";
+import { getLeads, updateLeadStatus } from "@/lib/server-functions";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/leads")({
+  loader: async () => {
+    const leads = await getLeads();
+    return { leads };
+  },
   head: () => ({
     meta: [
       { title: "Leads — Leadflow" },
@@ -21,22 +29,24 @@ export const Route = createFileRoute("/leads")({
 
 type ViewMode = "table" | "kanban";
 
-const COLUMNS: Lead["status"][] = ["novo", "negociacao", "qualificado", "perdido"];
+const COLUMNS: ('novo' | 'negociacao' | 'qualificado' | 'perdido')[] = ["novo", "negociacao", "qualificado", "perdido"];
 
 function LeadsPage() {
+  const { leads: initialLeads } = Route.useLoaderData();
   const [viewMode, setViewMode] = useState<ViewMode>("kanban");
-  const [leads, setLeads] = useState<Lead[]>(LEADS);
+  const [leads, setLeads] = useState(initialLeads);
   const [searchQuery, setSearchQuery] = useState("");
   const [isClient, setIsClient] = useState(false);
+  const qc = useQueryClient();
+  const updateStatusFn = useServerFn(updateLeadStatus);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   const filteredLeads = leads.filter(l => 
-    l.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    l.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    l.phone.includes(searchQuery)
+    l.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    l.jid.includes(searchQuery)
   );
 
   const onDragEnd = (result: DropResult) => {
@@ -45,23 +55,28 @@ function LeadsPage() {
     if (!destination) return;
     if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
-    const leadIndex = leads.findIndex(l => l.id === draggableId);
+    const leadIndex = leads.findIndex(l => l.jid === draggableId);
     if (leadIndex === -1) return;
 
     const updatedLeads = [...leads];
     const [movedLead] = updatedLeads.splice(leadIndex, 1);
     
-    // Atualiza o status e insere na nova posição relativa à coluna
     const leadWithNewStatus = {
       ...movedLead,
-      status: destination.droppableId as Lead["status"]
+      status: destination.droppableId as any
     };
 
-    // Para simplificar a reordenação visual no mock:
-    // Removemos o lead da posição antiga e inserimos no final da lista 
-    // (ou poderíamos implementar uma lógica de 'order' no mock se necessário)
     updatedLeads.push(leadWithNewStatus);
     setLeads(updatedLeads);
+    
+    updateStatusFn({ data: { jid: draggableId, status: destination.droppableId } })
+      .then(() => {
+        qc.invalidateQueries({ queryKey: ["leads"] });
+      })
+      .catch((err: Error) => {
+        toast.error("Erro ao atualizar status: " + err.message);
+        setLeads(leads);
+      });
   };
 
   return (
@@ -111,7 +126,7 @@ function LeadsPage() {
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar leads, telefone, empresa..."
+              placeholder="Buscar leads, telefone..."
               className="w-full bg-transparent pl-12 pr-4 py-3 text-[13px] outline-none placeholder:text-muted-foreground/30 font-mono"
             />
           </div>
@@ -153,7 +168,7 @@ function LeadsPage() {
                         )}
                       >
                         {filteredLeads.filter(l => l.status === status).map((lead, index) => (
-                          <Draggable key={lead.id} draggableId={lead.id} index={index}>
+                          <Draggable key={lead.jid} draggableId={lead.jid} index={index}>
                             {(provided, snapshot) => (
                               <div
                                 ref={provided.innerRef}
@@ -172,31 +187,22 @@ function LeadsPage() {
                                 >
                                   <div className="flex items-start justify-between mb-4">
                                     <div className="size-10 rounded-full grid place-items-center text-[12px] font-bold bg-void frost-border shadow-inner">
-                                      {lead.initials}
+                                      {lead.name?.slice(0, 2).toUpperCase()}
                                     </div>
                                     <div className={cn(
                                       "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider font-mono shadow-sm",
-                                      lead.line === "L1" ? "bg-orange-10/10 text-orange-10 border border-orange-10/20" : "bg-blue-10/10 text-blue-10 border border-blue-10/20"
+                                      lead.instance_id === "L1" ? "bg-orange-10/10 text-orange-10 border border-orange-10/20" : "bg-blue-10/10 text-blue-10 border border-blue-10/20"
                                     )}>
-                                      {lead.line}
+                                      {lead.instance_id}
                                     </div>
                                   </div>
                                   
                                   <h3 className="text-[16px] font-semibold text-near-white mb-1 group-hover:text-white transition-colors">
                                     {lead.name}
                                   </h3>
-                                  <TextMono className="text-[11px] opacity-40 block mb-4">
-                                    {lead.company || lead.phone}
+                                  <TextMono className="text-[11px] opacity-40 block mb-4 truncate">
+                                    {lead.jid}
                                   </TextMono>
-
-                                  <div className="flex flex-wrap gap-1.5 mb-5">
-                                    {lead.tags.slice(0, 2).map(t => (
-                                      <TagPill key={t.id} tag={t} />
-                                    ))}
-                                    {lead.tags.length > 2 && (
-                                      <span className="text-[9px] opacity-30 font-mono self-center ml-1">+{lead.tags.length - 2}</span>
-                                    )}
-                                  </div>
 
                                   <div className="flex items-center justify-between pt-4 border-t border-frost-border/10">
                                     <div className="flex items-center gap-2">
@@ -212,7 +218,7 @@ function LeadsPage() {
                                         </div>
                                       </div>
                                     </div>
-                                    <TextMono className="text-[9px] opacity-30 uppercase tracking-widest">{lead.lastTime}</TextMono>
+                                    <TextMono className="text-[9px] opacity-30 uppercase tracking-widest">{lead.type}</TextMono>
                                   </div>
                                 </ResendCard>
                               </div>
@@ -236,44 +242,34 @@ function LeadsPage() {
                     <th className="px-8 py-5">Lead</th>
                     <th className="px-8 py-5">Linha</th>
                     <th className="px-8 py-5">Status</th>
-                    <th className="px-8 py-5">Tags</th>
-                    <th className="px-8 py-5">Empresa</th>
                     <th className="px-8 py-5 text-right">Score</th>
-                    <th className="px-8 py-5 text-right">Atividade</th>
+                    <th className="px-8 py-5 text-right">Tipo</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-frost-border/10">
                   {filteredLeads.map((l) => (
-                    <tr key={l.id} className="group transition-all hover:bg-white/[0.03]">
+                    <tr key={l.jid} className="group transition-all hover:bg-white/[0.03]">
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-4">
                           <div className="size-10 rounded-full grid place-items-center text-[12px] font-bold bg-void frost-border group-hover:frost-ring transition-all duration-300">
-                            {l.initials}
+                            {l.name?.slice(0, 2).toUpperCase()}
                           </div>
                           <div>
                             <div className="text-[15px] font-semibold text-near-white">{l.name}</div>
-                            <TextMono className="text-[11px] opacity-40">{l.phone}</TextMono>
+                            <TextMono className="text-[11px] opacity-40">{l.jid}</TextMono>
                           </div>
                         </div>
                       </td>
                       <td className="px-8 py-6">
                         <span className={cn(
                           "pill px-3 py-1 text-[9px] font-mono font-black uppercase tracking-wider",
-                          l.line === "L1" ? "bg-orange-10/10 text-orange-10 border border-orange-10/20" : "bg-blue-10/10 text-blue-10 border border-blue-10/20"
+                          l.instance_id === "L1" ? "bg-orange-10/10 text-orange-10 border border-orange-10/20" : "bg-blue-10/10 text-blue-10 border border-blue-10/20"
                         )}>
-                          {l.line}
+                          {l.instance_id}
                         </span>
                       </td>
                       <td className="px-8 py-6">
-                        <span className="text-[13px] font-medium text-near-white/80">{STATUS_LABELS[l.status]}</span>
-                      </td>
-                      <td className="px-8 py-6">
-                        <div className="flex flex-wrap gap-2">
-                          {l.tags.map((t) => <TagPill key={t.id} tag={t} />)}
-                        </div>
-                      </td>
-                      <td className="px-8 py-6">
-                        <span className="text-[13px] text-muted-foreground">{l.company ?? "—"}</span>
+                        <span className="text-[13px] font-medium text-near-white/80">{STATUS_LABELS[l.status as any]}</span>
                       </td>
                       <td className="px-8 py-6 text-right">
                         <TextMono className="text-[15px] font-bold text-near-white block">
@@ -281,7 +277,7 @@ function LeadsPage() {
                         </TextMono>
                       </td>
                       <td className="px-8 py-6 text-right">
-                        <TextMono className="text-[11px] opacity-40">{l.lastTime}</TextMono>
+                        <TextMono className="text-[11px] opacity-40 uppercase">{l.type}</TextMono>
                       </td>
                     </tr>
                   ))}
