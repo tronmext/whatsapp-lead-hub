@@ -12,6 +12,13 @@ import {
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
 import { Button } from "@/components/ui/button";
+import { 
+  SidebarProvider, 
+  Sidebar, 
+  SidebarContent, 
+  SidebarHeader,
+  useSidebar
+} from "@/components/ui/sidebar";
 
 export const Route = createFileRoute("/inbox")({
   head: () => ({
