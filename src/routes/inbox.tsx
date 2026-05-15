@@ -358,61 +358,79 @@ function LeadCard({ lead }: { lead: Lead }) {
         </div>
       </Section>
 
-      <Section title="Detalhes" icon={Building2}>
-        <dl className="space-y-2 text-[12px]">
+      <Section title="Detalhes do Perfil" icon={Building2}>
+        <dl className="space-y-4 text-[13px]">
           <Row icon={Building2} label="Empresa" value={lead.company} />
           <Row icon={Users2} label="Cargo" value={lead.role} />
           <Row icon={MapPin} label="Cidade" value={lead.city} />
           <Row icon={Phone} label="Origem" value={lead.source} />
         </dl>
+        <button className="w-full mt-4 py-2 text-[11px] font-bold uppercase tracking-widest frost-border rounded-md text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all">
+          Editar Perfil
+        </button>
       </Section>
 
       {lead.insights && (
         <Section title="Insights IA" icon={Sparkles} accent>
-          <p className="text-[13px] leading-relaxed text-foreground/90 mb-4 italic font-display">
-            "{lead.insights.summary}"
-          </p>
-          <div className="space-y-1.5 mb-4">
+          <div className="relative">
+            <div className="absolute -left-3 top-0 bottom-0 w-0.5 bg-orange/30 rounded-full" />
+            <p className="text-[14px] leading-relaxed text-foreground/90 mb-5 italic font-display">
+              "{lead.insights.summary}"
+            </p>
+          </div>
+          
+          <div className="space-y-2.5 mb-6">
             {lead.insights.bullets.map((b, i) => (
-              <div key={i} className="flex gap-2 text-[12px]">
-                <span className="text-[oklch(0.74_0.18_45)] mt-0.5">·</span>
-                <span className="text-foreground/80">{b}</span>
+              <div key={i} className="flex gap-3 text-[12.5px] group">
+                <span className="text-orange font-bold group-hover:scale-125 transition-transform">·</span>
+                <span className="text-foreground/80 leading-snug">{b}</span>
               </div>
             ))}
           </div>
-          <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground font-section mb-2">
-            Próximos passos
+          
+          <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-section font-bold mb-3 flex items-center gap-2">
+            <div className="h-[1px] flex-1 bg-border/40" />
+            PRÓXIMOS PASSOS
+            <div className="h-[1px] flex-1 bg-border/40" />
           </div>
-          <div className="space-y-1.5">
+          
+          <div className="space-y-2">
             {lead.insights.nextSteps.map((s, i) => (
-              <div key={i} className="flex gap-2 text-[12px] frost-border rounded-md px-2.5 py-1.5">
-                <ArrowRight className="size-3 text-[oklch(0.86_0.2_155)] mt-0.5 shrink-0" />
-                <span>{s}</span>
+              <div key={i} className="flex gap-3 text-[12.5px] frost-border rounded-xl px-3 py-2.5 bg-white/[0.02] hover:bg-white/[0.05] transition-colors group/step cursor-default">
+                <ArrowRight className="size-3.5 text-green mt-0.5 shrink-0 group-hover/step:translate-x-1 transition-transform" />
+                <span className="leading-snug">{s}</span>
               </div>
             ))}
           </div>
         </Section>
       )}
 
-      <Section title="Notas" icon={FileText}>
-        {lead.notes.length === 0 && (
-          <p className="text-[12px] text-muted-foreground italic">Nenhuma nota ainda.</p>
-        )}
-        {lead.notes.map((n) => (
-          <div key={n.id} className="frost-border rounded-md p-2.5 mb-2">
-            <p className="text-[12px]">{n.text}</p>
-            <span className="text-[10px] font-mono text-muted-foreground mt-1 block">{n.at}</span>
-          </div>
-        ))}
-        <button className="text-[12px] text-muted-foreground hover:text-foreground flex items-center gap-1">
-          <Plus className="size-3" /> Adicionar nota
-        </button>
+      <Section title="Notas Internas" icon={FileText}>
+        <div className="space-y-3">
+          {lead.notes.length === 0 && (
+            <p className="text-[12.5px] text-muted-foreground italic bg-black/20 p-4 rounded-xl border border-dashed border-border/40">
+              Nenhuma anotação estratégica registrada.
+            </p>
+          )}
+          {lead.notes.map((n) => (
+            <div key={n.id} className="frost-border rounded-xl p-3.5 bg-white/[0.01] hover:frost-ring transition-all group/note">
+              <p className="text-[13px] leading-relaxed text-foreground/90">{n.text}</p>
+              <div className="flex items-center justify-between mt-2.5">
+                <span className="text-[10px] font-mono text-muted-foreground/60 uppercase tracking-tighter">{n.at}</span>
+                <button className="text-[10px] text-muted-foreground hover:text-red transition-colors opacity-0 group-hover/note:opacity-100">Excluir</button>
+              </div>
+            </div>
+          ))}
+          <button className="w-full py-2.5 flex items-center justify-center gap-2 text-[12px] font-bold text-muted-foreground hover:text-foreground hover:bg-white/5 frost-border border-dashed rounded-xl transition-all">
+            <Plus className="size-4" /> ADICIONAR NOTA
+          </button>
+        </div>
       </Section>
 
-      <Section title="Despachar" icon={Send}>
-        <div className="space-y-2">
-          <DispatchButton label="Enviar para Secretaria" sub="WhatsApp · resumo + insights" />
-          <DispatchButton label="Enviar para Equipe Interna" sub="WhatsApp · briefing técnico" />
+      <Section title="Ações de Despacho" icon={Send}>
+        <div className="space-y-3">
+          <DispatchButton label="Enviar para Secretaria" sub="WhatsApp · resumo + insights" icon={Users2} />
+          <DispatchButton label="Enviar para Equipe Interna" sub="WhatsApp · briefing técnico" icon={Building2} />
           <DispatchButton label="Agendar follow-up" sub="Lembrete + push" icon={Clock} />
         </div>
       </Section>
