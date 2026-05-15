@@ -55,8 +55,10 @@ export class DatabaseService {
 
   async updateInstanceAlias(id: string, alias: string) {
     return this.db.prepare(
-      "UPDATE instances SET alias = ? WHERE id = ?"
-    ).bind(alias, id).run();
+      `INSERT INTO instances (id, name, alias, api_key, webhook_token, is_active)
+       VALUES (?, ?, ?, '', '', 0)
+       ON CONFLICT(id) DO UPDATE SET alias = ?`
+    ).bind(id, id, alias, alias).run();
   }
 
   // Contacts
