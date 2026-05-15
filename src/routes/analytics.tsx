@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Sparkles, Calendar, ArrowUpRight } from "lucide-react";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
-import { ResendButton } from "@/components/ResendButton";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/analytics")({
   head: () => ({
