@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Plus, Sparkles, Wifi, Shield, Trash2, Command } from "lucide-react";
+import { Sparkles, Wifi, Shield, Command } from "lucide-react";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
-import { ResendCard } from "@/components/ResendCard";
 import { Button } from "@/components/ui/button";
+import { InstancesPanel } from "@/components/evolution/InstancesPanel";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
