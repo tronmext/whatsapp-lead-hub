@@ -66,7 +66,7 @@ export function AppSidebar() {
 
       <SidebarContent className="px-2 pt-4">
         <SidebarGroup>
-          <SidebarGroupLabel className="px-2 text-[10px] uppercase tracking-[0.2em] font-black text-muted-foreground/50 mb-2">
+          <SidebarGroupLabel className={cn("px-2 text-[10px] uppercase tracking-[0.2em] font-black text-muted-foreground/50 mb-2 transition-all", collapsed && "opacity-0 h-0 mb-0 overflow-hidden")}>
             Main Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
