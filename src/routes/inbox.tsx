@@ -284,6 +284,7 @@ function ChatHeader({ lead }: { lead: Lead }) {
 
 function ChatComposer() {
   const [text, setText] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
