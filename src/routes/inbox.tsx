@@ -77,7 +77,7 @@ function InboxPage() {
                   className={cn(
                     "flex-1 py-1 text-[8px] font-black uppercase tracking-[0.1em] transition-all rounded-md font-mono",
                     lineFilter === opt
-                      ? "bg-white/[0.05] text-foreground shadow-sm"
+                      ? "bg-secondary text-foreground shadow-sm"
                       : "text-muted-foreground/30 hover:text-foreground/50"
                   )}
                 >
@@ -207,8 +207,8 @@ function InboxPage() {
                     className={cn(
                       "px-4 py-2.5 rounded-[18px] text-[14.5px] leading-snug shadow-sm transition-all duration-500 relative",
                       isMe
-                        ? "bg-near-white text-void rounded-tr-none hover:shadow-[0_0_40px_rgba(255,255,255,0.1)] font-medium"
-                        : "frost-border bg-white/[0.02] backdrop-blur-xl rounded-tl-none hover:bg-white/[0.04]"
+                        ? "bg-primary text-primary-foreground rounded-tr-none hover:shadow-[0_0_40px_rgba(255,128,31,0.14)] font-semibold"
+                        : "frost-border bg-card backdrop-blur-xl rounded-tl-none hover:bg-secondary"
                     )}
                   >
                     <p>{m.text}</p>
@@ -357,8 +357,8 @@ function ChatComposer() {
                 className={cn(
                   "size-9 rounded-lg grid place-items-center transition-all active:scale-90",
                   text.trim() || isRecording
-                    ? "bg-near-white text-void shadow-[0_0_30px_rgba(255,255,255,0.2)]" 
-                    : "bg-white/5 text-muted-foreground cursor-not-allowed opacity-50"
+                    ? "bg-primary text-primary-foreground shadow-[0_0_30px_rgba(255,128,31,0.24)]" 
+                    : "bg-secondary text-muted-foreground cursor-not-allowed opacity-50"
                 )}
               >
                 <Send className="size-4.5" strokeWidth={2.5} />
@@ -399,7 +399,7 @@ function LeadCard({ lead }: { lead: Lead }) {
             <TextMono className="px-3 py-1 text-[9px] font-black uppercase tracking-wider border border-border/10 rounded-full opacity-40">
               LINHA {lead.line.slice(1)}
             </TextMono>
-            <TextMono className="px-3 py-1 text-[9px] font-black uppercase tracking-wider bg-foreground text-background rounded-full">
+            <TextMono className="px-3 py-1 text-[9px] font-black uppercase tracking-wider bg-primary text-primary-foreground rounded-full">
               {STATUS_LABELS[lead.status]}
             </TextMono>
           </div>
