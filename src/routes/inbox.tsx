@@ -405,8 +405,8 @@ function LeadCard({ lead }: { lead: Lead }) {
           </div>
         </div>
         
-        <div className="mt-12 p-6 rounded-3xl bg-white/[0.02] border border-frost-border relative group overflow-hidden">
-          <div className="absolute top-0 right-0 size-32 bg-green-4 opacity-5 blur-[60px] group-hover:opacity-15 transition-opacity duration-1000" />
+        <div className="mt-8 p-6 rounded-2xl bg-muted border border-border/5 relative group overflow-hidden">
+          <div className="absolute top-0 right-0 size-24 bg-primary/5 opacity-5 blur-[40px] group-hover:opacity-10 transition-opacity duration-1000" />
           <div className="flex items-center justify-between relative z-10">
             <div>
               <TextSmall className="text-[10px] opacity-80 mb-2 block">QUALIFICAÇÃO IA</TextSmall>
