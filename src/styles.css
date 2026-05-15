@@ -53,43 +53,50 @@
   --color-yellow-9: oklch(0.84 0.16 85);
   --color-red-5: oklch(0.62 0.24 18);
   
-  --color-frost-border: rgba(214, 235, 253, 0.19);
+  --color-frost-border: color-mix(in oklab, var(--foreground) 14%, transparent);
   --color-void: #000000;
-  --color-near-white: #f0f0f0;
+  --color-near-white: #e4e4e7;
 }
 
 :root {
-  /* Colors - High Contrast Technical Palette */
-  --background: #000000;
-  --foreground: #fafafa;
+  color-scheme: dark;
 
-  --card: #18181b;
-  --card-foreground: #fafafa;
-  --card-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.5);
+  /* Colors - Dark High Contrast Technical Palette */
+  --background: oklch(0.11 0 0);
+  --foreground: oklch(0.92 0.004 286);
 
-  --primary: #ff801f;
-  --primary-foreground: #111111;
+  --card: oklch(0.18 0.006 286);
+  --card-foreground: oklch(0.92 0.004 286);
+  --card-shadow: 0 16px 48px -24px rgba(0, 0, 0, 0.78);
 
-  --secondary: transparent;
-  --secondary-foreground: #000000;
+  --primary: oklch(0.72 0.18 52);
+  --primary-foreground: oklch(0.12 0 0);
 
-  --muted: #ffffff;
-  --muted-foreground: #f0f0f0;
+  --secondary: oklch(0.21 0.006 286);
+  --secondary-foreground: oklch(0.9 0.004 286);
 
-  --accent: #ff801f;
-  --accent-foreground: #111111;
+  --muted: oklch(0.16 0.006 286);
+  --muted-foreground: oklch(0.67 0.006 286);
 
-  --border: #f0f0f0;
-  --ring: #ff801f;
+  --accent: oklch(0.72 0.18 52);
+  --accent-foreground: oklch(0.12 0 0);
+
+  --border: oklch(0.29 0.008 286);
+  --input: oklch(0.15 0.006 286);
+  --input-color: oklch(0.9 0.004 286);
+  --ring: oklch(0.72 0.18 52);
+  --state-hover: color-mix(in oklab, var(--foreground) 7%, transparent);
+  --state-pressed: color-mix(in oklab, var(--foreground) 11%, transparent);
+  --btn-height: 2.5rem;
   
-  --destructive: #ef4444;
-  --destructive-foreground: #000000;
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(0.96 0.004 286);
 
   /* Layer 2 — Material 3 surfaces */
-  --surface-container: #18181b;
-  --surface-container-high: #27272a;
-  --surface-inverse: #ffffff;
-  --surface-inverse-foreground: #111111;
+  --surface-container: oklch(0.18 0.006 286);
+  --surface-container-high: oklch(0.23 0.008 286);
+  --surface-inverse: oklch(0.9 0.004 286);
+  --surface-inverse-foreground: oklch(0.12 0 0);
 
   /* Radius Contract */
   --radius-xs: 0.125rem;
