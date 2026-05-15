@@ -5,7 +5,7 @@ import { TagPill } from "@/components/Tag";
 import { cn } from "@/lib/utils";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
-import { ResendButton } from "@/components/ResendButton";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -46,9 +46,9 @@ function Dashboard() {
             </HeadingHero>
           </div>
           <Link to="/inbox">
-            <ResendButton icon={<ArrowUpRight className="size-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />}>
-              ABRIR INBOX
-            </ResendButton>
+            <Button variant="outline" className="group shadow-2xl">
+              ABRIR INBOX <ArrowUpRight className="ml-2 size-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </Button>
           </Link>
         </header>
 
@@ -128,9 +128,9 @@ function Dashboard() {
             <TextMono className="text-[15px] leading-relaxed mb-10 block opacity-80">
               Há <span className="text-near-white font-bold underline decoration-orange-10/40 underline-offset-8">12 conversas</span> aguardando qualificação automática.
             </TextMono>
-            <ResendButton variant="primary" className="w-full py-4 uppercase tracking-[0.1em] font-black">
+            <Button variant="default" className="w-full py-6">
               QUALIFICAR AGORA
-            </ResendButton>
+            </Button>
             
             <div className="mt-10 pt-10 border-t border-frost-border/40 flex items-center justify-between">
               <TextSmall className="text-[10px] opacity-50">MODELO ATIVO</TextSmall>

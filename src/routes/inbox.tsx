@@ -11,7 +11,14 @@ import {
 } from "lucide-react";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
-import { ResendButton } from "@/components/ResendButton";
+import { Button } from "@/components/ui/button";
+import { 
+  SidebarProvider, 
+  Sidebar, 
+  SidebarContent, 
+  SidebarHeader,
+  useSidebar
+} from "@/components/ui/sidebar";
 
 export const Route = createFileRoute("/inbox")({
   head: () => ({
@@ -35,7 +42,7 @@ function InboxPage() {
   );
 
   return (
-    <div className="h-screen flex bg-void animate-in fade-in duration-700 overflow-hidden">
+    <div className="h-full flex bg-void animate-in fade-in duration-700 overflow-hidden">
       {/* 01. Sidebar: Feed de Conversas */}
       <section className="w-[380px] shrink-0 border-r border-frost-border flex flex-col bg-white/[0.01] backdrop-blur-3xl relative z-10">
         <div className="p-8 border-b border-frost-border space-y-6">
@@ -228,18 +235,20 @@ function ChatHeader({ lead }: { lead: Lead }) {
           <MoreHorizontal className="size-4.5" strokeWidth={2} />
         </button>
         <div className="w-[1px] h-8 bg-frost-border/40 mx-2" />
-        <ResendButton 
+        <Button 
           onClick={() => {
             toast.loading("Analisando transcrição...", { id: "ai-qual" });
             setTimeout(() => {
               toast.success("Qualificação concluída com sucesso", { id: "ai-qual", description: "Score e insights atualizados." });
             }, 2000);
           }}
-          className="group overflow-hidden relative"
-          icon={<Sparkles className="size-4 text-orange-10 animate-pulse" />}
+          variant="outline"
+          size="default"
+          className="group overflow-hidden relative shadow-[0_0_20px_rgba(255,165,0,0.1)]"
         >
+          <Sparkles className="mr-2 size-4 text-orange-10 animate-pulse" /> 
           <span className="text-[12px] font-black uppercase tracking-[0.1em]">Qualificar</span>
-        </ResendButton>
+        </Button>
       </div>
     </div>
   );

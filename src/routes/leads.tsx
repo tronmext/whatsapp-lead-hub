@@ -5,7 +5,7 @@ import { Search, Plus, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
-import { ResendButton } from "@/components/ResendButton";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/leads")({
   head: () => ({
@@ -29,9 +29,9 @@ function LeadsPage() {
           </TextSmall>
           <HeadingHero className="text-[72px]">Leads</HeadingHero>
         </div>
-        <ResendButton variant="primary" size="md" icon={<Plus className="size-4" />} className="px-8 shadow-xl">
-          NOVO LEAD
-        </ResendButton>
+        <Button variant="default" size="default" className="px-8 shadow-xl">
+          NOVO LEAD <Plus className="ml-2 size-4" />
+        </Button>
       </header>
 
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 bg-black/40 p-2 rounded-2xl frost-border backdrop-blur-sm animate-in slide-in-from-bottom-4 duration-1000 delay-200">

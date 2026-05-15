@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Sparkles, Calendar, ArrowUpRight } from "lucide-react";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
-import { ResendButton } from "@/components/ResendButton";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/analytics")({
   head: () => ({
@@ -33,8 +33,8 @@ function AnalyticsPage() {
           <HeadingHero>Analytics</HeadingHero>
         </div>
         <div className="flex gap-3">
-          <ResendButton variant="secondary" size="md" className="uppercase tracking-widest text-[12px] font-black">Exportar Dados</ResendButton>
-          <ResendButton variant="primary" size="md" className="uppercase tracking-widest text-[12px] font-black shadow-2xl">Período Customizado</ResendButton>
+          <Button variant="secondary" size="default" className="uppercase tracking-widest text-[12px] font-black">Exportar Dados</Button>
+          <Button variant="default" size="default" className="uppercase tracking-widest text-[12px] font-black shadow-2xl">Período Customizado</Button>
         </div>
       </header>
 
