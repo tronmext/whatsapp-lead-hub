@@ -33,77 +33,94 @@ function InboxPage() {
   return (
     <div className="h-screen flex">
       {/* Conversations list */}
-      <section className="w-[320px] shrink-0 border-r border-border flex flex-col">
-        <div className="p-4 border-b border-border">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="font-section text-[18px] font-semibold tracking-tight">Inbox</h1>
-            <button className="size-7 rounded-md frost-border grid place-items-center hover:bg-white/5">
-              <Filter className="size-3.5" />
-            </button>
+      <section className="w-[340px] shrink-0 border-r border-border flex flex-col bg-sidebar/30 backdrop-blur-xl relative z-10">
+        <div className="p-5 border-b border-border space-y-4">
+          <div className="flex items-center justify-between">
+            <h1 className="font-section text-[20px] font-bold tracking-tight">Conversas</h1>
+            <div className="flex gap-1">
+              <button className="size-8 rounded-md frost-border grid place-items-center hover:bg-white/5 transition-all active:scale-90">
+                <Plus className="size-4" />
+              </button>
+              <button className="size-8 rounded-md frost-border grid place-items-center hover:bg-white/5 transition-all active:scale-90">
+                <Filter className="size-4" />
+              </button>
+            </div>
           </div>
-          <div className="relative">
-            <Search className="size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          
+          <div className="relative group">
+            <Search className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-foreground transition-colors" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar conversas..."
-              className="w-full bg-[oklch(0.06_0_0)] frost-border rounded-md pl-9 pr-3 py-2 text-[13px] placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
+              placeholder="Buscar..."
+              className="w-full bg-[oklch(0.06_0_0)] frost-border rounded-lg pl-10 pr-4 py-2.5 text-[13.5px] placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring focus:bg-[oklch(0.08_0_0)] transition-all"
             />
           </div>
-          <div className="flex gap-1.5 mt-3">
+          
+          <div className="flex gap-1.5 p-1 bg-black/20 rounded-lg frost-border">
             {(["all", "L1", "L2"] as const).map((opt) => (
               <button
                 key={opt}
                 onClick={() => setLineFilter(opt)}
-                className={[
-                  "pill px-3 py-1 text-[11px] font-medium transition-colors font-mono",
+                className={cn(
+                  "flex-1 py-1.5 text-[10px] font-bold tracking-wider transition-all rounded-md font-mono uppercase",
                   lineFilter === opt
-                    ? "bg-foreground text-background"
-                    : "frost-border text-muted-foreground hover:text-foreground",
-                ].join(" ")}
+                    ? "bg-foreground text-background shadow-lg"
+                    : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                )}
               >
-                {opt === "all" ? "TODAS" : opt}
+                {opt === "all" ? "Todas" : opt}
               </button>
             ))}
           </div>
         </div>
 
-        <ul className="flex-1 overflow-y-auto">
-          {filtered.map((l) => {
+        <ul className="flex-1 overflow-y-auto divide-y divide-border/20 scrollbar-hide">
+          {filtered.map((l, index) => {
             const active = l.id === selectedId;
             return (
-              <li key={l.id}>
+              <li key={l.id} className="animate-in fade-in slide-in-from-left-2 duration-300" style={{ animationDelay: `${index * 50}ms` }}>
                 <button
                   onClick={() => setSelectedId(l.id)}
-                  className={[
-                    "w-full text-left px-4 py-3 flex gap-3 border-b border-border/60 transition-colors",
-                    active ? "bg-[oklch(0.08_0_0)]" : "hover:bg-white/[0.02]",
-                  ].join(" ")}
+                  className={cn(
+                    "w-full text-left px-5 py-4 flex gap-4 transition-all duration-300 relative group",
+                    active ? "bg-[oklch(0.1_0_0)] shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]" : "hover:bg-white/[0.03]"
+                  )}
                 >
-                  <div className="relative">
-                    <div className="size-10 rounded-full grid place-items-center text-[13px] font-semibold bg-[oklch(0.12_0_0)] frost-border">
+                  {active && <span className="absolute left-0 top-0 bottom-0 w-1 bg-foreground" />}
+                  
+                  <div className="relative shrink-0">
+                    <div className="size-11 rounded-full grid place-items-center text-[14px] font-bold bg-[oklch(0.12_0_0)] frost-border group-hover:scale-105 transition-transform duration-300">
                       {l.initials}
                     </div>
                     <span
-                      className={[
-                        "absolute -bottom-0.5 -right-0.5 text-[8px] font-mono px-1 rounded-sm font-bold",
+                      className={cn(
+                        "absolute -bottom-1 -right-1 text-[8px] font-mono px-1.5 py-0.5 rounded-full font-black border-2 border-background",
                         l.line === "L1"
-                          ? "bg-[oklch(0.74_0.18_45)] text-black"
-                          : "bg-[oklch(0.68_0.18_245)] text-white",
-                      ].join(" ")}
+                          ? "bg-orange text-black"
+                          : "bg-blue text-white"
+                      )}
                     >
                       {l.line}
                     </span>
                   </div>
+                  
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[13px] font-medium truncate">{l.name}</span>
-                      <span className="text-[10px] text-muted-foreground font-mono">{l.lastTime}</span>
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className={cn("text-[14px] font-semibold truncate", active ? "text-foreground" : "text-foreground/80")}>
+                        {l.name}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground font-mono uppercase tracking-tighter shrink-0 ml-2">
+                        {l.lastTime}
+                      </span>
                     </div>
-                    <div className="flex items-center justify-between mt-0.5">
-                      <span className="text-[12px] text-muted-foreground truncate">{l.lastMessage}</span>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-[12.5px] text-muted-foreground/80 truncate leading-snug">
+                        {l.lastMessage}
+                      </span>
                       {l.unread > 0 && (
-                        <span className="ml-2 size-4 rounded-full bg-[oklch(0.86_0.2_155)] text-black text-[10px] font-bold grid place-items-center">
+                        <span className="ml-2 px-1.5 py-0.5 min-w-[18px] text-center rounded-full bg-green text-black text-[10px] font-black shadow-[0_0_10px_rgba(17,255,153,0.3)] shrink-0">
                           {l.unread}
                         </span>
                       )}
