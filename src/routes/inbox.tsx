@@ -332,19 +332,19 @@ function ChatComposer() {
                 <Paperclip className="size-4" />
               </button>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <button 
                 onClick={() => {
                   setIsRecording(!isRecording);
-                  if (!isRecording) toast.info("Gravando áudio...");
-                  else toast.success("Áudio enviado");
+                  if (!isRecording) toast.info("Gravando...");
+                  else toast.success("Enviado");
                 }}
                 className={cn(
-                  "size-9 rounded-lg grid place-items-center transition-all active:scale-90",
-                  isRecording ? "bg-red-5 text-near-white animate-pulse" : "text-muted-foreground hover:text-near-white hover:bg-white/5"
+                  "size-8 rounded-lg grid place-items-center transition-all",
+                  isRecording ? "bg-red-500 text-white animate-pulse" : "text-muted-foreground/40 hover:text-foreground"
                 )}
               >
-                <Mic className="size-5" />
+                <Mic className="size-4" />
               </button>
               <button 
                 disabled={!text.trim() && !isRecording}
