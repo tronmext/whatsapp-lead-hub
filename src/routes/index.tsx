@@ -46,9 +46,9 @@ function Dashboard() {
             </HeadingHero>
           </div>
           <Link to="/inbox">
-            <ResendButton icon={<ArrowUpRight className="size-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />}>
-              ABRIR INBOX
-            </ResendButton>
+            <Button variant="outline" className="group shadow-2xl">
+              ABRIR INBOX <ArrowUpRight className="ml-2 size-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </Button>
           </Link>
         </header>
 
