@@ -58,6 +58,7 @@ function LeadsPage() {
     const leadIndex = leads.findIndex(l => l.jid === draggableId);
     if (leadIndex === -1) return;
 
+    const previousLeads = [...leads];
     const updatedLeads = [...leads];
     const [movedLead] = updatedLeads.splice(leadIndex, 1);
     
@@ -75,7 +76,7 @@ function LeadsPage() {
       })
       .catch((err: Error) => {
         toast.error("Erro ao atualizar status: " + err.message);
-        setLeads(leads);
+        setLeads(previousLeads);
       });
   };
 
