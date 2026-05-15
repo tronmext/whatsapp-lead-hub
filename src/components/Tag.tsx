@@ -13,7 +13,7 @@ export function TagPill({ tag, className = "" }: { tag: Tag; className?: string 
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-[0.05em] transition-all",
+        "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] font-mono font-bold uppercase tracking-[0.05em] transition-all",
         COLORS[tag.color],
         className
       )}
