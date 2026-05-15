@@ -1,4 +1,6 @@
+import { createFileRoute } from '@tanstack/react-router'
 import { createFileRoute } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, ArrowUpRight, Loader2 } from "lucide-react";
@@ -37,7 +39,7 @@ function AnalyticsPage() {
 
   const m = metricsQ.data;
 
-  const buildSeries = (): number[] => {
+  const series = useMemo((): number[] => {
     if (!m?.weeklyQualified || m.weeklyQualified.length === 0) {
       return Array(18).fill(0);
     }
@@ -46,18 +48,18 @@ function AnalyticsPage() {
     m.weeklyQualified.forEach((w: { week_start: string; count: number }) => {
       weekMap.set(w.week_start, w.count);
     });
+    // Fixed anchor: most recent Sunday
+    const now = new Date();
+    const anchor = new Date(now);
+    anchor.setDate(anchor.getDate() - anchor.getDay());
     for (let i = 17; i >= 0; i--) {
-      const d = new Date();
+      const d = new Date(anchor);
       d.setDate(d.getDate() - (i * 7));
-      const dayOfWeek = d.getDay();
-      d.setDate(d.getDate() - dayOfWeek);
       const key = d.toISOString().split('T')[0];
       series.push(weekMap.get(key) || 0);
     }
     return series;
-  };
-
-  const series = buildSeries();
+  }, [m?.weeklyQualified]);
 
   if (metricsQ.isLoading) {
     return (
