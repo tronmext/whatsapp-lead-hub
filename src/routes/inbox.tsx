@@ -467,10 +467,10 @@ function Section({
 function Row({ icon: Icon, label, value }: { icon: any; label: string; value?: string }) {
   return (
     <div className="flex items-center justify-between gap-4 group/row">
-      <TextSmall className="flex items-center gap-3 opacity-60 group-hover:opacity-100 transition-opacity text-[11px]">
+      <div className="flex items-center gap-3 opacity-60 group-hover:opacity-100 transition-opacity">
         <Icon className="size-3.5" />
-        {label}
-      </TextSmall>
+        <TextSmall className="text-[11px] mb-0 tracking-widest">{label}</TextSmall>
+      </div>
       <TextMono className="text-near-white font-bold truncate max-w-[200px]">{value ?? "—"}</TextMono>
     </div>
   );
