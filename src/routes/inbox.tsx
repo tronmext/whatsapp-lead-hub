@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import {
   Search, Filter, Send, Paperclip, Smile, Sparkles,
   Phone, Building2, MapPin, Tag as TagIcon, Plus, ArrowRight,
-  MessageSquare, FileText, Users2, Clock, Mic, Check, CheckCheck, MoreHorizontal, Info
+  MessageSquare, FileText, Users2, Clock, Mic, Check, CheckCheck, MoreHorizontal, Info, Reply, Heart, ThumbsUp, Laugh, Meh, Frown
 } from "lucide-react";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
@@ -158,21 +158,49 @@ function InboxPage() {
               <div 
                 key={m.id} 
                 className={cn(
-                  "flex animate-in fade-in slide-in-from-bottom-4 duration-700", 
+                  "flex animate-in fade-in slide-in-from-bottom-4 duration-700 group/msg", 
                   isMe ? "justify-end" : "justify-start"
                 )}
                 style={{ animationDelay: `${i * 100}ms` }}
               >
-                <div className={cn("flex flex-col max-w-[65%]", isMe ? "items-end" : "items-start")}>
+                <div className={cn("flex flex-col max-w-[65%] relative", isMe ? "items-end" : "items-start")}>
+                  {/* Actions (Reply/React) */}
+                  <div className={cn(
+                    "absolute top-0 opacity-0 group-hover/msg:opacity-100 transition-all duration-300 flex items-center gap-1.5 z-10",
+                    isMe ? "right-full mr-3" : "left-full ml-3"
+                  )}>
+                    <button 
+                      onClick={() => toast.success("Emoji selecionado")}
+                      className="size-8 rounded-full frost-border bg-void/80 backdrop-blur-md grid place-items-center text-muted-foreground hover:text-near-white hover:scale-110 transition-all shadow-xl"
+                    >
+                      <Smile className="size-4" />
+                    </button>
+                    <button 
+                      onClick={() => toast.info(`Respondendo a: "${m.text.substring(0, 20)}..."`)}
+                      className="size-8 rounded-full frost-border bg-void/80 backdrop-blur-md grid place-items-center text-muted-foreground hover:text-near-white hover:scale-110 transition-all shadow-xl"
+                    >
+                      <Reply className="size-4" />
+                    </button>
+                  </div>
+
                   <div
                     className={cn(
-                      "px-5 py-4 rounded-[20px] text-[15.5px] leading-relaxed shadow-sm transition-all duration-500",
+                      "px-5 py-4 rounded-[20px] text-[15.5px] leading-relaxed shadow-sm transition-all duration-500 relative",
                       isMe
                         ? "bg-near-white text-void rounded-tr-none hover:shadow-[0_0_40px_rgba(255,255,255,0.1)] font-medium"
                         : "frost-border bg-white/[0.02] backdrop-blur-xl rounded-tl-none hover:bg-white/[0.04]"
                     )}
                   >
                     <p>{m.text}</p>
+                    
+                    {/* Mock Reactions */}
+                    {i === 1 && (
+                      <div className="absolute -bottom-2 -right-1 flex -space-x-1">
+                        <div className="size-5 rounded-full bg-void border border-frost-border grid place-items-center shadow-lg transform hover:scale-125 transition-transform">
+                          <Heart className="size-2.5 text-red-5 fill-red-5" />
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className={cn(
                     "flex items-center gap-2 mt-2 px-1 opacity-40",
@@ -256,6 +284,7 @@ function ChatHeader({ lead }: { lead: Lead }) {
 
 function ChatComposer() {
   const [text, setText] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -287,14 +316,30 @@ function ChatComposer() {
         />
         
         <div className="flex gap-2 items-center">
-          <button className="size-10 rounded-xl grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all">
+          <button 
+            onClick={() => {
+              setIsRecording(!isRecording);
+              if (!isRecording) toast.info("Gravando áudio...");
+              else toast.success("Áudio enviado");
+            }}
+            className={cn(
+              "size-10 rounded-xl grid place-items-center transition-all",
+              isRecording ? "bg-red-5 text-near-white animate-pulse" : "text-muted-foreground hover:text-near-white hover:bg-white/5"
+            )}
+          >
             <Mic className="size-5" />
           </button>
           <button 
-            disabled={!text.trim()}
+            disabled={!text.trim() && !isRecording}
+            onClick={() => {
+              if (text.trim()) {
+                toast.success("Mensagem enviada");
+                setText("");
+              }
+            }}
             className={cn(
               "size-10 rounded-xl grid place-items-center transition-all active:scale-90",
-              text.trim() 
+              text.trim() || isRecording
                 ? "bg-near-white text-void shadow-[0_0_30px_rgba(255,255,255,0.2)]" 
                 : "bg-white/5 text-muted-foreground cursor-not-allowed opacity-50"
             )}
