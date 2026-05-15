@@ -83,8 +83,8 @@ export function AppSidebar() {
                       className={cn(
                         "h-10 transition-all duration-200",
                         active 
-                          ? "bg-white/[0.05] text-near-white frost-border" 
-                          : "text-muted-foreground hover:text-near-white hover:bg-white/[0.02]"
+                          ? "bg-white/[0.05] text-foreground border-border" 
+                          : "text-muted-foreground hover:text-foreground hover:bg-state-hover"
                       )}
                     >
                       <Link to={item.url} className="flex items-center w-full">
@@ -92,7 +92,7 @@ export function AppSidebar() {
                         {!collapsed && (
                           <span className={cn(
                             "ml-3 tracking-[0.35px] font-section font-medium",
-                            active ? "text-near-white" : "text-muted-foreground"
+                            active ? "text-foreground" : "text-muted-foreground"
                           )}>
                             {item.title}
                           </span>
@@ -169,7 +169,7 @@ function LineStatus({
       </div>
       <div className="flex items-center gap-2 transition-colors">
         <Wifi className="size-3 text-muted-foreground group-hover/status:text-blue-10" strokeWidth={2.5} />
-        <TextMono className="text-[11px] group-hover/status:text-near-white tracking-tighter">
+        <TextMono className="text-[11px] group-hover/status:text-foreground tracking-tighter">
           +55 11 {phone}
         </TextMono>
       </div>
