@@ -60,8 +60,8 @@ Analise a transcrição da conversa e gere um objeto JSON:
 Tom: Sóbrio, editorial, técnico.`}
              />
              <div className="mt-8 flex justify-end gap-3 pt-6 border-t border-frost-border/20">
-                <ResendButton variant="secondary" size="sm" className="px-6 uppercase tracking-widest text-[11px] font-black">RESTAURAR</ResendButton>
-                <ResendButton variant="primary" size="sm" className="px-8 uppercase tracking-widest text-[11px] font-black shadow-2xl">SALVAR MUDANÇAS</ResendButton>
+                <Button variant="secondary" size="sm" className="px-6 uppercase tracking-widest text-[11px] font-black">RESTAURAR</Button>
+                <Button variant="default" size="sm" className="px-8 uppercase tracking-widest text-[11px] font-black shadow-2xl">SALVAR MUDANÇAS</Button>
              </div>
           </div>
         </section>
