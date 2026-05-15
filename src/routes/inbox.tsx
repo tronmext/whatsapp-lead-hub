@@ -56,7 +56,7 @@ function InboxPage() {
             />
           </div>
           
-          <div className="flex p-1 bg-void rounded-xl frost-border">
+          <div className="flex p-1 bg-void rounded-xl frost-border animate-in zoom-in-95 duration-500 delay-100">
             {(["all", "L1", "L2"] as const).map((opt) => (
               <button
                 key={opt}
@@ -360,7 +360,7 @@ function LeadCard({ lead }: { lead: Lead }) {
       </div>
 
       <Section title="Segmentação Operacional" icon={TagIcon}>
-        <div className="flex flex-wrap gap-2.5">
+        <div className="flex flex-wrap gap-2.5 animate-in slide-in-from-top-2 duration-500">
           {lead.tags.map((t) => <TagPill key={t.id} tag={t} className="px-3 py-1 shadow-lg hover:scale-110 transition-transform" />)}
           <button className="pill px-3 py-1.5 text-[10px] font-black uppercase tracking-widest frost-border text-muted-foreground hover:text-near-white hover:bg-white/5 inline-flex items-center gap-2 transition-all font-mono">
             <Plus className="size-3.5" /> GERENCIAR
@@ -386,7 +386,7 @@ function LeadCard({ lead }: { lead: Lead }) {
             </p>
           </div>
           
-          <div className="space-y-4 mb-10">
+          <div className="space-y-4 mb-10 animate-in fade-in duration-1000">
             {lead.insights.bullets.map((b, i) => (
               <div key={i} className="flex gap-4 group">
                 <span className="text-orange-10 font-black mt-0.5 group-hover:scale-150 transition-transform">·</span>
