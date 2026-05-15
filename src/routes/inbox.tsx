@@ -325,14 +325,11 @@ function ChatComposer() {
           />
           <div className="flex items-center justify-between px-2 pb-1">
             <div className="flex items-center gap-0.5">
-              <button className="size-9 rounded-lg grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
-                <Smile className="size-5" />
+              <button className="size-8 rounded-lg grid place-items-center text-muted-foreground/40 hover:text-foreground hover:bg-white/5 transition-all">
+                <Smile className="size-4" />
               </button>
-              <button className="size-9 rounded-lg grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
-                <Paperclip className="size-5" />
-              </button>
-              <button className="size-9 rounded-lg grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all active:scale-90">
-                <ImageIcon className="size-5" />
+              <button className="size-8 rounded-lg grid place-items-center text-muted-foreground/40 hover:text-foreground hover:bg-white/5 transition-all">
+                <Paperclip className="size-4" />
               </button>
             </div>
             <div className="flex items-center gap-2">
