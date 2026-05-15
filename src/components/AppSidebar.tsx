@@ -55,7 +55,10 @@ export function AppSidebar() {
         <Link to="/" className="flex items-center gap-2 group transition-transform active:scale-95 overflow-hidden">
           <div className="shrink-0 transition-all duration-300">
             <img 
-              src="https://ftczlwqeimdhgjkkhvbg.supabase.co/storage/v1/object/sign/lovable-storage/leadflow.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wNGRjMzRmOC1kMmQ0LTQ0MmQtOTY3Yy02NDVhYjMzOTI4OTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJsb3ZhYmxlLXN0b3JhZ2UvbGVhZGZsb3cucG5nIiwiaWF0IjoxNzc4ODE2NzcxLCJleHAiOjE4MTAzNTI3NzF9.R0YTMVP_-VBxo5vuyixcCHd7B6v_Nuz8Mibr-eGLWUk" 
+              src={collapsed 
+                ? "https://ftczlwqeimdhgjkkhvbg.supabase.co/storage/v1/object/sign/lovable-storage/logo-icone.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wNGRjMzRmOC1kMmQ0LTQ0MmQtOTY3Yy02NDVhYjMzOTI4OTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJsb3ZhYmxlLXN0b3JhZ2UvbG9nby1pY29uZS5wbmciLCJpYXQiOjE3Nzg4MTc3NDksImV4cCI6MTc3OTQyMjU0OX0.iRFA0HxgbL7wVKeTGk0Iyik1VzEq2TBCAFsc2f-jd2A"
+                : "https://ftczlwqeimdhgjkkhvbg.supabase.co/storage/v1/object/sign/lovable-storage/leadflow.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wNGRjMzRmOC1kMmQ0LTQ0MmQtOTY3Yy02NDVhYjMzOTI4OTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJsb3ZhYmxlLXN0b3JhZ2UvbGVhZGZsb3cucG5nIiwiaWF0IjoxNzc4ODE3NzE5LCJleHAiOjE3Nzk0MjI1MTl9.fUhWqiouMzktlsPnWqdNH0IvGOck6oLJZAft-mI0ObE"
+              }
               alt="Leadflow Logo"
               className={cn(
                 "object-contain transition-all duration-300",
