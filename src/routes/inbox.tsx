@@ -166,21 +166,34 @@ function InboxPage() {
                 <div className={cn("flex flex-col max-w-[65%] relative", isMe ? "items-end" : "items-start")}>
                   {/* Actions (Reply/React) */}
                   <div className={cn(
-                    "absolute top-0 opacity-0 group-hover/msg:opacity-100 transition-all duration-300 flex items-center gap-1.5 z-10",
-                    isMe ? "right-full mr-3" : "left-full ml-3"
+                    "absolute top-0 opacity-0 group-hover/msg:opacity-100 transition-all duration-300 flex items-center gap-1 z-10",
+                    isMe ? "right-full mr-3 flex-row-reverse" : "left-full ml-3"
                   )}>
-                    <button 
-                      onClick={() => toast.success("Emoji selecionado")}
-                      className="size-8 rounded-full frost-border bg-void/80 backdrop-blur-md grid place-items-center text-muted-foreground hover:text-near-white hover:scale-110 transition-all shadow-xl"
-                    >
-                      <Smile className="size-4" />
-                    </button>
-                    <button 
-                      onClick={() => toast.info(`Respondendo a: "${m.text.substring(0, 20)}..."`)}
-                      className="size-8 rounded-full frost-border bg-void/80 backdrop-blur-md grid place-items-center text-muted-foreground hover:text-near-white hover:scale-110 transition-all shadow-xl"
-                    >
-                      <Reply className="size-4" />
-                    </button>
+                    <div className="flex items-center frost-border bg-void/80 backdrop-blur-md rounded-full px-1 py-1 shadow-2xl">
+                      {[
+                        { icon: ThumbsUp, label: "Like", color: "text-blue-10" },
+                        { icon: Heart, label: "Love", color: "text-red-5" },
+                        { icon: Laugh, label: "Haha", color: "text-yellow-9" },
+                        { icon: Reply, label: "Reply", color: "text-near-white" }
+                      ].map((action, idx) => (
+                        <button 
+                          key={idx}
+                          onClick={() => {
+                            if (action.label === "Reply") {
+                              toast.info(`Respondendo a: "${m.text.substring(0, 20)}..."`);
+                            } else {
+                              toast.success(`Reagiu com ${action.label}`);
+                            }
+                          }}
+                          className={cn(
+                            "size-7 rounded-full grid place-items-center transition-all hover:scale-125 hover:bg-white/10",
+                            action.color
+                          )}
+                        >
+                          <action.icon className="size-3.5" />
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
                   <div
@@ -193,11 +206,11 @@ function InboxPage() {
                   >
                     <p>{m.text}</p>
                     
-                    {/* Mock Reactions */}
-                    {i === 1 && (
+                    {/* Mock Reactions Display */}
+                    {i % 3 === 0 && !isMe && (
                       <div className="absolute -bottom-2 -right-1 flex -space-x-1">
                         <div className="size-5 rounded-full bg-void border border-frost-border grid place-items-center shadow-lg transform hover:scale-125 transition-transform">
-                          <Heart className="size-2.5 text-red-5 fill-red-5" />
+                          <ThumbsUp className="size-2.5 text-blue-10 fill-blue-10" />
                         </div>
                       </div>
                     )}
