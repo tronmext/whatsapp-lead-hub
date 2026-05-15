@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, ArrowUpRight, Loader2 } from "lucide-react";
+import { formatMsToHuman } from "@/lib/utils";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
 import { Button } from "@/components/ui/button";
@@ -17,15 +18,6 @@ export const Route = createFileRoute("/analytics")({
   }),
   component: AnalyticsPage,
 });
-
-function formatMsToHuman(ms: number): string {
-  if (!ms || ms <= 0) return "—";
-  const totalSec = Math.round(ms / 1000);
-  const min = Math.floor(totalSec / 60);
-  const sec = totalSec % 60;
-  if (min === 0) return `${sec}s`;
-  return `${min}m ${sec}s`;
-}
 
 function AnalyticsPage() {
   const getMetricsFn = useServerFn(getAnalyticsMetrics);
