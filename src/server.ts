@@ -1,5 +1,6 @@
 import "./lib/error-capture";
 import { LocalD1Proxy } from "./lib/services/local-db-proxy";
+import { RemoteD1Proxy } from "./lib/services/remote-d1-proxy";
 import path from "path";
 import fs from "fs";
 
@@ -89,28 +90,43 @@ export default {
       
       // --- FALLBACK PARA DESENVOLVIMENTO LOCAL ---
       if (!db && process.env.NODE_ENV !== 'production') {
+        // Tentar RemoteD1Proxy primeiro (produção via wrangler)
         try {
-          const stateDir = path.join(process.cwd(), '.wrangler/state/v3/d1/miniflare-D1DatabaseObject');
-          if (fs.existsSync(stateDir)) {
-            const files = fs.readdirSync(stateDir).filter(f => {
-              if (!f.endsWith('.sqlite')) return false;
-              const fullPath = path.join(stateDir, f);
-              try {
-                return fs.statSync(fullPath).size > 0;
-              } catch { return false; }
-            });
-            if (files.length > 0) {
-              // Pega o arquivo mais recente que não esteja vazio
-              const latest = files.sort((a, b) => 
-                fs.statSync(path.join(stateDir, b)).mtimeMs - fs.statSync(path.join(stateDir, a)).mtimeMs
-              )[0];
-              const fullPath = path.join(stateDir, latest);
-              console.log('--- LOCAL DEV DB DETECTED ---', fullPath);
-              db = new LocalD1Proxy(fullPath);
-            }
+          console.log('--- TRYING REMOTE D1 ---');
+          const remoteDb = new RemoteD1Proxy();
+          const testResult = await remoteDb.prepare("SELECT 1 as test").bind().first<{ test: number }>();
+          if (testResult) {
+            db = remoteDb;
+            console.log('--- REMOTE D1 ACTIVE ---');
           }
         } catch (err) {
-          console.error('Failed to auto-detect local DB:', err);
+          console.log('Remote D1 unavailable, falling back to local:', (err as Error).message);
+        }
+
+        // Fallback: SQLite local do wrangler
+        if (!db) {
+          try {
+            const stateDir = path.join(process.cwd(), '.wrangler/state/v3/d1/miniflare-D1DatabaseObject');
+            if (fs.existsSync(stateDir)) {
+              const files = fs.readdirSync(stateDir).filter(f => {
+                if (!f.endsWith('.sqlite')) return false;
+                const fullPath = path.join(stateDir, f);
+                try {
+                  return fs.statSync(fullPath).size > 0;
+                } catch { return false; }
+              });
+              if (files.length > 0) {
+                const latest = files.sort((a, b) => 
+                  fs.statSync(path.join(stateDir, b)).mtimeMs - fs.statSync(path.join(stateDir, a)).mtimeMs
+                )[0];
+                const fullPath = path.join(stateDir, latest);
+                console.log('--- LOCAL DEV DB DETECTED ---', fullPath);
+                db = new LocalD1Proxy(fullPath);
+              }
+            }
+          } catch (err) {
+            console.error('Failed to auto-detect local DB:', err);
+          }
         }
       }
       // -------------------------------------------
