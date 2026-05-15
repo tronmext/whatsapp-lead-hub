@@ -7,25 +7,25 @@ interface TypographyProps {
 }
 
 export const HeadingHero = ({ children, className, as: Component = "h1" }: TypographyProps) => (
-  <Component className={cn("text-[96px] leading-[1.0] font-display text-near-white tracking-[-0.04em]", className)}>
+  <Component className={cn("font-display text-[96px] text-near-white", className)}>
     {children}
   </Component>
 );
 
 export const HeadingSection = ({ children, className, as: Component = "h2" }: TypographyProps) => (
-  <Component className={cn("text-[56px] leading-[1.2] font-section text-near-white tracking-[-0.05em]", className)}>
+  <Component className={cn("font-section text-[56px] text-near-white", className)}>
     {children}
   </Component>
 );
 
 export const HeadingSub = ({ children, className, as: Component = "h3" }: TypographyProps) => (
-  <Component className={cn("text-[20px] font-section text-near-white tracking-[0.35px]", className)}>
+  <Component className={cn("font-section text-[20px] text-near-white tracking-[0.35px] uppercase", className)}>
     {children}
   </Component>
 );
 
 export const TextBody = ({ children, className, as: Component = "p" }: TypographyProps) => (
-  <Component className={cn("text-[16px] leading-[1.5] text-near-white font-sans", className)}>
+  <Component className={cn("font-sans text-[16px] leading-[1.5] text-near-white/80", className)}>
     {children}
   </Component>
 );
