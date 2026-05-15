@@ -795,7 +795,7 @@ function InboxPage() {
                   )}
                 >
                   {active && (
-                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-8 rounded-r-full bg-primary shadow-[0_0_8px_rgba(255,128,31,0.4)]" />
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-8 rounded-r-full bg-primary active-indicator-glow" />
                   )}
                   <div className="relative shrink-0">
                     {c.profilePicUrl ? (
@@ -1643,7 +1643,13 @@ function MediaBubble({ instance, msg }: { instance: string; msg: any }) {
   const type = msg.type?.toLowerCase() || "";
 
   // Check if base64 is already present in raw_message (from webhookBase64=true)
-  const hasInlineBase64 = msg.raw_message?.base64?.data;
+  // Evolution API can put base64 in multiple locations:
+  // - raw_message.base64 (group messages or some configurations)
+  // - raw_message.message.base64 (individual messages)
+  const hasInlineBase64 = msg.raw_message?.message?.base64?.data || msg.raw_message?.base64?.data;
+
+  // Get the actual base64 data from wherever it's stored
+  const inlineBase64Data = msg.raw_message?.message?.base64 || msg.raw_message?.base64;
 
   // Handler to download media on demand (only if not already present)
   const handleDownload = async () => {
@@ -1672,7 +1678,7 @@ function MediaBubble({ instance, msg }: { instance: string; msg: any }) {
 
   // Use inline base64 if present (from webhook with webhookBase64=true)
   const mediaData = hasInlineBase64
-    ? { base64: msg.raw_message.base64.data, mimetype: msg.raw_message.base64.mimetype }
+    ? { base64: inlineBase64Data!.data, mimetype: inlineBase64Data!.mimetype }
     : data;
 
   // Determine if we have any media data to display
@@ -2167,7 +2173,17 @@ function ChatPane({
                 m.raw_message.base64.type === "sticker" ||
                 m.raw_message.base64.mimetype?.startsWith("image/") ||
                 m.raw_message.base64.mimetype?.startsWith("audio/") ||
-                m.raw_message.base64.mimetype?.startsWith("video/")));
+                m.raw_message.base64.mimetype?.startsWith("video/"))) ||
+            // Check raw_message.message.base64 (Evolution API webhookBase64=true for individual messages)
+            (m.raw_message?.message?.base64 &&
+              (m.raw_message.message.base64.type === "image" ||
+                m.raw_message.message.base64.type === "audio" ||
+                m.raw_message.message.base64.type === "video" ||
+                m.raw_message.message.base64.type === "document" ||
+                m.raw_message.message.base64.type === "sticker" ||
+                m.raw_message.message.base64.mimetype?.startsWith("image/") ||
+                m.raw_message.message.base64.mimetype?.startsWith("audio/") ||
+                m.raw_message.message.base64.mimetype?.startsWith("video/")));
 
           if (!text && !isMedia && m.type) {
             if (t.includes("sticker")) text = "👾 Figurinha";
