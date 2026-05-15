@@ -93,54 +93,54 @@ function InboxPage() {
             const active = l.id === selectedId;
             return (
               <li key={l.id} className="animate-in fade-in slide-in-from-left-4 duration-500" style={{ animationDelay: `${index * 50}ms` }}>
-                <button
-                  onClick={() => setSelectedId(l.id)}
-                  className={cn(
-                    "w-full text-left px-8 py-6 flex gap-5 transition-all duration-500 relative group",
-                    active ? "bg-white/[0.04] shadow-[inset_0_0_30px_rgba(255,255,255,0.02)]" : "hover:bg-white/[0.02]"
-                  )}
-                >
-                  {active && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-10 bg-near-white rounded-full" />}
-                  
-                  <div className="relative shrink-0">
-                    <div className={cn(
-                      "size-14 rounded-full grid place-items-center text-[16px] font-bold bg-void frost-border transition-all duration-700",
-                      active ? "scale-105 frost-ring" : "group-hover:scale-105"
-                    )}>
-                      {l.initials}
-                    </div>
-                    <span
-                      className={cn(
-                        "absolute -bottom-1 -right-1 text-[9px] font-mono px-2 py-0.5 rounded-full font-black border-2 border-void shadow-2xl",
-                        l.line === "L1" ? "bg-orange-10 text-void" : "bg-blue-10 text-near-white"
-                      )}
-                    >
-                      {l.line}
-                    </span>
-                  </div>
-                  
-                  <div className="flex-1 min-w-0 pt-1">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className={cn("text-[15px] font-bold truncate tracking-tight transition-colors", active ? "text-near-white" : "text-near-white/80 group-hover:text-near-white")}>
-                        {l.name}
+                  <button
+                    onClick={() => setSelectedId(l.id)}
+                    className={cn(
+                      "w-full text-left px-5 py-4 flex gap-4 transition-all duration-300 relative group",
+                      active ? "bg-white/[0.02]" : "hover:bg-white/[0.01]"
+                    )}
+                  >
+                    {active && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-6 bg-primary rounded-full" />}
+                    
+                    <div className="relative shrink-0">
+                      <div className={cn(
+                        "size-10 rounded-full grid place-items-center text-[12px] font-bold bg-void border border-white/5 transition-all duration-500",
+                        active ? "border-primary/40" : "group-hover:border-white/10"
+                      )}>
+                        {l.initials}
+                      </div>
+                      <span
+                        className={cn(
+                          "absolute -bottom-0.5 -right-0.5 text-[7px] font-mono px-1 py-0 rounded-full font-black border-2 border-void shadow-2xl",
+                          l.line === "L1" ? "bg-orange-10 text-void" : "bg-blue-10 text-white"
+                        )}
+                      >
+                        {l.line}
                       </span>
-                      <TextMono className="text-[10px] uppercase tracking-widest opacity-60">
-                        {l.lastTime}
-                      </TextMono>
                     </div>
                     
-                    <div className="flex items-center justify-between">
-                      <TextMono className="text-[13px] truncate leading-relaxed max-w-[180px] block">
-                        {l.lastMessage}
-                      </TextMono>
-                      {l.unread > 0 && (
-                        <span className="ml-2 px-1.5 py-0.5 min-w-[20px] text-center rounded-full bg-green-4 text-void text-[10px] font-black shadow-[0_0_15px_rgba(17,255,153,0.3)] shrink-0 animate-pulse">
-                          {l.unread}
+                    <div className="flex-1 min-w-0 pt-0.5">
+                      <div className="flex items-center justify-between mb-0.5">
+                        <span className={cn("text-[13px] font-bold truncate tracking-tight transition-colors", active ? "text-foreground" : "text-foreground/70 group-hover:text-foreground")}>
+                          {l.name}
                         </span>
-                      )}
+                        <TextMono className="text-[9px] uppercase tracking-wider opacity-30">
+                          {l.lastTime}
+                        </TextMono>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] truncate opacity-30 font-sans block max-w-[140px]">
+                          {l.lastMessage}
+                        </span>
+                        {l.unread > 0 && (
+                          <span className="ml-2 size-4 rounded-full bg-primary text-primary-foreground text-[8px] font-black grid place-items-center shadow-lg shrink-0">
+                            {l.unread}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </button>
+                  </button>
               </li>
             );
           })}
