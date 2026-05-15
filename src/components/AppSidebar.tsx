@@ -1,4 +1,5 @@
 import * as React from "react"
+import { useMemo } from "react"
 import { Link, useRouterState } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useQuery } from "@tanstack/react-query"
@@ -34,6 +35,7 @@ import {
 import { cn } from "@/lib/utils"
 import { TextMono, TextSmall } from "@/components/Typography"
 import { listInstances } from "@/lib/evolution.functions"
+import { getInstances } from "@/lib/server-functions"
 
 const navItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -132,12 +134,29 @@ export function AppSidebar() {
 
 function InstanceStatuses({ collapsed }: { collapsed: boolean }) {
   const listFn = useServerFn(listInstances)
+  const getInstancesFn = useServerFn(getInstances)
   
   const { data, isLoading } = useQuery({
     queryKey: ["sidebar", "instances"],
     queryFn: () => listFn(),
     refetchInterval: 10000,
   })
+
+  const { data: dbInstances, isLoading: dbLoading } = useQuery({
+    queryKey: ["sidebar", "db-instances"],
+    queryFn: () => getInstancesFn(),
+    refetchInterval: 10000,
+  })
+
+  const aliasMap = useMemo(() => {
+    const map: Record<string, string> = {}
+    if (dbInstances) {
+      dbInstances.forEach((inst: any) => {
+        map[inst.name] = inst.alias ?? ""
+      })
+    }
+    return map
+  }, [dbInstances])
 
   const instances = (data?.instances ?? []) as Array<{
     instanceName?: string
@@ -178,23 +197,25 @@ function InstanceStatuses({ collapsed }: { collapsed: boolean }) {
           : phone
         
         if (collapsed) {
+          const display = aliasMap[name] || name.slice(0, 2)
           return (
             <div key={name} className="flex flex-col items-center justify-center gap-1 opacity-60 hover:opacity-100 transition-opacity min-h-[40px]">
               <div className={cn("size-2 rounded-full", isOnline ? "bg-green-4 animate-pulse shadow-[0_0_8px_rgba(17,255,153,0.4)]" : "bg-muted")} />
-              <span className="text-[9px] font-black font-mono text-muted-foreground">{name.slice(0, 2)}</span>
+              <span className="text-[9px] font-black font-mono text-muted-foreground">{display}</span>
             </div>
           )
         }
 
         const stateColor = isOnline ? "text-green-4" : state === "connecting" ? "text-orange-10" : "text-red-5"
         const stateLabel = isOnline ? "LIVE" : state === "connecting" ? "CONECTANDO" : "OFF"
+        const displayName = aliasMap[name] || name
 
         return (
           <div key={name} className="frost-border rounded-xl px-3 py-3 bg-white/[0.01] group/status hover:bg-white/[0.03] transition-all shadow-sm">
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-2">
                 <span className="text-[9px] font-black font-mono px-1.5 rounded border border-current bg-current/5 text-muted-foreground">
-                  {name}
+                  {displayName}
                 </span>
                 <TextSmall className="text-[9px] opacity-40">INSTÂNCIA</TextSmall>
               </div>

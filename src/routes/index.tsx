@@ -6,7 +6,8 @@ import { cn, formatMsToHuman } from "@/lib/utils";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
 import { Button } from "@/components/ui/button";
-import { getLeads, getAnalyticsMetrics } from "@/lib/server-functions";
+import { getLeads, getAnalyticsMetrics, getInstances } from "@/lib/server-functions";
+import { useMemo } from "react";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
@@ -26,6 +27,23 @@ function Dashboard() {
   const { leads } = Route.useLoaderData();
   const recent = (leads ?? []).slice(0, 4);
   const getMetricsFn = useServerFn(getAnalyticsMetrics);
+  const getInstancesFn = useServerFn(getInstances);
+
+  const instancesQ = useQuery({
+    queryKey: ["instances", "aliases"],
+    queryFn: () => getInstancesFn(),
+    refetchInterval: 30000,
+  })
+
+  const aliasMap = useMemo(() => {
+    const map: Record<string, string> = {}
+    if (instancesQ.data) {
+      instancesQ.data.forEach((inst: any) => {
+        map[inst.name] = inst.alias ?? inst.name
+      })
+    }
+    return map
+  }, [instancesQ.data])
 
   const metricsQ = useQuery({
     queryKey: ["analytics", "metrics"],
@@ -131,7 +149,7 @@ function Dashboard() {
                           "text-[9px] font-mono font-black uppercase tracking-[0.1em] px-2 py-0.5 rounded inline-block",
                           l.instance_id === "L1" ? "bg-orange-10/10 text-orange-10 border border-orange-10/20" : "bg-blue-10/10 text-blue-10 border border-blue-10/20"
                         )}>
-                          {l.instance_id}
+                          {aliasMap[l.instance_id] ?? l.instance_id}
                         </span>
                       </div>
                     </li>

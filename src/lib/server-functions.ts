@@ -183,3 +183,22 @@ export const updateLeadStatus = createServerFn({ method: 'POST' })
       return { ok: false, error: error.message };
     }
   });
+
+export const updateInstanceAlias = createServerFn({ method: 'POST' })
+  .inputValidator((data: { id: string; alias: string }) => data)
+  .handler(async ({ data, context }) => {
+    try {
+      // @ts-ignore
+      const env = context?.cloudflare?.env || context?.env || (globalThis as any).env || process.env;
+      // @ts-ignore
+      const dbInstance = env.DB || (globalThis as any).DB || env.ggailabs_leadflow;
+      
+      if (!dbInstance) return { ok: false, error: 'no_db' };
+      
+      const db = new DatabaseService(dbInstance);
+      return db.updateInstanceAlias(data.id, data.alias);
+    } catch (error: any) {
+      console.error('Error in updateInstanceAlias:', error.message);
+      return { ok: false, error: error.message };
+    }
+  });

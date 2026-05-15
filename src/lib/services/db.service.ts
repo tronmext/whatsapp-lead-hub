@@ -1,6 +1,7 @@
 export interface D1Instance {
   id: string;
   name: string;
+  alias?: string;
   api_key: string;
   webhook_token?: string;
   is_active: number;
@@ -41,14 +42,21 @@ export class DatabaseService {
 
   async upsertInstance(instance: Partial<D1Instance>) {
     return this.db.prepare(`
-      INSERT INTO instances (id, name, api_key, webhook_token, is_active)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO instances (id, name, alias, api_key, webhook_token, is_active)
+      VALUES (?, ?, ?, ?, ?, ?)
       ON CONFLICT(id) DO UPDATE SET
         name = excluded.name,
+        alias = excluded.alias,
         api_key = excluded.api_key,
         webhook_token = excluded.webhook_token,
         is_active = excluded.is_active
-    `).bind(instance.id, instance.name, instance.api_key, instance.webhook_token, instance.is_active ?? 1).run();
+    `).bind(instance.id, instance.name, instance.alias, instance.api_key, instance.webhook_token, instance.is_active ?? 1).run();
+  }
+
+  async updateInstanceAlias(id: string, alias: string) {
+    return this.db.prepare(
+      "UPDATE instances SET alias = ? WHERE id = ?"
+    ).bind(alias, id).run();
   }
 
   // Contacts

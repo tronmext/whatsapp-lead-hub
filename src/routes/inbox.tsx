@@ -7,6 +7,7 @@ import {
   findMessages,
   checkIsWhatsapp,
   markMessageAsRead,
+  getMediaData,
 } from "@/lib/evolution.functions";
 import { getActiveInstance } from "@/components/evolution/InstancesPanel";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -29,6 +30,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Link } from "@tanstack/react-router";
+import { getContact, updateContact, getLeads, getInstances } from "@/lib/server-functions";
 
 export const Route = createFileRoute("/inbox")({
   head: () => ({
@@ -138,7 +140,12 @@ function extractText(message: any): string {
 /* -------------------------------- Hooks ---------------------------------- */
 
 function useActiveInstance(): string | null {
-  const [name, setName] = useState<string | null>(() => getActiveInstance());
+  const [name, setName] = useState<string | null>(null);
+
+  useEffect(() => {
+    setName(getActiveInstance());
+  }, []);
+
   useEffect(() => {
     const onStorage = () => setName(getActiveInstance());
     window.addEventListener("storage", onStorage);
@@ -158,22 +165,92 @@ function InboxPage() {
   const [selectedJid, setSelectedJid] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [newChatOpen, setNewChatOpen] = useState(false);
+  const [showInsights, setShowInsights] = useState(true);
 
   const findChatsFn = useServerFn(findChats);
+  const getLeadsFn = useServerFn(getLeads);
+  const getInstancesFn = useServerFn(getInstances);
+
+  const instancesQ = useQuery({
+    queryKey: ["instances", "aliases"],
+    queryFn: () => getInstancesFn(),
+    refetchInterval: 30000,
+  })
+
+  const aliasMap = useMemo(() => {
+    const map: Record<string, string> = {}
+    if (instancesQ.data) {
+      instancesQ.data.forEach((inst: any) => {
+        map[inst.name] = inst.alias ?? inst.name
+      })
+    }
+    return map
+  }, [instancesQ.data])
 
   const chatsQ = useQuery({
     queryKey: ["evo", "chats", instance],
     queryFn: async () => {
-      const data = await findChatsFn({ data: { instanceName: instance! } });
-      const arr: any[] = Array.isArray(data) ? data : (data as any)?.chats ?? [];
-      return arr.map<Chat>((c: any) => ({
-        remoteJid: c.remoteJid ?? c.id ?? c.jid,
-        pushName: c.pushName ?? c.name ?? c.lastMessage?.pushName,
-        profilePicUrl: c.profilePicUrl ?? c.profilePictureUrl ?? null,
-        unreadCount: c.unreadCount ?? c.unreadMessages ?? 0,
-        lastMessage: c.lastMessage,
-        updatedAt: c.updatedAt ?? c.updated_at,
-      })).filter((c) => c.remoteJid && !c.remoteJid.endsWith("@g.us"));
+      const [evoData, localLeads] = await Promise.all([
+        findChatsFn({ data: { instanceName: instance! } }),
+        getLeadsFn()
+      ]);
+
+      const evoArr: any[] = Array.isArray(evoData) ? evoData : (evoData as any)?.chats ?? [];
+      const evoMap = new Map<string, Chat>();
+
+      // Helper to normalize JID for comparison (removes 55 prefix and all non-digits)
+      const normalize = (jid: string) => {
+        let n = jid.split('@')[0].replace(/\D/g, '');
+        if (n.startsWith('55') && n.length > 11) n = n.substring(2);
+        return n;
+      };
+
+      // 1. Process Evolution Chats
+      evoArr.forEach((c: any) => {
+        const jid = c.remoteJid ?? c.id ?? c.jid;
+        if (!jid || jid.endsWith("@g.us")) return;
+        const norm = normalize(jid);
+        
+        let pName = c.pushName ?? c.name;
+        if (!pName && c.lastMessage && !c.lastMessage.key?.fromMe) {
+           pName = c.lastMessage.pushName;
+        }
+
+        evoMap.set(norm, {
+          remoteJid: jid,
+          pushName: pName,
+          profilePicUrl: c.profilePicUrl ?? c.profilePictureUrl ?? null,
+          unreadCount: c.unreadCount ?? c.unreadMessages ?? 0,
+          lastMessage: c.lastMessage,
+          updatedAt: c.updatedAt ?? c.updated_at,
+        });
+      });
+
+      // 2. Merge with Local Leads
+      localLeads.forEach((l: any) => {
+        const norm = normalize(l.jid);
+        if (evoMap.has(norm)) {
+          // Enhance existing chat with local name if missing or if it's just the phone number
+          const chat = evoMap.get(norm)!;
+          if (!chat.pushName || chat.pushName.includes('@') || chat.pushName === 'Você' || /^\d+$/.test(chat.pushName)) {
+            chat.pushName = l.name;
+          }
+        } else {
+          // Add as a new "Local" chat
+          evoMap.set(norm, {
+            remoteJid: l.jid,
+            pushName: l.name,
+            unreadCount: 0,
+            updatedAt: l.updated_at,
+          });
+        }
+      });
+
+      return Array.from(evoMap.values()).sort((a, b) => {
+        const da = new Date(a.updatedAt || 0).getTime();
+        const db = new Date(b.updatedAt || 0).getTime();
+        return db - da;
+      });
     },
     enabled: !!instance,
     refetchInterval: 8000,
@@ -328,7 +405,14 @@ function InboxPage() {
       {/* Center */}
       <section className="flex-1 flex flex-col min-w-0 bg-void relative overflow-hidden h-full">
         {selected ? (
-          <ChatPane instance={instance} chat={selected} />
+          <div className="flex-1 flex flex-row overflow-hidden">
+            <div className="flex-1 flex flex-col min-w-0 relative h-full">
+              <ChatPane instance={instance} chat={selected} onToggleInsights={() => setShowInsights(!showInsights)} />
+            </div>
+            {showInsights && (
+              <AIInsightsPanel jid={selected.remoteJid} instance={instance} />
+            )}
+          </div>
         ) : (
           <div className="flex-1 grid place-items-center">
             <div className="text-center opacity-60">
@@ -352,9 +436,226 @@ function InboxPage() {
   );
 }
 
+/* ----------------------------- AI Insights Panel -------------------------- */
+
+function AIInsightsPanel({ jid, instance }: { jid: string, instance?: string }) {
+  const getContactFn = useServerFn(getContact);
+  const updateContactFn = useServerFn(updateContact);
+  const qc = useQueryClient();
+
+  const contactQ = useQuery({
+    queryKey: ["contact", jid],
+    queryFn: () => getContactFn({ data: jid }),
+    enabled: !!jid,
+    refetchInterval: 5000,
+  });
+
+  const toggleMut = useMutation({
+    mutationFn: (enabled: boolean) => updateContactFn({ data: { jid, updates: { ai_enabled: enabled ? 1 : 0 } } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["contact", jid] }),
+  });
+
+  if (contactQ.isLoading) return (
+    <aside className="w-72 shrink-0 border-l border-border/10 bg-void p-6 flex flex-col gap-6 animate-in slide-in-from-right duration-500">
+      <Loader2 className="size-5 animate-spin mx-auto text-muted-foreground" />
+    </aside>
+  );
+
+  const contact = contactQ.data || {
+    jid,
+    score: 0,
+    metadata: "{}",
+    ai_enabled: 0,
+    status: 'novo',
+    type: 'lead'
+  };
+  
+  const metadata = JSON.parse(contact.metadata || "{}");
+  const aiEnabled = contact.ai_enabled === 1;
+
+  const handleToggleAi = (enabled: boolean) => {
+    if (!contactQ.data) {
+      updateContactFn({ data: { jid, updates: { ai_enabled: enabled ? 1 : 0, instance_id: instance || 'default' } } })
+        .then(() => qc.invalidateQueries({ queryKey: ["contact", jid] }));
+    } else {
+      toggleMut.mutate(enabled);
+    }
+  };
+
+  return (
+    <aside className="w-72 shrink-0 border-l border-border/10 bg-void p-6 flex flex-col gap-6 animate-in slide-in-from-right duration-500 overflow-y-auto scrollbar-hide">
+      <div>
+        <TextSmall className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4 block">
+          Automação IA
+        </TextSmall>
+        <div className="flex items-center justify-between p-3 rounded-xl border border-border/10 bg-white/[0.02]">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[12px] font-bold">{aiEnabled ? "Ativa" : "Desativada"}</span>
+            <span className="text-[10px] opacity-40">Agent mode</span>
+          </div>
+          <button 
+            onClick={() => handleToggleAi(!aiEnabled)}
+            disabled={toggleMut.isPending}
+            className={cn(
+              "w-10 h-5 rounded-full relative transition-all duration-300",
+              aiEnabled ? "bg-primary" : "bg-muted"
+            )}
+          >
+            <div className={cn(
+              "absolute top-1 size-3 rounded-full bg-white transition-all duration-300",
+              aiEnabled ? "left-6" : "left-1"
+            )} />
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <TextSmall className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4 block">
+          Qualificação
+        </TextSmall>
+        <div className="p-4 rounded-2xl border border-border/10 bg-white/[0.02] relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-2 opacity-20">
+            <Sparkles className="size-10" />
+          </div>
+          <div className="flex items-end gap-1 mb-2">
+            <span className="text-[32px] font-display leading-none">{contact.score}</span>
+            <span className="text-[12px] opacity-40 mb-1">/100</span>
+          </div>
+          <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+            <div className="h-full bg-primary" style={{ width: `${contact.score}%` }} />
+          </div>
+          <TextSmall className="text-[11px] mt-3 block opacity-60">
+            {contact.score > 70 ? "Lead quente. Alta propensão de fechamento." : contact.score > 30 ? "Interessado, requer nutrição." : "Lead frio ou desqualificado."}
+          </TextSmall>
+        </div>
+      </div>
+
+      {metadata.summary && (
+        <div>
+          <TextSmall className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4 block">
+            Resumo da IA
+          </TextSmall>
+          <div className="p-4 rounded-2xl border border-border/10 bg-white/[0.02] text-[13px] leading-relaxed italic opacity-80">
+            "{metadata.summary}"
+          </div>
+        </div>
+      )}
+
+      {metadata.sentiment && (
+        <div>
+          <TextSmall className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4 block">
+            Sentimento
+          </TextSmall>
+          <div className="flex items-center gap-2">
+            <div className={cn(
+              "size-2 rounded-full",
+              metadata.sentiment === 'positive' ? "bg-green-4 shadow-[0_0_10px_#22c55e]" : 
+              metadata.sentiment === 'negative' ? "bg-red-5 shadow-[0_0_10px_#ef4444]" : "bg-blue-10"
+            )} />
+            <span className="text-[12px] font-mono uppercase tracking-widest opacity-60">{metadata.sentiment}</span>
+          </div>
+        </div>
+      )}
+    </aside>
+  );
+}
+
+/* ------------------------- Chat Utilities ------------------------------- */
+
+function formatWhatsAppMarkdown(text: string) {
+  if (!text) return "";
+  const escapeHtml = (unsafe: string) => {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+  }
+  let html = escapeHtml(text)
+    .replace(/\*([^\*]+)\*/g, "<strong>$1</strong>")
+    .replace(/_([^_]+)_/g, "<em>$1</em>")
+    .replace(/~([^~]+)~/g, "<del>$1</del>")
+    .replace(/```([^`]*)```/g, "<code class='bg-black/10 px-1 rounded'>$1</code>")
+    .replace(/\n/g, "<br/>");
+  return html;
+}
+
+function MediaBubble({ instance, msg }: { instance: string; msg: any }) {
+  const getMediaFn = useServerFn(getMediaData);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["media", instance, msg.id],
+    queryFn: () => getMediaFn({ data: { instanceName: instance, message: msg.raw_message } }),
+    enabled: !!msg.raw_message,
+    staleTime: Infinity,
+  });
+
+  const type = msg.type?.toLowerCase() || "";
+
+  if (!msg.raw_message) {
+    return <div className="p-2 opacity-50 italic text-[11px]">Mídia não salva no banco local.</div>;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="p-4 flex items-center justify-center gap-2 bg-black/5 rounded-lg border border-border/10">
+        <Loader2 className="size-4 animate-spin text-muted-foreground" />
+        <span className="text-[11px] opacity-70">Baixando...</span>
+      </div>
+    );
+  }
+
+  if (isError || !data?.base64) {
+    return <div className="p-2 opacity-50 italic text-[11px] text-destructive">Erro ao carregar mídia.</div>;
+  }
+
+  const src = `data:${data.mimetype};base64,${data.base64}`;
+
+  if (type.includes('audio')) {
+    return <audio controls src={src} className="max-w-[240px] h-10 outline-none mt-1" />;
+  }
+
+  if (type.includes('image')) {
+    const handleOpenImage = () => {
+      fetch(src)
+        .then(res => res.blob())
+        .then(blob => {
+          const url = URL.createObjectURL(blob);
+          window.open(url, '_blank');
+        })
+        .catch(() => window.open(src, '_blank')); // fallback
+    };
+    return <img src={src} alt="Media" className="max-w-xs rounded-lg mt-1 object-cover cursor-pointer hover:opacity-90 transition-opacity" onClick={handleOpenImage} />;
+  }
+  
+  if (type.includes('video')) {
+    return <video controls src={src} className="max-w-xs rounded-lg mt-1" />;
+  }
+
+  return (
+    <a href={src} download="documento" className="flex items-center gap-2 p-3 bg-black/5 rounded-lg border border-border/10 hover:bg-black/10 transition-colors mt-1">
+      <div className="size-8 rounded bg-primary/20 text-primary grid place-items-center">
+        <Paperclip className="size-4" />
+      </div>
+      <div className="flex flex-col">
+        <span className="text-[12px] font-bold">Documento / Mídia</span>
+        <span className="text-[10px] opacity-60 cursor-pointer">Clique para baixar</span>
+      </div>
+    </a>
+  );
+}
+
 /* ------------------------------ Chat Pane -------------------------------- */
 
-function ChatPane({ instance, chat }: { instance: string; chat: Chat }) {
+function ChatPane({ 
+  instance, 
+  chat, 
+  onToggleInsights 
+}: { 
+  instance: string; 
+  chat: Chat; 
+  onToggleInsights: () => void;
+}) {
   const findMessagesFn = useServerFn(findMessages);
   const markReadFn = useServerFn(markMessageAsRead);
   const qc = useQueryClient();
@@ -366,25 +667,13 @@ function ChatPane({ instance, chat }: { instance: string; chat: Chat }) {
       const data = await findMessagesFn({
         data: { instanceName: instance, remoteJid: chat.remoteJid, limit: 80 },
       });
-      // Evolution returns various shapes; normalize.
-      const records: any[] =
-        (data as any)?.messages?.records ??
-        (data as any)?.messages ??
-        (Array.isArray(data) ? data : []);
-      return records as Msg[];
+      return (Array.isArray(data) ? data : []) as any[];
     },
     enabled: !!instance && !!chat.remoteJid,
     refetchInterval: 4000,
   });
 
-  const messages = useMemo(() => {
-    const arr = messagesQ.data ?? [];
-    return [...arr].sort((a, b) => {
-      const ta = tsToDate(a.messageTimestamp)?.getTime() ?? 0;
-      const tb = tsToDate(b.messageTimestamp)?.getTime() ?? 0;
-      return ta - tb;
-    });
-  }, [messagesQ.data]);
+  const messages = messagesQ.data ?? [];
 
   // Auto-scroll on new messages
   useEffect(() => {
@@ -397,9 +686,9 @@ function ChatPane({ instance, chat }: { instance: string; chat: Chat }) {
   useEffect(() => {
     if (!chat.unreadCount) return;
     const unread = messages
-      .filter((m) => !m.key.fromMe)
+      .filter((m) => !m.from_me)
       .slice(-Math.max(chat.unreadCount, 1))
-      .map((m) => ({ remoteJid: m.key.remoteJid, fromMe: m.key.fromMe, id: m.key.id }));
+      .map((m) => ({ remoteJid: chat.remoteJid, fromMe: false, id: m.id }));
     if (unread.length === 0) return;
     markReadFn({ data: { instanceName: instance, readMessages: unread } }).catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -439,6 +728,12 @@ function ChatPane({ instance, chat }: { instance: string; chat: Chat }) {
           >
             <Phone className="size-3.5" />
           </a>
+          <button
+            onClick={onToggleInsights}
+            className="size-8 rounded-lg border border-border/10 grid place-items-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+          >
+            <Info className="size-3.5" />
+          </button>
           <Button
             variant="outline"
             size="sm"
@@ -467,24 +762,41 @@ function ChatPane({ instance, chat }: { instance: string; chat: Chat }) {
           </div>
         )}
         {messages.map((m) => {
-          const isMe = m.key.fromMe;
-          const text = extractText(m.message);
-          const time = formatTime(tsToDate(m.messageTimestamp));
+          const isMe = m.from_me === 1 || m.from_me === true;
+          let text = m.content || "";
+          
+          const t = (m.type || "").toLowerCase();
+          const isMedia = t.includes('audio') || t.includes('image') || t.includes('video') || t.includes('document');
+
+          if (!text && !isMedia && m.type) {
+            if (t.includes('sticker')) text = "👾 Figurinha";
+            else if (t.includes('reaction')) text = "❤️ Reação";
+            else text = "—";
+          }
+          
+          const time = formatTime(new Date(m.timestamp));
           return (
             <div
-              key={m.key.id}
+              key={m.id}
               className={cn("flex", isMe ? "justify-end" : "justify-start")}
             >
-              <div className={cn("flex flex-col max-w-[65%]", isMe ? "items-end" : "items-start")}>
+              <div className={cn("flex flex-col max-w-[80%]", isMe ? "items-end" : "items-start")}>
                 <div
                   className={cn(
-                    "px-4 py-2.5 rounded-[18px] text-[14px] leading-snug shadow-sm",
+                    "px-4 py-2.5 rounded-[18px] text-[14px] leading-snug shadow-sm overflow-hidden",
                     isMe
                       ? "bg-primary text-primary-foreground rounded-tr-none font-medium"
                       : "bg-card border border-border/10 text-foreground rounded-tl-none",
                   )}
                 >
-                  <p className="whitespace-pre-wrap break-words">{text || "—"}</p>
+                  {isMedia ? (
+                    <MediaBubble instance={instance} msg={m} />
+                  ) : (
+                    <div 
+                      className="whitespace-pre-wrap break-words [&>strong]:font-bold [&>em]:italic [&>del]:line-through [&>code]:font-mono [&>code]:text-[12px]" 
+                      dangerouslySetInnerHTML={{ __html: formatWhatsAppMarkdown(text) || "—" }} 
+                    />
+                  )}
                 </div>
                 <div
                   className={cn(

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { STATUS_LABELS } from "@/lib/mock-data";
@@ -10,8 +10,9 @@ import { cn } from "@/lib/utils";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
 import { Button } from "@/components/ui/button";
-import { getLeads, updateLeadStatus } from "@/lib/server-functions";
+import { getLeads, updateLeadStatus, getInstances } from "@/lib/server-functions";
 import { toast } from "sonner";
+import { useMemo } from "react";
 
 export const Route = createFileRoute("/leads")({
   loader: async () => {
@@ -39,6 +40,23 @@ function LeadsPage() {
   const [isClient, setIsClient] = useState(false);
   const qc = useQueryClient();
   const updateStatusFn = useServerFn(updateLeadStatus);
+  const getInstancesFn = useServerFn(getInstances);
+
+  const instancesQ = useQuery({
+    queryKey: ["instances", "aliases"],
+    queryFn: () => getInstancesFn(),
+    refetchInterval: 30000,
+  })
+
+  const aliasMap = useMemo(() => {
+    const map: Record<string, string> = {}
+    if (instancesQ.data) {
+      instancesQ.data.forEach((inst: any) => {
+        map[inst.name] = inst.alias ?? inst.name
+      })
+    }
+    return map
+  }, [instancesQ.data])
 
   useEffect(() => {
     setIsClient(true);
@@ -194,7 +212,7 @@ function LeadsPage() {
                                       "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider font-mono shadow-sm",
                                       lead.instance_id === "L1" ? "bg-orange-10/10 text-orange-10 border border-orange-10/20" : "bg-blue-10/10 text-blue-10 border border-blue-10/20"
                                     )}>
-                                      {lead.instance_id}
+                                      {aliasMap[lead.instance_id] ?? lead.instance_id}
                                     </div>
                                   </div>
                                   
@@ -266,7 +284,7 @@ function LeadsPage() {
                           "pill px-3 py-1 text-[9px] font-mono font-black uppercase tracking-wider",
                           l.instance_id === "L1" ? "bg-orange-10/10 text-orange-10 border border-orange-10/20" : "bg-blue-10/10 text-blue-10 border border-blue-10/20"
                         )}>
-                          {l.instance_id}
+                          {aliasMap[l.instance_id] ?? l.instance_id}
                         </span>
                       </td>
                       <td className="px-8 py-6">

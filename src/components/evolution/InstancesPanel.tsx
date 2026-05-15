@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -23,6 +23,7 @@ import {
   deleteInstance,
   logoutInstance,
 } from "@/lib/evolution.functions";
+import { updateInstanceAlias } from "@/lib/server-functions";
 
 const ACTIVE_KEY = "evolution.activeInstance";
 
@@ -73,6 +74,7 @@ export function InstancesPanel() {
   const create = useServerFn(createInstance);
   const del = useServerFn(deleteInstance);
   const logout = useServerFn(logoutInstance);
+  const updateAliasFn = useServerFn(updateInstanceAlias);
 
   const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["evolution", "instances"],
@@ -92,6 +94,9 @@ export function InstancesPanel() {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [qrTarget, setQrTarget] = useState<string | null>(null);
+
+  const [aliases, setAliases] = useState<Record<string, string>>({});
+  const aliasTimers = useRef<Record<string, NodeJS.Timeout>>({});
 
   const createMutation = useMutation({
     mutationFn: async () => {
@@ -202,6 +207,14 @@ export function InstancesPanel() {
               profileName={inst.profileName}
               profilePictureUrl={pickPicture(inst)}
               isActive={isActive}
+              alias={aliases[name] ?? (inst as any).alias ?? ""}
+              onAliasChange={(alias) => {
+                setAliases(prev => ({ ...prev, [name]: alias }));
+                clearTimeout(aliasTimers.current[name]);
+                aliasTimers.current[name] = setTimeout(() => {
+                  updateAliasFn({ data: { id: name, alias } }).catch(() => {});
+                }, 800);
+              }}
               onActivate={() => {
                 setActiveInstance(name);
                 setActive(name);
@@ -285,6 +298,8 @@ function InstanceLiveCard({
   onActivate,
   onShowQr,
   onDelete,
+  alias,
+  onAliasChange,
 }: {
   name: string;
   state: string;
@@ -295,6 +310,8 @@ function InstanceLiveCard({
   onActivate: () => void;
   onShowQr: () => void;
   onDelete: () => void;
+  alias?: string;
+  onAliasChange: (alias: string) => void;
 }) {
   const stateMeta =
     state === "open"
@@ -329,7 +346,18 @@ function InstanceLiveCard({
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex items-center gap-2 mt-2">
+        <TextMono className="text-[10px] text-muted-foreground opacity-50">TAG</TextMono>
+        <input
+          value={alias ?? ""}
+          onChange={(e) => onAliasChange(e.target.value.slice(0, 8))}
+          placeholder={name}
+          className="bg-transparent border border-frost-border/30 rounded px-2 py-0.5 text-[11px] font-mono outline-none focus:border-primary/40 text-foreground w-24"
+          maxLength={8}
+        />
+      </div>
+
+      <div className="flex flex-wrap gap-2 mt-4">
         {state !== "open" && (
           <Button size="sm" onClick={onShowQr} className="text-[11px] font-bold tracking-widest uppercase">
             <QrCode className="size-4 mr-1" /> Conectar (QR)
