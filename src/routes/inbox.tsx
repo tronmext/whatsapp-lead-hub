@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { LEADS, STATUS_LABELS, type Lead, type LineId } from "@/lib/mock-data";
 import { TagPill } from "@/components/Tag";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import {
   Search, Filter, Send, Paperclip, Smile, Sparkles,
   Phone, Building2, MapPin, Tag as TagIcon, Plus, ArrowRight,
@@ -224,7 +225,15 @@ function ChatHeader({ lead }: { lead: Lead }) {
           <MoreHorizontal className="size-4.5" strokeWidth={2} />
         </button>
         <div className="w-[1px] h-8 bg-frost-border/40 mx-2" />
-        <button className="btn-secondary px-6 py-2.5 flex items-center gap-3 group overflow-hidden relative">
+        <button 
+          onClick={() => {
+            toast.loading("Analisando transcrição...", { id: "ai-qual" });
+            setTimeout(() => {
+              toast.success("Qualificação concluída com sucesso", { id: "ai-qual", description: "Score e insights atualizados." });
+            }, 2000);
+          }}
+          className="btn-secondary px-6 py-2.5 flex items-center gap-3 group overflow-hidden relative"
+        >
           <div className="absolute inset-0 bg-orange-10 opacity-0 group-hover:opacity-10 transition-opacity" />
           <Sparkles className="size-4 text-orange-10 animate-pulse" /> 
           <span className="text-[12px] font-black uppercase tracking-[0.1em]">Qualificar com IA</span>
