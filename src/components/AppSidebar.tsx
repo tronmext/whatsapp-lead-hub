@@ -52,15 +52,17 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" className="border-r border-frost-border bg-void">
       <SidebarHeader className={cn("p-4 transition-all duration-300", collapsed ? "items-center" : "items-start")}>
-        <Link to="/" className="flex items-center gap-3 group transition-transform active:scale-95 overflow-hidden">
-          <div className="size-8 shrink-0 rounded-lg bg-near-white text-void grid place-items-center shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-            <Sparkles className="size-5" strokeWidth={2.4} />
+        <Link to="/" className="flex items-center gap-2 group transition-transform active:scale-95 overflow-hidden">
+          <div className="shrink-0 transition-all duration-300">
+            <img 
+              src="https://ftczlwqeimdhgjkkhvbg.supabase.co/storage/v1/object/sign/lovable-storage/leadflow.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wNGRjMzRmOC1kMmQ0LTQ0MmQtOTY3Yy02NDVhYjMzOTI4OTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJsb3ZhYmxlLXN0b3JhZ2UvbGVhZGZsb3cucG5nIiwiaWF0IjoxNzc4ODE2NzcxLCJleHAiOjE4MTAzNTI3NzF9.R0YTMVP_-VBxo5vuyixcCHd7B6v_Nuz8Mibr-eGLWUk" 
+              alt="Leadflow Logo"
+              className={cn(
+                "object-contain transition-all duration-300",
+                collapsed ? "size-8" : "h-7 w-auto"
+              )}
+            />
           </div>
-          {!collapsed && (
-            <span className="font-section text-[18px] font-semibold tracking-[-1px] text-near-white animate-in fade-in slide-in-from-left-2 duration-300">
-              leadflow<span className="text-orange-10">.</span>
-            </span>
-          )}
         </Link>
       </SidebarHeader>
 
