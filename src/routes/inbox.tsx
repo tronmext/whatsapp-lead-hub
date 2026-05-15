@@ -241,7 +241,7 @@ function InboxPage() {
           <div className="h-4" />
         </div>
         
-        <ChatComposer />
+        <ChatComposer phone={lead.phone} />
       </section>
 
       {/* 03. Right: Lead Insights Card */}
