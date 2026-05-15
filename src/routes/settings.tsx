@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Plus, Sparkles, Wifi, Shield, Trash2, Command } from "lucide-react";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
-import { ResendButton } from "@/components/ResendButton";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
