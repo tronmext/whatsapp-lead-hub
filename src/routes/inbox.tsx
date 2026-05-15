@@ -244,7 +244,7 @@ function ChatHeader({ lead }: { lead: Lead }) {
           }}
           variant="outline"
           size="default"
-          className="group overflow-hidden relative"
+          className="group overflow-hidden relative shadow-[0_0_20px_rgba(255,165,0,0.1)]"
         >
           <Sparkles className="mr-2 size-4 text-orange-10 animate-pulse" /> 
           <span className="text-[12px] font-black uppercase tracking-[0.1em]">Qualificar</span>
