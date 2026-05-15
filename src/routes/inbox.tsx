@@ -1,4 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { sendText } from "@/lib/evolution.functions";
+import { getActiveInstance } from "@/components/evolution/InstancesPanel";
 import { useState, useRef, useEffect } from "react";
 import { LEADS, STATUS_LABELS, type Lead, type LineId } from "@/lib/mock-data";
 import { TagPill } from "@/components/Tag";
