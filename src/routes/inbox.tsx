@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import {
   Search, Filter, Send, Paperclip, Smile, Sparkles,
   Phone, Building2, MapPin, Tag as TagIcon, Plus, ArrowRight,
-  MessageSquare, FileText, Users2, Clock, Mic, Check, CheckCheck, MoreHorizontal, Info
+  MessageSquare, FileText, Users2, Clock, Mic, Check, CheckCheck, MoreHorizontal, Info, Reply, Heart, ThumbsUp, Laugh, Surprise, Frown
 } from "lucide-react";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { ResendCard } from "@/components/ResendCard";
