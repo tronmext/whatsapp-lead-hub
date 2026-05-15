@@ -45,39 +45,46 @@ function InboxPage() {
     <div className="h-full flex flex-col md:flex-row bg-void animate-in fade-in duration-700 overflow-hidden relative">
       {/* 01. Sidebar: Feed de Conversas */}
       <section className="w-full md:w-[380px] shrink-0 border-b md:border-b-0 md:border-r border-frost-border flex flex-col bg-white/[0.01] backdrop-blur-3xl relative z-10 h-1/3 md:h-full">
-        <div className="p-8 border-b border-frost-border space-y-6">
+        <div className="p-6 border-b border-frost-border space-y-4 bg-void/50 backdrop-blur-md sticky top-0 z-20">
           <div className="flex items-center justify-between">
-            <HeadingSub className="text-[24px] tracking-tight mb-0">Conversas</HeadingSub>
-            <button className="size-9 rounded-full frost-border grid place-items-center hover:bg-white/5 transition-all active:scale-90">
-              <Plus className="size-4.5" />
-            </button>
-          </div>
-          
-          <div className="relative group">
-            <Search className="size-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-near-white transition-colors" />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar no pipeline..."
-              className="w-full bg-void frost-border rounded-xl pl-12 pr-4 py-3.5 text-[14px] placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-near-white/20 transition-all font-mono"
-            />
-          </div>
-          
-          <div className="flex p-1 bg-void rounded-xl frost-border animate-in zoom-in-95 duration-500 delay-100">
-            {(["all", "L1", "L2"] as const).map((opt) => (
-              <button
-                key={opt}
-                onClick={() => setLineFilter(opt)}
-                className={cn(
-                  "flex-1 py-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all rounded-lg font-mono",
-                  lineFilter === opt
-                    ? "bg-white/[0.08] text-near-white shadow-xl"
-                    : "text-muted-foreground hover:text-near-white hover:bg-white/5"
-                )}
-              >
-                {opt === "all" ? "Geral" : opt}
+            <HeadingSub className="text-[18px] tracking-tight mb-0">Conversas</HeadingSub>
+            <div className="flex items-center gap-1.5">
+              <button className="size-8 rounded-lg frost-border grid place-items-center hover:bg-white/5 transition-all active:scale-90 text-muted-foreground hover:text-near-white">
+                <Filter className="size-3.5" />
               </button>
-            ))}
+              <button className="size-8 rounded-lg frost-border grid place-items-center bg-near-white text-void hover:opacity-90 transition-all active:scale-90">
+                <Plus className="size-3.5" strokeWidth={3} />
+              </button>
+            </div>
+          </div>
+          
+          <div className="flex flex-col gap-3">
+            <div className="relative group">
+              <Search className="size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-near-white transition-colors" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Buscar leads..."
+                className="w-full bg-void/40 border border-frost-border/30 rounded-lg pl-9 pr-3 py-2 text-[13px] placeholder:text-muted-foreground/30 outline-none focus:border-near-white/20 focus:bg-void/60 transition-all font-sans"
+              />
+            </div>
+            
+            <div className="flex p-1 bg-void/40 rounded-lg border border-frost-border/20">
+              {(["all", "L1", "L2"] as const).map((opt) => (
+                <button
+                  key={opt}
+                  onClick={() => setLineFilter(opt)}
+                  className={cn(
+                    "flex-1 py-1.5 text-[9px] font-black uppercase tracking-[0.15em] transition-all rounded-md font-mono",
+                    lineFilter === opt
+                      ? "bg-near-white/10 text-near-white shadow-sm"
+                      : "text-muted-foreground/40 hover:text-near-white/60"
+                  )}
+                >
+                  {opt === "all" ? "Geral" : opt}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
