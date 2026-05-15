@@ -410,8 +410,8 @@ function LeadCard({ lead }: { lead: Lead }) {
           <div className="flex items-center justify-between relative z-10">
             <div>
               <TextSmall className="text-[10px] opacity-80 mb-2 block">QUALIFICAÇÃO IA</TextSmall>
-              <div className="text-[44px] font-display leading-none tracking-tighter text-near-white">
-                {lead.score}<span className="text-muted-foreground/20 text-[20px] ml-1 font-sans">/100</span>
+              <div className="text-[32px] font-bold leading-none tracking-tight text-foreground">
+                {lead.score}<span className="text-muted-foreground/20 text-[14px] ml-1 font-sans">/100</span>
               </div>
             </div>
             <div className="size-16 relative flex items-center justify-center">
