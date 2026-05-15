@@ -264,50 +264,67 @@ function ChatComposer() {
 
 function LeadCard({ lead }: { lead: Lead }) {
   return (
-    <aside className="w-[360px] shrink-0 overflow-y-auto bg-card/30">
-      <div className="p-6 border-b border-border">
+    <aside className="w-[380px] shrink-0 overflow-y-auto bg-card/40 backdrop-blur-xl border-l border-border animate-in slide-in-from-right duration-500">
+      <div className="p-8 border-b border-border bg-gradient-to-b from-white/[0.02] to-transparent">
         <div className="flex flex-col items-center text-center">
-          <div className="size-16 rounded-full grid place-items-center text-[20px] font-semibold bg-[oklch(0.12_0_0)] frost-border mb-3">
-            {lead.initials}
+          <div className="relative mb-4 group">
+            <div className="size-20 rounded-full grid place-items-center text-[24px] font-bold bg-[oklch(0.12_0_0)] frost-border group-hover:frost-ring transition-all duration-500 group-hover:scale-110">
+              {lead.initials}
+            </div>
+            <button className="absolute bottom-0 right-0 size-7 bg-foreground text-background rounded-full grid place-items-center shadow-lg border-2 border-background hover:scale-110 transition-transform">
+              <Plus className="size-3.5" />
+            </button>
           </div>
-          <h2 className="font-display text-[22px] tracking-[-0.03em]">{lead.name}</h2>
-          <p className="text-[12px] text-muted-foreground font-mono mt-1">{lead.phone}</p>
-          <div className="flex items-center gap-2 mt-3">
-            <span className="pill px-2 py-0.5 text-[10px] font-mono frost-border">
+          <h2 className="font-display text-[26px] tracking-tight leading-tight">{lead.name}</h2>
+          <div className="flex items-center gap-1.5 justify-center mt-1 text-muted-foreground font-mono text-[12.5px]">
+            <Phone className="size-3" /> {lead.phone}
+          </div>
+          
+          <div className="flex items-center gap-2 justify-center mt-5">
+            <span className={cn(
+              "pill px-3 py-1 text-[10px] font-black uppercase tracking-widest border shadow-sm",
+              lead.line === "L1" ? "border-orange/30 text-orange" : "border-blue/30 text-blue"
+            )}>
               Linha {lead.line.slice(1)}
             </span>
-            <span className="pill px-2 py-0.5 text-[10px] font-mono bg-[oklch(0.18_0.02_240)]">
+            <span className="pill px-3 py-1 text-[10px] font-black uppercase tracking-widest bg-foreground text-background shadow-lg">
               {STATUS_LABELS[lead.status]}
             </span>
           </div>
         </div>
-        <div className="mt-5 frost-border rounded-xl p-3 flex items-center justify-between">
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground font-section">
-              Score IA
+        
+        <div className="mt-8 p-4 rounded-2xl bg-black/40 border border-white/5 relative group overflow-hidden">
+          <div className="absolute top-0 right-0 size-24 bg-green opacity-5 blur-3xl group-hover:opacity-10 transition-opacity" />
+          <div className="flex items-center justify-between relative z-10">
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-section font-bold mb-1">
+                Score de Qualificação
+              </div>
+              <div className="font-display text-[32px] tracking-tighter leading-none">
+                {lead.score}<span className="text-muted-foreground/30 text-[18px] ml-1">/100</span>
+              </div>
             </div>
-            <div className="font-display text-[28px] tracking-tight leading-none mt-1">
-              {lead.score}<span className="text-muted-foreground text-[16px]">/100</span>
+            <div className="size-14 relative flex items-center justify-center">
+              <svg viewBox="0 0 36 36" className="size-14 -rotate-90">
+                <circle cx="18" cy="18" r="15" fill="none" stroke="oklch(0.12 0 0)" strokeWidth="3" />
+                <circle
+                  cx="18" cy="18" r="15" fill="none"
+                  stroke="oklch(0.86 0.2 155)" strokeWidth="3" strokeLinecap="round"
+                  strokeDasharray={`${(lead.score / 100) * 94} 100`}
+                  className="animate-in fade-in duration-1000"
+                />
+              </svg>
+              <span className="absolute text-[11px] font-mono font-bold text-green">{lead.score}%</span>
             </div>
-          </div>
-          <div className="size-12 relative">
-            <svg viewBox="0 0 36 36" className="size-12 -rotate-90">
-              <circle cx="18" cy="18" r="14" fill="none" stroke="oklch(0.18 0 0)" strokeWidth="3" />
-              <circle
-                cx="18" cy="18" r="14" fill="none"
-                stroke="oklch(0.86 0.2 155)" strokeWidth="3" strokeLinecap="round"
-                strokeDasharray={`${(lead.score / 100) * 88} 100`}
-              />
-            </svg>
           </div>
         </div>
       </div>
 
-      <Section title="Tags" icon={TagIcon}>
-        <div className="flex flex-wrap gap-1.5">
-          {lead.tags.map((t) => <TagPill key={t.id} tag={t} />)}
-          <button className="pill px-2 py-0.5 text-[11px] frost-border text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
-            <Plus className="size-3" /> Tag
+      <Section title="Segmentação" icon={TagIcon}>
+        <div className="flex flex-wrap gap-2">
+          {lead.tags.map((t) => <TagPill key={t.id} tag={t} className="hover:scale-105 transition-transform" />)}
+          <button className="pill px-2.5 py-1 text-[11px] font-bold frost-border text-muted-foreground hover:text-foreground hover:bg-white/5 inline-flex items-center gap-1.5 transition-all">
+            <Plus className="size-3" /> ADICIONAR
           </button>
         </div>
       </Section>
