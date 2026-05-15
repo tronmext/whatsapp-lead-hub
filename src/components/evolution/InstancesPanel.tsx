@@ -200,7 +200,7 @@ export function InstancesPanel() {
               state={state}
               ownerJid={inst.ownerJid}
               profileName={inst.profileName}
-              profilePictureUrl={inst.profilePictureUrl}
+              profilePictureUrl={pickPicture(inst)}
               isActive={isActive}
               onActivate={() => {
                 setActiveInstance(name);
