@@ -316,14 +316,30 @@ function ChatComposer() {
         />
         
         <div className="flex gap-2 items-center">
-          <button className="size-10 rounded-xl grid place-items-center text-muted-foreground hover:text-near-white hover:bg-white/5 transition-all">
+          <button 
+            onClick={() => {
+              setIsRecording(!isRecording);
+              if (!isRecording) toast.info("Gravando áudio...");
+              else toast.success("Áudio enviado");
+            }}
+            className={cn(
+              "size-10 rounded-xl grid place-items-center transition-all",
+              isRecording ? "bg-red-5 text-near-white animate-pulse" : "text-muted-foreground hover:text-near-white hover:bg-white/5"
+            )}
+          >
             <Mic className="size-5" />
           </button>
           <button 
-            disabled={!text.trim()}
+            disabled={!text.trim() && !isRecording}
+            onClick={() => {
+              if (text.trim()) {
+                toast.success("Mensagem enviada");
+                setText("");
+              }
+            }}
             className={cn(
               "size-10 rounded-xl grid place-items-center transition-all active:scale-90",
-              text.trim() 
+              text.trim() || isRecording
                 ? "bg-near-white text-void shadow-[0_0_30px_rgba(255,255,255,0.2)]" 
                 : "bg-white/5 text-muted-foreground cursor-not-allowed opacity-50"
             )}
