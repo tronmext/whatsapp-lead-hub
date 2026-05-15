@@ -42,7 +42,7 @@ function InboxPage() {
   );
 
   return (
-    <div className="h-[calc(100vh-64px)] flex bg-void animate-in fade-in duration-700 overflow-hidden">
+    <div className="h-full flex bg-void animate-in fade-in duration-700 overflow-hidden">
       {/* 01. Sidebar: Feed de Conversas */}
       <section className="w-[380px] shrink-0 border-r border-frost-border flex flex-col bg-white/[0.01] backdrop-blur-3xl relative z-10">
         <div className="p-8 border-b border-frost-border space-y-6">
