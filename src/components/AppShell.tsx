@@ -9,7 +9,7 @@ import { TextMono } from "./Typography"
 export function AppShell() {
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="flex h-screen w-full bg-void text-near-white animate-in fade-in duration-500 overflow-hidden">
+      <div className="flex h-svh w-full bg-void text-near-white animate-in fade-in duration-500 overflow-hidden">
         <AppSidebar />
         
         <SidebarInset className="flex flex-col flex-1 bg-void relative overflow-hidden">

@@ -42,9 +42,9 @@ function InboxPage() {
   );
 
   return (
-    <div className="h-full flex bg-void animate-in fade-in duration-700 overflow-hidden">
+    <div className="h-full flex flex-col md:flex-row bg-void animate-in fade-in duration-700 overflow-hidden relative">
       {/* 01. Sidebar: Feed de Conversas */}
-      <section className="w-[380px] shrink-0 border-r border-frost-border flex flex-col bg-white/[0.01] backdrop-blur-3xl relative z-10">
+      <section className="w-full md:w-[380px] shrink-0 border-b md:border-b-0 md:border-r border-frost-border flex flex-col bg-white/[0.01] backdrop-blur-3xl relative z-10 h-1/3 md:h-full">
         <div className="p-8 border-b border-frost-border space-y-6">
           <div className="flex items-center justify-between">
             <HeadingSub className="text-[24px] tracking-tight mb-0">Conversas</HeadingSub>
@@ -372,7 +372,7 @@ function ChatComposer() {
 
 function LeadCard({ lead }: { lead: Lead }) {
   return (
-    <aside className="w-[420px] shrink-0 overflow-y-auto bg-void border-l border-frost-border animate-in slide-in-from-right-8 duration-1000 scrollbar-hide relative z-20">
+    <aside className="hidden xl:flex w-[420px] shrink-0 flex-col overflow-y-auto bg-void border-l border-frost-border animate-in slide-in-from-right-8 duration-1000 scrollbar-hide relative z-20">
       <div className="absolute inset-0 bg-gradient-to-b from-orange-10/[0.02] via-transparent to-transparent pointer-events-none" />
       
       <div className="p-10 border-b border-frost-border relative z-10">
