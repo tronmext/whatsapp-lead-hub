@@ -119,7 +119,8 @@ function LeadsPage() {
       </header>
 
       <main className="flex-1 px-8 md:px-12 pb-12 overflow-hidden flex flex-col">
-        {isClient && viewMode === "kanban" ? (
+        {isClient ? (
+          viewMode === "kanban" ? (
           <DragDropContext onDragEnd={onDragEnd}>
             <div className="flex gap-6 h-full overflow-x-auto pb-4 scrollbar-hide">
               {COLUMNS.map((status) => (
@@ -288,6 +289,11 @@ function LeadsPage() {
               </table>
             </div>
           </ResendCard>
+          )
+        ) : (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="size-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
+          </div>
         )}
       </main>
     </div>
