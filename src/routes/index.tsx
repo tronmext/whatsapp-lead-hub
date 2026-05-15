@@ -90,9 +90,9 @@ function Dashboard() {
                 {recent.map((l) => (
                   <li 
                     key={l.id} 
-                    className="flex items-center gap-6 px-8 py-5 transition-all duration-500 hover:bg-white/[0.03] group/lead"
+                    className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 px-4 md:px-8 py-5 transition-all duration-500 hover:bg-white/[0.03] group/lead"
                   >
-                    <div className="size-12 rounded-full grid place-items-center text-[15px] font-bold bg-void frost-border group-hover/lead:shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all">
+                    <div className="size-12 rounded-full grid place-items-center text-[15px] font-bold bg-void frost-border group-hover/lead:shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all shrink-0">
                       {l.initials}
                     </div>
                     <div className="flex-1 min-w-0">
