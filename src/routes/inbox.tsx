@@ -303,9 +303,9 @@ function ChatComposer() {
   }, [text]);
 
   return (
-    <div className="border-t border-frost-border p-6 md:p-8 bg-void relative z-20 mt-auto">
-      <div className="max-w-4xl mx-auto">
-        <div className="frost-border rounded-2xl bg-white/[0.02] backdrop-blur-xl p-2 transition-all focus-within:bg-white/[0.04] focus-within:border-white/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+    <div className="border-t border-border/10 p-4 md:p-6 bg-void relative z-20 mt-auto">
+      <div className="max-w-3xl mx-auto">
+        <div className="border border-border/10 rounded-2xl bg-muted p-1 transition-all focus-within:border-primary/20 shadow-2xl">
           <textarea
             ref={textareaRef}
             value={text}
