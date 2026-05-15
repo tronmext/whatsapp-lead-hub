@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { LEADS, STATUS_LABELS, type Lead, type LineId } from "@/lib/mock-data";
 import { TagPill } from "@/components/Tag";
+import { cn } from "@/lib/utils";
 import {
   Search, Filter, Send, Paperclip, Smile, Sparkles,
   Phone, Building2, MapPin, Tag as TagIcon, Plus, ArrowRight,
-  MessageSquare, FileText, Users2, Clock, Mic
+  MessageSquare, FileText, Users2, Clock, Mic, Check, CheckCheck, MoreHorizontal, Info
 } from "lucide-react";
 
 export const Route = createFileRoute("/inbox")({
