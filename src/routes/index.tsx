@@ -99,8 +99,8 @@ function Dashboard() {
                       <div className="text-[16px] font-semibold text-near-white/90 group-hover/lead:text-near-white transition-colors">{l.name}</div>
                       <TextMono className="text-[13px] opacity-60 mt-0.5">{l.lastMessage}</TextMono>
                     </div>
-                    <div className="text-right shrink-0">
-                      <TextMono className="text-[16px] font-bold text-near-white block">
+                    <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0">
+                      <TextMono className="text-[16px] font-bold text-near-white">
                         {l.score}<span className="text-muted-foreground/30 font-medium text-[12px] ml-1">/100</span>
                       </TextMono>
                       <span className={cn(
