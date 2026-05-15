@@ -23,7 +23,7 @@ import {
   deleteInstance,
   logoutInstance,
 } from "@/lib/evolution.functions";
-import { updateInstanceAlias } from "@/lib/server-functions";
+import { getInstances, updateInstanceAlias } from "@/lib/server-functions";
 
 const ACTIVE_KEY = "evolution.activeInstance";
 
@@ -97,6 +97,24 @@ export function InstancesPanel() {
 
   const [aliases, setAliases] = useState<Record<string, string>>({});
   const aliasTimers = useRef<Record<string, NodeJS.Timeout>>({});
+
+  // Load aliases from local DB
+  const getInstancesFn = useServerFn(getInstances);
+  useQuery({
+    queryKey: ["instances", "aliases"],
+    queryFn: async () => {
+      const data = await getInstancesFn();
+      if (data && data.length > 0) {
+        const aliasMap: Record<string, string> = {};
+        data.forEach((inst: any) => {
+          if (inst.alias) aliasMap[inst.name] = inst.alias;
+        });
+        setAliases(prev => ({ ...prev, ...aliasMap }));
+      }
+      return data;
+    },
+    refetchInterval: 30000,
+  });
 
   const createMutation = useMutation({
     mutationFn: async () => {
@@ -212,7 +230,13 @@ export function InstancesPanel() {
                 setAliases(prev => ({ ...prev, [name]: alias }));
                 clearTimeout(aliasTimers.current[name]);
                 aliasTimers.current[name] = setTimeout(() => {
-                  updateAliasFn({ data: { id: name, alias } }).catch(() => {});
+                  updateAliasFn({ data: { id: name, alias } })
+                    .then(() => {
+                      queryClient.invalidateQueries({ queryKey: ["instances", "aliases"] });
+                    })
+                    .catch((err: Error) => {
+                      toast.error("Erro ao salvar tag: " + err.message);
+                    });
                 }, 800);
               }}
               onActivate={() => {
