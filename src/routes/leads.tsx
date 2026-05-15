@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { LEADS, STATUS_LABELS } from "@/lib/mock-data";
 import { TagPill } from "@/components/Tag";
 import { Search, Plus } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/leads")({
   head: () => ({
