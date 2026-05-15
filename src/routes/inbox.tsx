@@ -478,7 +478,10 @@ function DispatchButton({
   label, sub, icon: Icon = MessageSquare,
 }: { label: string; sub: string; icon?: any }) {
   return (
-    <button className="w-full frost-border rounded-2xl p-5 text-left flex items-center gap-5 hover:bg-white/[0.03] transition-all duration-500 group relative overflow-hidden shadow-2xl">
+    <button 
+      onClick={() => toast.success(`Briefing enviado para ${label}`)}
+      className="w-full frost-border rounded-2xl p-5 text-left flex items-center gap-5 hover:bg-white/[0.03] transition-all duration-500 group relative overflow-hidden shadow-2xl"
+    >
       <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-10 transition-opacity">
          <Icon className="size-10" />
       </div>
