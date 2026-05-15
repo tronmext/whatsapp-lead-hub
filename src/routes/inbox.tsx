@@ -194,26 +194,39 @@ function InboxPage() {
 
 function ChatHeader({ lead }: { lead: Lead }) {
   return (
-    <div className="px-6 py-4 border-b border-border flex items-center justify-between">
-      <div className="flex items-center gap-3">
-        <div className="size-9 rounded-full grid place-items-center text-[12px] font-semibold bg-[oklch(0.12_0_0)] frost-border">
+    <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-black/40 backdrop-blur-md sticky top-0 z-20">
+      <div className="flex items-center gap-4">
+        <div className="size-10 rounded-full grid place-items-center text-[13px] font-bold bg-[oklch(0.12_0_0)] frost-border relative group">
           {lead.initials}
+          <span className="absolute bottom-0 right-0 size-2.5 bg-green rounded-full border-2 border-background shadow-[0_0_8px_rgba(17,255,153,0.5)]" />
         </div>
         <div>
-          <div className="text-[14px] font-medium">{lead.name}</div>
+          <div className="text-[15px] font-bold tracking-tight">{lead.name}</div>
           <div className="flex items-center gap-2 text-[11px] text-muted-foreground font-mono">
-            <span>{lead.phone}</span>
+            <span className="flex items-center gap-1">
+              <span className={cn(
+                "size-1.5 rounded-full",
+                lead.line === "L1" ? "bg-orange" : "bg-blue"
+              )} />
+              {lead.phone}
+            </span>
             <span>·</span>
-            <span className="text-[oklch(0.86_0.2_155)]">digitando…</span>
+            <span className="text-green animate-pulse font-medium">digitando…</span>
           </div>
         </div>
       </div>
+      
       <div className="flex items-center gap-2">
-        <span className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground font-section mr-1">
-          {STATUS_LABELS[lead.status]}
-        </span>
-        <button className="pill px-3 py-1.5 text-[12px] font-medium frost-border hover:bg-white/5 flex items-center gap-1.5">
-          <Sparkles className="size-3" /> Analisar com IA
+        <button className="size-9 rounded-full frost-border grid place-items-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all">
+          <Phone className="size-4" />
+        </button>
+        <button className="size-9 rounded-full frost-border grid place-items-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all">
+          <MoreHorizontal className="size-4" />
+        </button>
+        <div className="w-[1px] h-6 bg-border mx-2" />
+        <button className="pill bg-white/5 frost-border px-4 py-2 text-[12.5px] font-bold text-foreground hover:bg-[oklch(0.74_0.18_45/0.2)] hover:text-orange hover:border-orange/30 transition-all duration-300 flex items-center gap-2 group">
+          <Sparkles className="size-3.5 text-orange group-hover:animate-bounce" /> 
+          <span>Analisar com IA</span>
         </button>
       </div>
     </div>
