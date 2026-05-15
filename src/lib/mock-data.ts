@@ -15,7 +15,9 @@ export const ALL_TAGS: Tag[] = [
   { id: "t6", label: "Retornar", color: "blue" },
 ];
 
-export const STATUS_LABELS: Record<string, string> = {
+export type LeadStatus = "novo" | "negociacao" | "qualificado" | "perdido";
+
+export const STATUS_LABELS: Record<LeadStatus, string> = {
   novo: "Novo",
   negociacao: "Em negociação",
   qualificado: "Qualificado",
