@@ -120,34 +120,7 @@ Tom: Sóbrio, editorial, técnico.`}
 }
 
 function InstanceSettings() {
-  return (
-    <section className="space-y-12">
-      <div className="flex items-baseline justify-between border-b border-frost-border pb-8">
-        <div>
-          <HeadingSub className="mb-2">Instâncias WhatsApp</HeadingSub>
-          <TextSmall className="text-muted-foreground">Gerencie suas conexões ativas e status de despacho.</TextSmall>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="size-2 rounded-full bg-green-4 shadow-[0_0_10px_rgba(17,255,153,0.5)] animate-pulse" />
-          <TextMono className="text-[10px] text-green-4 font-bold">REDE OPERACIONAL</TextMono>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6">
-        <InstanceCard line="L1" label="Operação Comercial" phone="+55 11 99887-1100" accent="orange" />
-        <InstanceCard line="L2" label="Setor Agronegócio" phone="+55 65 99700-2244" accent="blue" />
-        <button className="frost-border rounded-2xl p-12 bg-white/[0.01] border-dashed border-2 flex flex-col items-center justify-center gap-4 group hover:bg-white/[0.03] transition-all duration-500">
-           <div className="size-14 rounded-full bg-white/5 grid place-items-center group-hover:scale-110 transition-transform shadow-xl">
-              <Plus className="size-6 text-muted-foreground" />
-           </div>
-           <div className="text-center">
-             <TextSmall className="tracking-[0.2em] text-near-white font-bold block mb-1">CONECTAR NOVA LINHA</TextSmall>
-             <TextSmall className="text-muted-foreground opacity-50 text-[10px]">SUPORTA API OFICIAL E WEB</TextSmall>
-           </div>
-        </button>
-      </div>
-    </section>
-  );
+  return <InstancesPanel />;
 }
 
 function SecuritySettings() {
@@ -164,10 +137,10 @@ function SecuritySettings() {
       <div className="space-y-6">
         <div className="frost-border p-8 rounded-2xl bg-white/[0.01] flex items-center justify-between group hover:bg-white/[0.02] transition-all">
           <div>
-            <TextSmall className="text-muted-foreground uppercase tracking-widest text-[10px] block mb-2">API KEY PRINCIPAL</TextSmall>
-            <TextMono className="text-[15px] text-near-white">sk-••••••••••••••••••••••••4j2k</TextMono>
+            <TextSmall className="text-muted-foreground uppercase tracking-widest text-[10px] block mb-2">EVOLUTION API</TextSmall>
+            <TextMono className="text-[15px] text-near-white">configurada via secret server-side</TextMono>
           </div>
-          <Button variant="outline" size="sm" className="font-bold tracking-widest text-[10px]">ROTACIONAR</Button>
+          <Button variant="outline" size="sm" className="font-bold tracking-widest text-[10px]">ATIVA</Button>
         </div>
 
         <div className="frost-border p-8 rounded-2xl bg-white/[0.01] flex items-center justify-between group hover:bg-white/[0.02] transition-all border-red-5/20">
@@ -179,35 +152,5 @@ function SecuritySettings() {
         </div>
       </div>
     </section>
-  );
-}
-
-function InstanceCard({ line, label, phone, accent }: { line: string; label: string; phone: string; accent: "orange" | "blue" }) {
-  const colorClass = accent === "orange" ? "text-orange-10 border-orange-10/30" : "text-blue-10 border-blue-10/30";
-  const bgClass = accent === "orange" ? "bg-orange-10/10" : "bg-blue-10/10";
-  
-  return (
-    <ResendCard variant="large" className="p-8 relative overflow-hidden group">
-       <div className="flex items-center justify-between mb-8">
-          <TextMono className={cn("px-3 py-1 border uppercase tracking-widest text-[10px] font-black rounded-full", bgClass, colorClass)}>
-            LINHA {line}
-          </TextMono>
-          <div className="flex items-center gap-2 bg-green-4/10 px-3 py-1 rounded-full border border-green-4/20">
-             <div className="size-1.5 rounded-full bg-green-4 animate-pulse" />
-             <TextSmall className="text-green-4 text-[9px]">ESTÁVEL</TextSmall>
-          </div>
-       </div>
-       <div className="text-[20px] font-semibold text-near-white mb-2 font-sans tracking-tight">{label}</div>
-       <div className="flex items-center gap-2">
-          <Wifi className="size-4 text-muted-foreground" strokeWidth={2.5} />
-          <TextMono className="text-[14px]">{phone}</TextMono>
-       </div>
-       <div className="mt-10 flex gap-3">
-          <Button variant="secondary" size="sm" className="flex-1 uppercase tracking-widest text-[11px] font-black">CONFIGURAR</Button>
-          <button className="size-11 rounded-xl frost-border grid place-items-center text-muted-foreground hover:text-red-5 hover:border-red-5/30 transition-all active:scale-90">
-             <Trash2 className="size-4" />
-          </button>
-       </div>
-    </ResendCard>
   );
 }
