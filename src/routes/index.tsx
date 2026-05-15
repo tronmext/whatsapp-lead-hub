@@ -28,13 +28,13 @@ function Dashboard() {
   const recent = LEADS.slice(0, 4);
 
   return (
-    <div className="relative min-h-screen bg-void animate-in fade-in duration-1000 overflow-hidden">
+    <div className="relative min-h-full bg-void animate-in fade-in duration-1000 overflow-y-auto">
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
       <div className="absolute top-[-20%] right-[-10%] size-[800px] bg-orange-10/5 rounded-full blur-[150px] pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] size-[600px] bg-blue-10/5 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="relative px-12 py-16 max-w-[1400px] mx-auto">
-        <header className="flex items-end justify-between mb-20 animate-in slide-in-from-top-6 duration-1000">
+      <div className="relative px-6 md:px-12 py-8 md:py-16 max-w-[1400px] mx-auto">
+        <header className="flex flex-col md:flex-row items-start md:items-end justify-between gap-8 mb-12 md:mb-20 animate-in slide-in-from-top-6 duration-1000">
           <div className="space-y-6">
             <div className="flex items-center gap-3">
               <div className="size-2 rounded-full bg-green-4 animate-pulse shadow-[0_0_10px_rgba(17,255,153,0.5)]" />
@@ -79,8 +79,8 @@ function Dashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <ResendCard variant="large" className="lg:col-span-2 group">
-            <div className="flex items-center justify-between p-10 pb-6 border-b border-frost-border">
-              <HeadingSub>Leads Recentes</HeadingSub>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 md:p-10 pb-6 border-b border-frost-border gap-4">
+              <HeadingSub className="mb-0">Leads Recentes</HeadingSub>
               <Link to="/leads" className="nav-link text-[12px] flex items-center gap-2 group/link">
                 GERENCIAR TODOS <ArrowUpRight className="size-4 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
               </Link>
@@ -90,21 +90,21 @@ function Dashboard() {
                 {recent.map((l) => (
                   <li 
                     key={l.id} 
-                    className="flex items-center gap-6 px-8 py-5 transition-all duration-500 hover:bg-white/[0.03] group/lead"
+                    className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 px-4 md:px-8 py-5 transition-all duration-500 hover:bg-white/[0.03] group/lead"
                   >
-                    <div className="size-12 rounded-full grid place-items-center text-[15px] font-bold bg-void frost-border group-hover/lead:shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all">
+                    <div className="size-12 rounded-full grid place-items-center text-[15px] font-bold bg-void frost-border group-hover/lead:shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all shrink-0">
                       {l.initials}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-[16px] font-semibold text-near-white/90 group-hover/lead:text-near-white transition-colors">{l.name}</div>
                       <TextMono className="text-[13px] opacity-60 mt-0.5">{l.lastMessage}</TextMono>
                     </div>
-                    <div className="text-right shrink-0">
-                      <TextMono className="text-[16px] font-bold text-near-white block">
+                    <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0">
+                      <TextMono className="text-[16px] font-bold text-near-white">
                         {l.score}<span className="text-muted-foreground/30 font-medium text-[12px] ml-1">/100</span>
                       </TextMono>
                       <span className={cn(
-                        "text-[9px] font-mono font-black uppercase tracking-[0.1em] mt-1.5 px-2 py-0.5 rounded inline-block",
+                        "text-[9px] font-mono font-black uppercase tracking-[0.1em] px-2 py-0.5 rounded inline-block",
                         l.line === "L1" ? "bg-orange-10/10 text-orange-10 border border-orange-10/20" : "bg-blue-10/10 text-blue-10 border border-blue-10/20"
                       )}>
                         {l.line}
