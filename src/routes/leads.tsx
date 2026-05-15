@@ -29,9 +29,9 @@ function LeadsPage() {
           </TextSmall>
           <HeadingHero className="text-[72px]">Leads</HeadingHero>
         </div>
-        <ResendButton variant="primary" size="md" icon={<Plus className="size-4" />} className="px-8 shadow-xl">
+        <Button variant="default" size="default" icon={<Plus className="size-4" />} className="px-8 shadow-xl">
           NOVO LEAD
-        </ResendButton>
+        </Button>
       </header>
 
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 bg-black/40 p-2 rounded-2xl frost-border backdrop-blur-sm animate-in slide-in-from-bottom-4 duration-1000 delay-200">
