@@ -4,10 +4,17 @@ interface CardProps {
   children: React.ReactNode;
   className?: string;
   variant?: "standard" | "large" | "section";
+  bordered?: boolean;
   style?: React.CSSProperties;
 }
 
-export const ResendCard = ({ children, className, variant = "standard", style }: CardProps) => {
+export const ResendCard = ({
+  children,
+  className,
+  variant = "standard",
+  bordered = false,
+  style,
+}: CardProps) => {
   const radius = {
     standard: "rounded-[var(--radius-card)]",
     large: "rounded-[24px]",
@@ -15,16 +22,15 @@ export const ResendCard = ({ children, className, variant = "standard", style }:
   }[variant];
 
   return (
-    <div 
+    <div
       className={cn(
-        "border border-border bg-card text-card-foreground transition-all duration-500 hover:bg-white/[0.03]",
+        "border bg-card text-card-foreground transition-all duration-500",
+        bordered ? "border-frost-border-strong" : "border-frost-border/60",
+        "hover:bg-white/[0.02]",
         radius,
-        className
+        className,
       )}
-      style={{
-        boxShadow: "var(--card-shadow)",
-        ...style
-      }}
+      style={style}
     >
       {children}
     </div>

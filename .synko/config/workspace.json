@@ -1,0 +1,11 @@
+{
+  "autoSpawnSquad": null,
+  "defaultLayout": "1",
+  "defaultAgent": "claude",
+  "defaultProviderId": "custom-anthropic-deepseek-1778475445883",
+  "defaultModel": "deepseek-v4-flash",
+  "executionMode": "pend",
+  "lastActivePanel": "terminal",
+  "extensionPacks": [],
+  "mcpConnectors": []
+}

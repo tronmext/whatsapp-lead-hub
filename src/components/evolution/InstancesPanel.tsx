@@ -80,7 +80,8 @@ export function InstancesPanel() {
   const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["evolution", "instances"],
     queryFn: () => list(),
-    refetchInterval: 8000,
+    staleTime: 10000,
+    refetchInterval: 20000,
   });
 
   const instances = useMemo<EvoInstance[]>(() => {
@@ -104,7 +105,8 @@ export function InstancesPanel() {
   const { data: dbInstances } = useQuery({
     queryKey: ["instances", "aliases"],
     queryFn: () => getInstancesFn(),
-    refetchInterval: 15000,
+    staleTime: 10000,
+    refetchInterval: 30000,
   });
 
   const dbAliasMap = useMemo(() => {
@@ -119,7 +121,7 @@ export function InstancesPanel() {
 
   // Initialize aliases from DB on mount and after refetch
   useEffect(() => {
-    setAliases(prev => {
+    setAliases((prev) => {
       const merged = { ...prev };
       for (const [name, alias] of Object.entries(dbAliasMap)) {
         merged[name] = alias;
@@ -190,7 +192,11 @@ export function InstancesPanel() {
           >
             <RefreshCw className={cn("size-4", isFetching && "animate-spin")} />
           </button>
-          <Button onClick={() => setCreating(true)} size="sm" className="font-bold tracking-widest text-[11px] uppercase">
+          <Button
+            onClick={() => setCreating(true)}
+            size="sm"
+            className="font-bold tracking-widest text-[11px] uppercase"
+          >
             <Plus className="size-4 mr-1" /> Nova instância
           </Button>
         </div>
@@ -205,7 +211,9 @@ export function InstancesPanel() {
 
       {isError && (
         <div className="frost-border p-6 rounded-2xl border-red-5/30 bg-red-5/5">
-          <TextSmall className="text-red-5 font-bold mb-2">Falha ao consultar Evolution API</TextSmall>
+          <TextSmall className="text-red-5 font-bold mb-2">
+            Falha ao consultar Evolution API
+          </TextSmall>
           <TextMono className="text-[11px] text-muted-foreground break-all">
             {(error as Error).message}
           </TextMono>
@@ -240,21 +248,21 @@ export function InstancesPanel() {
               alias={aliases[name] ?? (inst as any).alias ?? ""}
               saving={savingAliases[name] ?? false}
               onAliasChange={(alias) => {
-                setAliases(prev => ({ ...prev, [name]: alias }));
+                setAliases((prev) => ({ ...prev, [name]: alias }));
               }}
               onAliasSave={() => {
                 const alias = aliases[name] ?? "";
-                setSavingAliases(prev => ({ ...prev, [name]: true }));
+                setSavingAliases((prev) => ({ ...prev, [name]: true }));
                 updateAliasFn({ data: { id: name, alias } })
                   .then(() => {
                     queryClient.invalidateQueries({ queryKey: ["instances"] });
                     queryClient.invalidateQueries({ queryKey: ["sidebar"] });
-                    setSavingAliases(prev => ({ ...prev, [name]: false }));
+                    setSavingAliases((prev) => ({ ...prev, [name]: false }));
                     toast.success(`Tag "${alias || name}" salva`);
                   })
                   .catch((err: Error) => {
                     toast.error("Erro ao salvar tag: " + err.message);
-                    setSavingAliases(prev => ({ ...prev, [name]: false }));
+                    setSavingAliases((prev) => ({ ...prev, [name]: false }));
                   });
               }}
               onActivate={() => {
@@ -361,17 +369,36 @@ function InstanceLiveCard({
 }) {
   const stateMeta =
     state === "open"
-      ? { label: "CONECTADA", color: "text-green-4 border-green-4/30 bg-green-4/10", dot: "bg-green-4" }
+      ? {
+          label: "CONECTADA",
+          color: "text-green-4 border-green-4/30 bg-green-4/10",
+          dot: "bg-green-4",
+        }
       : state === "connecting"
-        ? { label: "CONECTANDO", color: "text-orange-10 border-orange-10/30 bg-orange-10/10", dot: "bg-orange-10" }
-        : { label: state.toUpperCase() || "DESCONECTADA", color: "text-red-5/80 border-red-5/30 bg-red-5/10", dot: "bg-red-5" };
+        ? {
+            label: "CONECTANDO",
+            color: "text-orange-10 border-orange-10/30 bg-orange-10/10",
+            dot: "bg-orange-10",
+          }
+        : {
+            label: state.toUpperCase() || "DESCONECTADA",
+            color: "text-red-5/80 border-red-5/30 bg-red-5/10",
+            dot: "bg-red-5",
+          };
 
   return (
-    <ResendCard variant="large" className={cn("p-8 relative overflow-hidden group", isActive && "ring-1 ring-primary/40")}>
+    <ResendCard
+      variant="large"
+      className={cn("p-8 relative overflow-hidden group", isActive && "ring-1 ring-primary/40")}
+    >
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           {profilePictureUrl ? (
-            <img src={profilePictureUrl} alt={profileName ?? name} className="size-10 rounded-full object-cover" />
+            <img
+              src={profilePictureUrl}
+              alt={profileName ?? name}
+              className="size-10 rounded-full object-cover"
+            />
           ) : (
             <div className="size-10 rounded-full bg-primary/10 grid place-items-center">
               <Wifi className="size-4 text-primary" />
@@ -386,14 +413,22 @@ function InstanceLiveCard({
             )}
           </div>
         </div>
-        <div className={cn("flex items-center gap-2 px-3 py-1 rounded-full border", stateMeta.color)}>
-          <span className={cn("size-1.5 rounded-full", stateMeta.dot, state === "connecting" && "animate-pulse")} />
+        <div
+          className={cn("flex items-center gap-2 px-3 py-1 rounded-full border", stateMeta.color)}
+        >
+          <span
+            className={cn(
+              "size-1.5 rounded-full",
+              stateMeta.dot,
+              state === "connecting" && "animate-pulse",
+            )}
+          />
           <TextMono className="text-[10px] font-bold">{stateMeta.label}</TextMono>
         </div>
       </div>
 
       <div className="flex items-center gap-2 mt-2">
-        <TextMono className="text-[10px] text-muted-foreground opacity-50">TAG</TextMono>
+        <TextMono className="text-[10px] text-muted-foreground opacity-50">Apelido</TextMono>
         <input
           value={alias ?? ""}
           onChange={(e) => onAliasChange(e.target.value.slice(0, 8))}
@@ -416,7 +451,11 @@ function InstanceLiveCard({
 
       <div className="flex flex-wrap gap-2 mt-4">
         {state !== "open" && (
-          <Button size="sm" onClick={onShowQr} className="text-[11px] font-bold tracking-widest uppercase">
+          <Button
+            size="sm"
+            onClick={onShowQr}
+            className="text-[11px] font-bold tracking-widest uppercase"
+          >
             <QrCode className="size-4 mr-1" /> Conectar (QR)
           </Button>
         )}
@@ -491,16 +530,12 @@ function QrDialog({ instanceName, onClose }: { instanceName: string | null; onCl
               {(qrQuery.error as Error).message}
             </TextMono>
           )}
-          {base64 && (
-            <img
-              src={base64}
-              alt="QR Code"
-              className="size-64 rounded-xl bg-white p-2"
-            />
-          )}
+          {base64 && <img src={base64} alt="QR Code" className="size-64 rounded-xl bg-white p-2" />}
           {!base64 && code && (
             <div className="bg-muted p-4 rounded-lg text-center">
-              <TextSmall className="text-muted-foreground block mb-1">Pairing code</TextSmall>
+              <TextSmall className="text-muted-foreground block mb-1">
+                Código de pareamento
+              </TextSmall>
               <TextMono className="text-2xl font-bold tracking-widest">{code}</TextMono>
             </div>
           )}
@@ -511,7 +546,9 @@ function QrDialog({ instanceName, onClose }: { instanceName: string | null; onCl
                 <TextSmall className="text-[11px]">Aguardando leitura…</TextSmall>
               </>
             )}
-            {isConnected && <TextSmall className="text-[11px] text-green-4 font-bold">Conectada!</TextSmall>}
+            {isConnected && (
+              <TextSmall className="text-[11px] text-green-4 font-bold">Conectada!</TextSmall>
+            )}
           </div>
         </div>
 
@@ -519,7 +556,9 @@ function QrDialog({ instanceName, onClose }: { instanceName: string | null; onCl
           <Button variant="secondary" size="sm" onClick={() => qrQuery.refetch()}>
             <RefreshCw className="size-4 mr-1" /> Renovar QR
           </Button>
-          <Button size="sm" onClick={onClose}>Fechar</Button>
+          <Button size="sm" onClick={onClose}>
+            Fechar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

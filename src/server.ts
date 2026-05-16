@@ -17,7 +17,7 @@ let seeded = false;
 async function getServerEntry(): Promise<ServerEntry> {
   if (!serverEntryPromise) {
     serverEntryPromise = import("@tanstack/react-start/server-entry").then(
-      (m) => ((m as { default?: ServerEntry }).default ?? (m as unknown as ServerEntry)),
+      (m) => (m as { default?: ServerEntry }).default ?? (m as unknown as ServerEntry),
     );
   }
   return serverEntryPromise;
@@ -74,81 +74,93 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 export default {
   async fetch(request: Request, env: any, ctx: any) {
     try {
-      console.log('--- SERVER FETCH ---');
-      
       // Merge incoming env with process.env for local development
       const activeEnv = {
         ...(process.env || {}),
         ...(env || {}),
-        ...((globalThis as any).env || {})
+        ...((globalThis as any).env || {}),
       };
-      
-      console.log('Env keys:', Object.keys(activeEnv).filter(k => !k.startsWith('npm_')));
-      
+      const debugFetch = activeEnv.DEBUG_SERVER_FETCH === "1";
+      if (debugFetch) {
+        console.log("--- SERVER FETCH ---", request.method, new URL(request.url).pathname);
+      }
+
       // Inject DB into global context for server functions
       let db = activeEnv?.DB || activeEnv?.ggailabs_leadflow;
-      
+
       // --- FALLBACK PARA DESENVOLVIMENTO LOCAL ---
-      if (!db && process.env.NODE_ENV !== 'production') {
-        // Tentar RemoteD1Proxy primeiro (produção via wrangler)
+      // Priorizar SQLite LOCAL para queries rápidas durante desenvolvimento
+      // RemoteD1Proxy (wrangler CLI) é muito lento para iterar rapidamente
+      if (!db && process.env.NODE_ENV !== "production") {
+        // 1. PRIORIDADE: SQLite local do wrangler (fastest for dev)
         try {
-          console.log('--- TRYING REMOTE D1 ---');
-          const remoteDb = new RemoteD1Proxy();
-          const testResult = await remoteDb.prepare("SELECT 1 as test").bind().first<{ test: number }>();
-          if (testResult) {
-            db = remoteDb;
-            console.log('--- REMOTE D1 ACTIVE ---');
+          const stateDir = path.join(
+            process.cwd(),
+            ".wrangler/state/v3/d1/miniflare-D1DatabaseObject",
+          );
+          if (fs.existsSync(stateDir)) {
+            const files = fs.readdirSync(stateDir).filter((f) => {
+              if (!f.endsWith(".sqlite")) return false;
+              const fullPath = path.join(stateDir, f);
+              try {
+                return fs.statSync(fullPath).size > 0;
+              } catch {
+                return false;
+              }
+            });
+            if (files.length > 0) {
+              const latest = files.sort(
+                (a, b) =>
+                  fs.statSync(path.join(stateDir, b)).mtimeMs -
+                  fs.statSync(path.join(stateDir, a)).mtimeMs,
+              )[0];
+              const fullPath = path.join(stateDir, latest);
+              if (debugFetch) console.log("--- LOCAL DEV DB ACTIVE ---", fullPath);
+              db = new LocalD1Proxy(fullPath);
+            }
           }
         } catch (err) {
-          console.log('Remote D1 unavailable, falling back to local:', (err as Error).message);
+          console.error("Failed to auto-detect local DB:", err);
         }
 
-        // Fallback: SQLite local do wrangler
+        // 2. FALLBACK: RemoteD1Proxy (slow, via wrangler CLI)
         if (!db) {
           try {
-            const stateDir = path.join(process.cwd(), '.wrangler/state/v3/d1/miniflare-D1DatabaseObject');
-            if (fs.existsSync(stateDir)) {
-              const files = fs.readdirSync(stateDir).filter(f => {
-                if (!f.endsWith('.sqlite')) return false;
-                const fullPath = path.join(stateDir, f);
-                try {
-                  return fs.statSync(fullPath).size > 0;
-                } catch { return false; }
-              });
-              if (files.length > 0) {
-                const latest = files.sort((a, b) => 
-                  fs.statSync(path.join(stateDir, b)).mtimeMs - fs.statSync(path.join(stateDir, a)).mtimeMs
-                )[0];
-                const fullPath = path.join(stateDir, latest);
-                console.log('--- LOCAL DEV DB DETECTED ---', fullPath);
-                db = new LocalD1Proxy(fullPath);
-              }
+            if (debugFetch) console.log("--- TRYING REMOTE D1 (fallback) ---");
+            const remoteDb = new RemoteD1Proxy();
+            const testResult = await remoteDb
+              .prepare("SELECT 1 as test")
+              .bind()
+              .first<{ test: number }>();
+            if (testResult) {
+              db = remoteDb;
+              if (debugFetch) console.log("--- REMOTE D1 ACTIVE ---");
             }
           } catch (err) {
-            console.error('Failed to auto-detect local DB:', err);
+            if (debugFetch) console.log("Remote D1 unavailable:", (err as Error).message);
           }
         }
       }
       // -------------------------------------------
 
       if (db) {
-        console.log('DB active, injecting into globalThis');
+        if (debugFetch) console.log("DB active, injecting into globalThis");
         (globalThis as any).DB = db;
-        
+
         // Seed default data if needed (only once per server instance)
         if (!seeded) {
           try {
-            const { seedDatabase } = await import('./lib/seed');
+            const { seedDatabase } = await import("./lib/seed");
             await seedDatabase(db);
             seeded = true;
           } catch (err) {
-            console.error('Seed failed:', err);
+            console.error("Seed failed:", err);
           }
         }
       } else {
-        console.warn('DB NOT FOUND in env or local filesystem');
+        console.warn("DB NOT FOUND in env or local filesystem");
       }
-      
+
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);

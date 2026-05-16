@@ -76,7 +76,11 @@ import {
   getPrompts,
   requalifyLead,
   getConversationCategorySettings,
+  dispatchLead,
+  getDispatchSettings,
 } from "@/lib/server-functions";
+import { STATUS_LABELS } from "@/lib/lead-constants";
+import { DEFAULT_CONVERSATION_CATEGORIES } from "@/lib/defaults/conversation-categories";
 import { setActiveInstance } from "@/components/evolution/InstancesPanel";
 
 export const Route = createFileRoute("/inbox")({
@@ -929,7 +933,13 @@ function ContactDetailsPanel({
   const ensureContactFn = useServerFn(ensureContact);
   const updateContactFn = useServerFn(updateContact);
   const getConversationCategorySettingsFn = useServerFn(getConversationCategorySettings);
+  const dispatchLeadFn = useServerFn(dispatchLead);
+  const getDispatchSettingsFn = useServerFn(getDispatchSettings);
   const qc = useQueryClient();
+  const [followupOpen, setFollowupOpen] = useState(false);
+  const [followupAt, setFollowupAt] = useState("");
+  const [followupNote, setFollowupNote] = useState("");
+  const [dispatchingType, setDispatchingType] = useState<string | null>(null);
 
   const contactQ = useQuery({
     queryKey: ["contact", jid],
@@ -943,6 +953,12 @@ function ContactDetailsPanel({
     queryKey: ["inbox", "conversation-categories"],
     queryFn: () => getConversationCategorySettingsFn(),
     staleTime: 30000,
+  });
+
+  const dispatchSettingsQ = useQuery({
+    queryKey: ["settings", "dispatch"],
+    queryFn: () => getDispatchSettingsFn(),
+    staleTime: 60000,
   });
 
   // Mutation for updating contact (including metadata fields)
@@ -1000,7 +1016,7 @@ function ContactDetailsPanel({
   const baseCategory = isGroup ? "group" : "lead";
   const categoryOptions = useMemo(() => {
     const fromSettings = (categorySettingsQ.data as any)?.categories;
-    const defaults = ["lead", "group", "amigo", "familia", "marketing"];
+    const defaults = [...DEFAULT_CONVERSATION_CATEGORIES];
     const raw = Array.isArray(fromSettings) && fromSettings.length > 0 ? fromSettings : defaults;
     const current = normalizeLeadCategory(
       metadataDraft.lead_category || (contact as any).type || baseCategory,
@@ -1030,11 +1046,59 @@ function ContactDetailsPanel({
     ? metadataDraft.notes
     : [];
 
-  const STATUS_LABELS: Record<string, string> = {
-    novo: "Novo",
-    negociacao: "Em Negociação",
-    qualificado: "Qualificado",
-    perdido: "Perdido",
+  const timeline: Array<{ type: string; at: string; target: string; preview: string }> =
+    Array.isArray(metadataDraft.timeline) ? metadataDraft.timeline : [];
+
+  const dispatchMut = useMutation({
+    mutationFn: async (params: {
+      type: "secretaria" | "comercial" | "followup";
+      note?: string;
+      followupAt?: string;
+    }) => {
+      if (!instance) throw new Error("Selecione uma instância");
+      setDispatchingType(params.type);
+      return dispatchLeadFn({
+        data: {
+          jid,
+          instanceId: instance,
+          type: params.type,
+          note: params.note,
+          followupAt: params.followupAt,
+        },
+      });
+    },
+    onSuccess: (res) => {
+      setDispatchingType(null);
+      if (!res?.ok) {
+        const err = res?.error;
+        toast.error(
+          err === "dispatch_target_not_configured"
+            ? "Configure os destinos em Configurações → Despacho"
+            : err || "Falha no despacho",
+        );
+        return;
+      }
+      toast.success("Despacho enviado via WhatsApp");
+      qc.invalidateQueries({ queryKey: ["contact", jid] });
+      setFollowupOpen(false);
+      setFollowupNote("");
+      setFollowupAt("");
+    },
+    onError: (err) => {
+      setDispatchingType(null);
+      toast.error((err as Error).message);
+    },
+  });
+
+  const handleDispatch = (type: "secretaria" | "comercial" | "followup") => {
+    if (type === "followup") {
+      setFollowupOpen(true);
+      return;
+    }
+    if (!window.confirm(`Enviar briefing para ${type === "secretaria" ? "Secretaria" : "Comercial"}?`)) {
+      return;
+    }
+    dispatchMut.mutate({ type });
   };
 
   // Handlers
@@ -1578,11 +1642,38 @@ function ContactDetailsPanel({
         </div>
       </div>
 
+      {timeline.length > 0 && (
+        <div className="p-6 border-b border-border/10">
+          <TextSmall className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3">
+            Histórico de despachos
+          </TextSmall>
+          <div className="space-y-2 max-h-32 overflow-y-auto">
+            {timeline.slice(-5).reverse().map((t, i) => (
+              <div
+                key={i}
+                className="text-[10px] font-mono opacity-70 border-l-2 border-primary/30 pl-2"
+              >
+                <span className="uppercase text-primary">{t.type}</span> ·{" "}
+                {new Date(t.at).toLocaleString("pt-BR")}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ===== DISPATCH ===== */}
       <div className="p-6 border-b border-border/10">
         <TextSmall className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2">
           <Send className="size-3" /> Despacho
         </TextSmall>
+        {!dispatchSettingsQ.data?.ok && (
+          <TextSmall className="text-[10px] text-muted-foreground mb-3 block">
+            <Link to="/settings" className="text-primary underline">
+              Configure destinos
+            </Link>{" "}
+            em Configurações → Despacho
+          </TextSmall>
+        )}
         <div className="space-y-2">
           {[
             { label: "Secretaria", sub: "Resumo + Score", icon: Users2 },
@@ -1591,11 +1682,30 @@ function ContactDetailsPanel({
           ].map((d) => (
             <button
               key={d.label}
-              onClick={() => toast.success(`Briefing enviado para ${d.label}`)}
-              className="w-full p-3 rounded-xl border border-border/10 bg-white/[0.02] flex items-center gap-3 hover:bg-white/[0.04] transition-all text-left"
+              type="button"
+              disabled={dispatchMut.isPending || !instance}
+              onClick={() =>
+                handleDispatch(
+                  d.label === "Secretaria"
+                    ? "secretaria"
+                    : d.label === "Comercial"
+                      ? "comercial"
+                      : "followup",
+                )
+              }
+              className="w-full p-3 rounded-xl border border-border/10 bg-white/[0.02] flex items-center gap-3 hover:bg-white/[0.04] transition-all text-left disabled:opacity-50"
             >
               <div className="size-8 rounded-lg bg-muted grid place-items-center">
-                <d.icon className="size-4 opacity-60" />
+                {dispatchingType ===
+                (d.label === "Secretaria"
+                  ? "secretaria"
+                  : d.label === "Comercial"
+                    ? "comercial"
+                    : "followup") ? (
+                  <Loader2 className="size-4 animate-spin opacity-60" />
+                ) : (
+                  <d.icon className="size-4 opacity-60" />
+                )}
               </div>
               <div className="flex-1 min-w-0">
                 <span className="text-[11px] font-bold block">{d.label}</span>
@@ -1606,6 +1716,49 @@ function ContactDetailsPanel({
           ))}
         </div>
       </div>
+
+      <Dialog open={followupOpen} onOpenChange={setFollowupOpen}>
+        <DialogContent className="bg-card border-border/20">
+          <DialogHeader>
+            <DialogTitle>Agendar follow-up</DialogTitle>
+            <DialogDescription>
+              Envia lembrete ao operador e salva no perfil do lead.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Input
+              type="datetime-local"
+              value={followupAt}
+              onChange={(e) => setFollowupAt(e.target.value)}
+            />
+            <Textarea
+              value={followupNote}
+              onChange={(e) => setFollowupNote(e.target.value)}
+              placeholder="Nota do follow-up..."
+              rows={3}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setFollowupOpen(false)}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={() =>
+                dispatchMut.mutate({
+                  type: "followup",
+                  note: followupNote,
+                  followupAt: followupAt
+                    ? new Date(followupAt).toLocaleString("pt-BR")
+                    : new Date().toLocaleString("pt-BR"),
+                })
+              }
+              disabled={dispatchMut.isPending}
+            >
+              {dispatchMut.isPending ? <Loader2 className="size-4 animate-spin" /> : "Enviar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Footer */}
       <div className="p-4 text-center opacity-20">

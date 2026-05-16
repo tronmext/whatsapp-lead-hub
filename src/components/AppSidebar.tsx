@@ -261,10 +261,12 @@ function InstanceStatuses({ collapsed }: { collapsed: boolean }) {
           phone.length > 4 ? `${phone.slice(0, -4)}-${phone.slice(-4)}` : phone;
 
         const dbLoaded = !dbLoading && dbInstances;
-        const displayName = dbLoaded ? aliasMap[name] || name : name;
+        const alias = dbLoaded ? aliasMap[name] : undefined;
+        const displayName = alias && alias.trim() ? alias : (name !== "—" ? name : "Instância");
 
         if (collapsed) {
-          const display = dbLoaded ? aliasMap[name] || name.slice(0, 2) : name.slice(0, 2);
+          const alias = dbLoaded ? aliasMap[name] : undefined;
+          const display = alias && alias.trim() ? alias.slice(0, 2) : (name !== "—" ? name.slice(0, 2) : "IN");
           return (
             <div
               key={name}

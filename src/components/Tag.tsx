@@ -1,7 +1,14 @@
-import type { Tag } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
-const COLORS: Record<Tag["color"], string> = {
+export type TagColor = "orange" | "green" | "blue" | "yellow" | "red";
+
+export type Tag = {
+  id: string;
+  label: string;
+  color: TagColor;
+};
+
+const COLORS: Record<TagColor, string> = {
   orange: "border-orange-10/30 text-orange-10 bg-orange-10/[0.08]",
   green: "border-green-4/30 text-green-4 bg-green-4/[0.08]",
   blue: "border-blue-10/30 text-blue-10 bg-blue-10/[0.08]",
@@ -15,7 +22,7 @@ export function TagPill({ tag, className = "" }: { tag: Tag; className?: string 
       className={cn(
         "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] font-mono font-bold uppercase tracking-[0.05em] transition-all",
         COLORS[tag.color],
-        className
+        className,
       )}
     >
       <span className="size-1 rounded-full bg-current shadow-[0_0_8px_currentColor]" />

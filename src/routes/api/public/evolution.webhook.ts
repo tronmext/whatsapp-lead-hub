@@ -171,11 +171,17 @@ export const Route = createFileRoute("/api/public/evolution/webhook")({
               messageTimestamp: msgData.messageTimestamp,
             });
 
-            // 1. Upsert Contact
+            // 1. Upsert Contact (preserve manual/custom name if already saved)
+            const existingContact = await db.getContact(jid);
+            const existingName =
+              typeof existingContact?.name === "string" ? existingContact.name.trim() : "";
+            const incomingName = (msgData.pushName || data.pushName || jid.split("@")[0] || "").trim();
+            const stableName = existingName || incomingName;
+
             await db.upsertContact({
               jid,
               instance_id: instance,
-              name: msgData.pushName || data.pushName || jid.split("@")[0],
+              name: stableName,
               phone: jid.split("@")[0],
               type: jid.includes("@g.us") ? "group" : "lead",
             });

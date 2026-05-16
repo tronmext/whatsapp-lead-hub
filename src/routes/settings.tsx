@@ -16,6 +16,7 @@ import {
   Lock,
   Palette,
   Check,
+  Send,
 } from "lucide-react";
 import { HeadingHero, HeadingSub, TextSmall, TextMono } from "@/components/Typography";
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,10 @@ import {
   setLeadsAiBatch,
   getConversationCategorySettings,
   saveConversationCategorySettings,
+  getDispatchSettings,
+  saveDispatchSettings,
 } from "@/lib/server-functions";
+import { Input } from "@/components/ui/input";
 import { useTheme, THEMES } from "@/hooks/use-theme";
 import { toast } from "sonner";
 
@@ -112,7 +116,9 @@ export const Route = createFileRoute("/settings")({
 });
 
 function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<"ai" | "instances" | "security" | "appearance">("ai");
+  const [activeTab, setActiveTab] = useState<
+    "ai" | "instances" | "dispatch" | "security" | "appearance"
+  >("ai");
   const listInstancesFn = useServerFn(listInstances);
 
   const instancesQ = useQuery({
@@ -139,6 +145,12 @@ function SettingsPage() {
       label: "Instâncias",
       desc: "Conexões ativas da Evolution",
       icon: Wifi,
+    },
+    {
+      id: "dispatch",
+      label: "Despacho",
+      desc: "Destinos WhatsApp para briefings",
+      icon: Send,
     },
     {
       id: "security",
@@ -253,6 +265,7 @@ function SettingsPage() {
 
           {activeTab === "ai" && <AISettings />}
           {activeTab === "instances" && <InstanceSettings />}
+          {activeTab === "dispatch" && <DispatchSettings />}
           {activeTab === "security" && <SecuritySettings />}
           {activeTab === "appearance" && <AppearanceSettings />}
         </div>
@@ -886,6 +899,96 @@ function AISettings() {
   );
 }
 
+function DispatchSettings() {
+  const getDispatchFn = useServerFn(getDispatchSettings);
+  const saveDispatchFn = useServerFn(saveDispatchSettings);
+  const [secretaria, setSecretaria] = useState("");
+  const [comercial, setComercial] = useState("");
+  const [followupNotify, setFollowupNotify] = useState("");
+
+  const dispatchQ = useQuery({
+    queryKey: ["settings", "dispatch"],
+    queryFn: () => getDispatchFn(),
+  });
+
+  useEffect(() => {
+    if (dispatchQ.data?.ok && dispatchQ.data.settings) {
+      setSecretaria(dispatchQ.data.settings.secretaria || "");
+      setComercial(dispatchQ.data.settings.comercial || "");
+      setFollowupNotify(dispatchQ.data.settings.followupNotify || "");
+    }
+  }, [dispatchQ.data]);
+
+  const saveMut = useMutation({
+    mutationFn: () =>
+      saveDispatchFn({
+        data: { secretaria, comercial, followupNotify },
+      }),
+    onSuccess: (res) => {
+      if (res?.ok) {
+        toast.success("Destinos de despacho salvos");
+      } else {
+        toast.error(res?.error || "Erro ao salvar");
+      }
+    },
+    onError: (e) => toast.error((e as Error).message),
+  });
+
+  return (
+    <section className="space-y-8">
+      <div className="border-b border-frost-border pb-6">
+        <HeadingSub className="mb-2">Destinos de Despacho</HeadingSub>
+        <TextSmall className="text-muted-foreground">
+          Números WhatsApp (somente dígitos, com DDI) que receberão briefings do inbox.
+        </TextSmall>
+      </div>
+      <div className="grid gap-6 max-w-lg">
+        <div className="space-y-2">
+          <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+            Secretaria
+          </label>
+          <Input
+            value={secretaria}
+            onChange={(e) => setSecretaria(e.target.value.replace(/\D/g, ""))}
+            placeholder="5511999999999"
+            className="bg-muted font-mono"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+            Equipe comercial
+          </label>
+          <Input
+            value={comercial}
+            onChange={(e) => setComercial(e.target.value.replace(/\D/g, ""))}
+            placeholder="5511888888888"
+            className="bg-muted font-mono"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+            Follow-up (operador)
+          </label>
+          <Input
+            value={followupNotify}
+            onChange={(e) => setFollowupNotify(e.target.value.replace(/\D/g, ""))}
+            placeholder="5511777777777"
+            className="bg-muted font-mono"
+          />
+        </div>
+        <Button onClick={() => saveMut.mutate()} disabled={saveMut.isPending}>
+          {saveMut.isPending ? (
+            <Loader2 className="size-4 animate-spin mr-2" />
+          ) : (
+            <Save className="size-4 mr-2" />
+          )}
+          Salvar destinos
+        </Button>
+      </div>
+    </section>
+  );
+}
+
 function InstanceSettings() {
   return <InstancesPanel />;
 }
@@ -983,10 +1086,12 @@ function AppearanceSettings() {
                 <div className="relative">
                   <div
                     className="size-10 rounded-xl transition-all duration-200 ring-2 ring-offset-2 ring-offset-void"
-                    style={{
-                      backgroundColor: themeColors[id],
-                      ringColor: isActive ? themeColors[id] : "transparent",
-                    }}
+                    style={
+                      {
+                        backgroundColor: themeColors[id],
+                        "--tw-ring-color": isActive ? themeColors[id] : "transparent",
+                      } as React.CSSProperties
+                    }
                   />
                   {isActive && (
                     <div className="absolute inset-0 flex items-center justify-center">

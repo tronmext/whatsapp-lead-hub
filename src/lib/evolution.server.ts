@@ -10,13 +10,26 @@ export type EvolutionRequestOptions = {
   query?: Record<string, string | number | boolean | undefined>;
   /** Optional per-instance token (overrides global apikey). */
   instanceToken?: string;
+  /** Whether to return null instead of throwing on 404. */
+  ignore404?: boolean;
 };
 
 function getCreds() {
-  const url = process.env.EVOLUTION_API_URL;
-  const key = process.env.EVOLUTION_API_KEY;
-  if (!url) throw new Error("EVOLUTION_API_URL is not configured");
-  if (!key) throw new Error("EVOLUTION_API_KEY is not configured");
+  // @ts-ignore
+  const env = (globalThis as any).env || process.env;
+
+  const url = env.EVOLUTION_API_URL || env.EVOLUTION_API_BASE_URL;
+  const key = env.EVOLUTION_API_KEY || env.EVOLUTION_API_GLOBAL_KEY;
+
+  if (!url)
+    throw new Error(
+      "EVOLUTION_API_URL is not configured (checked EVOLUTION_API_URL and EVOLUTION_API_BASE_URL)",
+    );
+  if (!key)
+    throw new Error(
+      "EVOLUTION_API_KEY is not configured (checked EVOLUTION_API_KEY and EVOLUTION_API_GLOBAL_KEY)",
+    );
+
   return { url: url.replace(/\/+$/, ""), key };
 }
 
@@ -40,7 +53,9 @@ export type JsonValue =
   | JsonValue[]
   | { [key: string]: JsonValue };
 
-export async function evolutionFetch<T extends JsonValue = JsonValue>(opts: EvolutionRequestOptions): Promise<T> {
+export async function evolutionFetch<T extends JsonValue = JsonValue>(
+  opts: EvolutionRequestOptions,
+): Promise<T> {
   const { url, key } = getCreds();
   const target = buildUrl(url, opts.path, opts.query);
 
@@ -62,13 +77,18 @@ export async function evolutionFetch<T extends JsonValue = JsonValue>(opts: Evol
   }
 
   if (!res.ok) {
+    if (res.status === 404 && opts.ignore404) {
+      return null as any;
+    }
     const msg =
       typeof data === "object" && data && "message" in data
         ? JSON.stringify((data as Record<string, unknown>).message)
         : typeof data === "string"
           ? data
           : `HTTP ${res.status}`;
-    throw new Error(`Evolution API ${opts.method ?? "GET"} ${opts.path} failed [${res.status}]: ${msg}`);
+    throw new Error(
+      `Evolution API ${opts.method ?? "GET"} ${opts.path} failed [${res.status}]: ${msg}`,
+    );
   }
 
   return data as T;

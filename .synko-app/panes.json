@@ -1,0 +1,23 @@
+{
+  "pane-whatsapp-l-3HXv45": {
+    "agent": "shell",
+    "cwd": "/home/guilherme/Documentos/GG.AI/PLATAFORMAS/whatsapp-lead-hub",
+    "id": "pane-whatsapp-l-3HXv45",
+    "workspacePath": "/home/guilherme/Documentos/GG.AI/PLATAFORMAS/whatsapp-lead-hub",
+    "savedAt": 1778889779403,
+    "lastLines": [
+      "%                                                                                                        \r \r\u001b]2;guilherme@Lenovo-Ideapad:~/Documentos/GG.AI/PLATAFORMAS/whatsapp-lead-hub\u0007\u001b]1;..sapp-lead-hub\u0007\u001b]7;file://Lenovo-Ideapad/home/guilherme/Documentos/GG.AI/PLATAFORMAS/whatsapp-lead-hub\u001b\\\r╭─guilherme at Lenovo-Ideapad in ~/Documentos/GG.AI/PLATAFORMAS/whatsapp-lead-hub 26-05-15 - 20:02:56\r",
+      "╰─⠠⠵ \u001b[?2004h\r\r╭─guilherme at Lenovo-Ideapad in ~/Documentos/GG.AI/PLATAFORMAS/whatsapp-lead-hub on main✘✘✘ 26-05-15 - 20:02:56\r"
+    ]
+  },
+  "pane-whatsapp-l-KP6w-Z": {
+    "id": "pane-whatsapp-l-KP6w-Z",
+    "agent": "claude",
+    "cwd": "/home/guilherme/Documentos/GG.AI/PLATAFORMAS/whatsapp-lead-hub",
+    "sessionId": "d9d2a004-66d3-4a7e-9c7a-658f46ca25c6",
+    "sessionName": "claude-whatsapp-lead-hub-claude-z",
+    "workspacePath": "/home/guilherme/Documentos/GG.AI/PLATAFORMAS/whatsapp-lead-hub",
+    "savedAt": 1778889779403,
+    "lastLines": []
+  }
+}

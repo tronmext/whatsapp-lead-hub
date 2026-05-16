@@ -12,8 +12,29 @@ const InstanceName = z.string().trim().min(1).max(120);
 /* ============================== INSTANCES ================================ */
 
 export const listInstances = createServerFn({ method: "GET" }).handler(async () => {
-  const data = await evolutionFetch({ path: "/instance/fetchInstances" });
-  return { instances: Array.isArray(data) ? data : [data] };
+  const data: any = await evolutionFetch({ path: "/instance/fetchInstances" });
+
+  if (Array.isArray(data)) {
+    return { instances: data };
+  }
+
+  if (Array.isArray(data?.instances)) {
+    return { instances: data.instances };
+  }
+
+  if (Array.isArray(data?.data)) {
+    return { instances: data.data };
+  }
+
+  if (
+    data &&
+    typeof data === "object" &&
+    (data.instanceName || data.name || data.instance?.instanceName)
+  ) {
+    return { instances: [data] };
+  }
+
+  return { instances: [] as any[] };
 });
 
 export const createInstance = createServerFn({ method: "POST" })
@@ -69,7 +90,9 @@ export const connectInstance = createServerFn({ method: "GET" })
 export const connectionState = createServerFn({ method: "GET" })
   .inputValidator((input) => z.object({ instanceName: InstanceName }).parse(input))
   .handler(async ({ data }) => {
-    return evolutionFetch<{ instance: { instanceName: string; state: "open" | "connecting" | "close" } }>({
+    return evolutionFetch<{
+      instance: { instanceName: string; state: "open" | "connecting" | "close" };
+    }>({
       path: `/instance/connectionState/${encodeURIComponent(data.instanceName)}`,
     });
   });
@@ -77,19 +100,28 @@ export const connectionState = createServerFn({ method: "GET" })
 export const restartInstance = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ instanceName: InstanceName }).parse(input))
   .handler(async ({ data }) =>
-    evolutionFetch({ method: "PUT", path: `/instance/restart/${encodeURIComponent(data.instanceName)}` }),
+    evolutionFetch({
+      method: "PUT",
+      path: `/instance/restart/${encodeURIComponent(data.instanceName)}`,
+    }),
   );
 
 export const logoutInstance = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ instanceName: InstanceName }).parse(input))
   .handler(async ({ data }) =>
-    evolutionFetch({ method: "DELETE", path: `/instance/logout/${encodeURIComponent(data.instanceName)}` }),
+    evolutionFetch({
+      method: "DELETE",
+      path: `/instance/logout/${encodeURIComponent(data.instanceName)}`,
+    }),
   );
 
 export const deleteInstance = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ instanceName: InstanceName }).parse(input))
   .handler(async ({ data }) =>
-    evolutionFetch({ method: "DELETE", path: `/instance/delete/${encodeURIComponent(data.instanceName)}` }),
+    evolutionFetch({
+      method: "DELETE",
+      path: `/instance/delete/${encodeURIComponent(data.instanceName)}`,
+    }),
   );
 
 export const setPresence = createServerFn({ method: "POST" })
@@ -145,7 +177,10 @@ export const setInstanceSettings = createServerFn({ method: "POST" })
 export const getInstanceSettings = createServerFn({ method: "GET" })
   .inputValidator((input) => z.object({ instanceName: InstanceName }).parse(input))
   .handler(async ({ data }) =>
-    evolutionFetch({ path: `/settings/find/${encodeURIComponent(data.instanceName)}` }),
+    evolutionFetch({
+      path: `/settings/find/${encodeURIComponent(data.instanceName)}`,
+      ignore404: true,
+    }),
   );
 
 /* ============================== MESSAGES ================================= */
@@ -175,20 +210,22 @@ export const sendText = createServerFn({ method: "POST" })
       })
       .parse(input),
   )
-  .handler(async ({ data }) =>
-    evolutionFetch({
+  .handler(async ({ data }) => {
+    const body: any = {
+      number: normalizePhone(data.number),
+      text: data.text,
+      delay: data.delay ?? 1200,
+    };
+    if (data.quoted) body.quoted = data.quoted;
+    if (data.mentioned) body.mentioned = data.mentioned;
+    if (data.mentionsEveryOne !== undefined) body.mentionsEveryOne = data.mentionsEveryOne;
+
+    return evolutionFetch({
       method: "POST",
       path: `/message/sendText/${encodeURIComponent(data.instanceName)}`,
-      body: {
-        number: normalizePhone(data.number),
-        text: data.text,
-        delay: data.delay,
-        mentioned: data.mentioned,
-        mentionsEveryOne: data.mentionsEveryOne,
-        quoted: data.quoted,
-      },
-    }),
-  );
+      body,
+    });
+  });
 
 export const sendMedia = createServerFn({ method: "POST" })
   .inputValidator((input) =>
@@ -432,14 +469,28 @@ export const checkIsWhatsapp = createServerFn({ method: "POST" })
       method: "POST",
       path: `/chat/checkIsWhatsapp/${encodeURIComponent(data.instanceName)}`,
       body: { numbers: data.numbers.map(normalizePhone) },
+      ignore404: true,
     }),
   );
 
 export const findChats = createServerFn({ method: "GET" })
   .inputValidator((input) => z.object({ instanceName: InstanceName }).parse(input))
-  .handler(async ({ data }) =>
-    evolutionFetch({ path: `/chat/findChats/${encodeURIComponent(data.instanceName)}` }),
-  );
+  .handler(async ({ data }) => {
+    const res = await evolutionFetch<any>({
+      method: "POST",
+      path: `/chat/findChats/${encodeURIComponent(data.instanceName)}`,
+      body: {},
+      ignore404: true,
+    });
+
+    // Filtra os status e broadcast para não poluir o painel
+    if (Array.isArray(res)) {
+      return res.filter(
+        (c) => c.remoteJid !== "status@broadcast" && !c.remoteJid?.includes("@broadcast"),
+      );
+    }
+    return res;
+  });
 
 export const findContacts = createServerFn({ method: "GET" })
   .inputValidator((input) =>
@@ -447,8 +498,10 @@ export const findContacts = createServerFn({ method: "GET" })
   )
   .handler(async ({ data }) =>
     evolutionFetch({
+      method: "POST",
       path: `/chat/findContacts/${encodeURIComponent(data.instanceName)}`,
-      query: data.jid ? { "where[id]": data.jid } : undefined,
+      body: data.jid ? { "where[id]": data.jid } : {},
+      ignore404: true,
     }),
   );
 
@@ -462,12 +515,167 @@ export const findMessages = createServerFn({ method: "GET" })
       })
       .parse(input),
   )
-  .handler(async ({ data }) =>
-    evolutionFetch({
+  .handler(async ({ data, context }) => {
+    // Run both in parallel — don't let local DB slow down Evolution response
+    const evoPromise = evolutionFetch<any>({
+      method: "POST",
       path: `/chat/findMessages/${encodeURIComponent(data.instanceName)}`,
-      query: { "where[key.remoteJid]": data.remoteJid, limit: data.limit },
-    }),
-  );
+      body: {
+        where: { key: { remoteJid: data.remoteJid } },
+        limit: data.limit,
+      },
+      ignore404: true,
+    });
+
+    const localPromise = (async () => {
+      try {
+        const env = {
+          ...(process.env || {}),
+          ...((context as any)?.env || {}),
+          ...((context as any)?.cloudflare?.env || {}),
+          ...((globalThis as any).env || {}),
+        };
+        const dbInstance = env.DB || env.ggailabs_leadflow || (globalThis as any).DB;
+        if (dbInstance) {
+          const db = new (await import("./services/db.service")).DatabaseService(dbInstance);
+          return await db.getMessagesSmart(data.remoteJid, data.limit);
+        }
+      } catch (err) {
+        console.error("[findMessages] Local DB error:", err);
+      }
+      return [] as any[];
+    })();
+
+    const localArr = await localPromise;
+
+    const evoRace = await Promise.race([
+      evoPromise
+        .then((value) => ({ kind: "ok" as const, value }))
+        .catch((error) => ({ kind: "error" as const, error })),
+      new Promise<{ kind: "timeout" }>((resolve) =>
+        setTimeout(() => resolve({ kind: "timeout" }), 1500),
+      ),
+    ]);
+
+    // If Evolution is slow but we already have local history, return immediately.
+    if (evoRace.kind === "timeout" && localArr.length > 0) {
+      return localArr
+        .map((m: any) => {
+          // Parse raw_message JSON if available
+          let rawMessage = null;
+          if (m.raw_message) {
+            try {
+              rawMessage = JSON.parse(m.raw_message);
+            } catch {
+              rawMessage = null;
+            }
+          }
+          return {
+            id: m.id,
+            content: m.content,
+            from_me: m.from_me,
+            timestamp: m.timestamp,
+            type: m.type,
+            raw_message: rawMessage,
+          };
+        })
+        .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+    }
+
+    let evoResolved: any = null;
+    if (evoRace.kind === "ok") {
+      evoResolved = evoRace.value;
+    } else if (evoRace.kind === "timeout") {
+      try {
+        evoResolved = await evoPromise;
+      } catch {
+        evoResolved = null;
+      }
+    }
+
+    // Safely extract the array from Evolution's variable response structures
+    let evoMsgs: any[] = [];
+    if (evoResolved) {
+      if (Array.isArray(evoResolved)) {
+        evoMsgs = evoResolved;
+      } else if (Array.isArray(evoResolved?.messages?.records)) {
+        evoMsgs = evoResolved.messages.records;
+      } else if (Array.isArray(evoResolved?.messages)) {
+        evoMsgs = evoResolved.messages;
+      }
+    }
+
+    // 3. Merge and deduplicate
+    const msgMap = new Map<string, any>();
+
+    // Process Evolution messages
+    evoMsgs.forEach((m: any) => {
+      const id = m.key?.id || m.id;
+
+      let type = m.messageType || m.type || "text";
+      if (m.message && !m.messageType) {
+        const keys = Object.keys(m.message).filter((k) => k !== "messageContextInfo");
+        if (keys.length > 0) type = keys[0];
+      }
+
+      msgMap.set(id, {
+        id,
+        content: m.message?.conversation || m.message?.extendedTextMessage?.text || m.content || "",
+        from_me: m.key?.fromMe ? 1 : 0,
+        timestamp: new Date((m.messageTimestamp || Date.now() / 1000) * 1000).toISOString(),
+        type,
+        raw_message: {
+          key: m.key,
+          message: m.message,
+          messageTimestamp: m.messageTimestamp,
+        },
+      });
+    });
+
+    // Process Local messages (overwrite if ID matches, or add if new)
+    localArr.forEach((m: any) => {
+      // Parse raw_message JSON if available
+      let rawMessage = null;
+      if (m.raw_message) {
+        try {
+          rawMessage = JSON.parse(m.raw_message);
+        } catch {
+          rawMessage = null;
+        }
+      }
+      msgMap.set(m.id, {
+        id: m.id,
+        content: m.content,
+        from_me: m.from_me,
+        timestamp: m.timestamp,
+        type: m.type,
+        raw_message: rawMessage,
+      });
+    });
+
+    return Array.from(msgMap.values()).sort(
+      (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+    );
+  });
+
+export const getMediaData = createServerFn({ method: "POST" })
+  .inputValidator((input) =>
+    z
+      .object({
+        instanceName: InstanceName,
+        message: z.any(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    // The Evolution API expects { message: <raw_message> }
+    const res = await evolutionFetch<any>({
+      method: "POST",
+      path: `/chat/getBase64FromMediaMessage/${encodeURIComponent(data.instanceName)}`,
+      body: { message: data.message },
+    });
+    return res; // usually { base64: "..." }
+  });
 
 export const fetchProfilePictureUrl = createServerFn({ method: "GET" })
   .inputValidator((input) =>
@@ -477,6 +685,7 @@ export const fetchProfilePictureUrl = createServerFn({ method: "GET" })
     evolutionFetch<{ profilePictureUrl?: string }>({
       path: `/chat/fetchProfilePictureUrl/${encodeURIComponent(data.instanceName)}`,
       query: { number: normalizePhone(data.number) },
+      ignore404: true,
     }),
   );
 
@@ -486,9 +695,7 @@ export const markMessageAsRead = createServerFn({ method: "POST" })
       .object({
         instanceName: InstanceName,
         readMessages: z
-          .array(
-            z.object({ remoteJid: z.string(), fromMe: z.boolean(), id: z.string() }),
-          )
+          .array(z.object({ remoteJid: z.string(), fromMe: z.boolean(), id: z.string() }))
           .min(1)
           .max(50),
       })
@@ -571,5 +778,8 @@ export const setWebhook = createServerFn({ method: "POST" })
 export const findWebhook = createServerFn({ method: "GET" })
   .inputValidator((input) => z.object({ instanceName: InstanceName }).parse(input))
   .handler(async ({ data }) =>
-    evolutionFetch({ path: `/webhook/find/${encodeURIComponent(data.instanceName)}` }),
+    evolutionFetch({
+      path: `/webhook/find/${encodeURIComponent(data.instanceName)}`,
+      ignore404: true,
+    }),
   );

@@ -146,23 +146,16 @@ export function AppShell() {
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="hidden sm:flex items-center gap-2 mr-4">
-                <Sparkles
-                  className={`size-3 ${aiStatusMeta.className}`}
-                  title={
-                    activeInstance
-                      ? `Instância ativa: ${activeInstance}`
-                      : "Nenhuma instância ativa"
-                  }
-                />
-                <TextMono
-                  className={`text-[10px] font-black uppercase tracking-[0.2em] ${aiStatusMeta.className}`}
-                  title={
-                    activeInstance
-                      ? `Instância ativa: ${activeInstance}`
-                      : "Nenhuma instância ativa"
-                  }
-                >
+              <div 
+                className="hidden sm:flex items-center gap-2 mr-4"
+                title={
+                  activeInstance
+                    ? `Instância ativa: ${activeInstance}`
+                    : "Nenhuma instância ativa"
+                }
+              >
+                <Sparkles className={`size-3 ${aiStatusMeta.className}`} />
+                <TextMono className={`text-[10px] font-black uppercase tracking-[0.2em] ${aiStatusMeta.className}`}>
                   {aiStatusMeta.label}
                 </TextMono>
               </div>

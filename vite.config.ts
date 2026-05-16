@@ -12,4 +12,13 @@ export default defineConfig({
   tanstackStart: {
     server: { entry: "server" },
   },
+  vite: {
+    server: {
+      allowedHosts: [
+        "c791-2804-14c-85b0-4356-7d69-24e1-4ab8-2ebc.ngrok-free.app",
+        "44cb-179-0-188-17.ngrok-free.app",
+        ".ngrok-free.app", // Allow any ngrok subdomain
+      ],
+    },
+  },
 });

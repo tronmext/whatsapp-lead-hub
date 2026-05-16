@@ -1,26 +1,12 @@
-import { DatabaseService } from "./services/db.service";
+import { DatabaseService, type D1Database } from "./services/db.service";
+import { DEFAULT_PROMPT_SEED } from "./prompts/default-sales";
 
-const DEFAULT_PROMPT = `Você é um analista comercial sênior especialista em High Ticket.
-Analise a transcrição da conversa e gere um objeto JSON:
-
-1. EXECUTIVE_SUMMARY (3-5 linhas diretas)
-2. QUALIFICATION_SCORE (0-100 baseado em urgência e budget)
-3. IDENTIFIED_NEEDS (Lista técnica de dores)
-4. SUGGESTED_NEXT_STEPS (Ações pragmáticas)
-
-Tom: Sóbrio, editorial, técnico.`;
-
-export async function seedDatabase(db: any) {
+export async function seedDatabase(db: D1Database) {
   const dbService = new DatabaseService(db);
-  
+
   const prompts = await dbService.getPrompts();
   if (prompts.length === 0) {
-    await dbService.savePrompt({
-      id: "default_sales",
-      name: "Sales Analyst",
-      content: DEFAULT_PROMPT,
-      category: "sales",
-    });
+    await dbService.savePrompt(DEFAULT_PROMPT_SEED);
     console.log("[seed] Created default sales prompt");
   }
 }

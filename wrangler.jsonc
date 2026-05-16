@@ -4,4 +4,11 @@
   "compatibility_date": "2025-09-24",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/server.ts",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ggailabs-leadflow",
+      "database_id": "3ddd9cd9-f468-4926-b072-48e9b50fc786",
+    },
+  ],
 }
